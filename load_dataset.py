@@ -22,7 +22,7 @@ def write_string_labels(dataset_name, str_labels):
     path = cache_dir + dataset_name +  "/labels.txt"
     with open(path, 'w') as f:
         for i, label in enumerate(str_labels):
-            f.write(str(i) + " " + label)
+            f.write(str(i) + " " + label + "\n")
 
 def load_raw_dataset(dataset_name):
     train_images = []
@@ -30,6 +30,8 @@ def load_raw_dataset(dataset_name):
     train_labels = []
     test_labels = []
     str_labels = []
+
+    # ler ficheiro para ver se é train ou test "list_eval_partition.txt"
 
     dataset_path = raw_dir + dataset_name + "/"
 
@@ -98,7 +100,4 @@ def main():
     (train_images, train_labels), (test_images, test_labels) = load_dataset("lfw-deepfunneled")
     print(len(train_labels))
 
-    # print(train_images.shape)
-    # print(train_labels.shape)
-    # print(test_images.shape)
-    # print(test_labels.shape)
+main()

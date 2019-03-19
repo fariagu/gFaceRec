@@ -7,16 +7,25 @@ from tensorflow import keras
 
 from model import create_model
 from load_dataset import load_dataset
-# from train import dataset_name, checkpoint_path
+from load_celeba import load_dataset
 
-(train_images, train_labels), (test_images, test_labels) = load_dataset("lfw-deepfunneled")
+from train import dataset_name, checkpoint_path
+
+checkpoint_dir = os.path.dirname(os.path.realpath(__file__))
+checkpoint_path = checkpoint_dir + "/training_2/cp-{epoch:04d}.hdf5"
+checkpoint_path = checkpoint_path.replace('\\', '/')
+
+# (train_images, train_labels), (test_images, test_labels) = load_dataset("lfw-deepfunneled")
+(train_images, train_labels), (test_images, test_labels) = load_dataset()
 
 print(len(test_labels))
 
-num_classes = 500
+num_classes = 10177
 
 model = create_model(num_classes)
-model.load_weights("C:/code/keras/training_1/cp-0050.hdf5")
 
-loss, acc = model.evaluate(test_images[:500], test_labels[:500])
+# Muda valor da epoch manualmente (checkpoint mais recente)
+model.load_weights(checkpoint_path.format(epoch=50))
+
+loss, acc = model.evaluate(test_images[:1000], test_labels[:1000])
 print("Model accuracy: {:5.2f}%".format(100*acc))

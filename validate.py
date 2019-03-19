@@ -12,7 +12,7 @@ from load_celeba import load_dataset
 from train import dataset_name, checkpoint_path
 
 checkpoint_dir = os.path.dirname(os.path.realpath(__file__))
-checkpoint_path = checkpoint_dir + "/training_2/cp-{epoch:04d}.hdf5"
+checkpoint_path = checkpoint_dir + "/training_3/cp-{epoch:03d}.hdf5"
 checkpoint_path = checkpoint_path.replace('\\', '/')
 
 # (train_images, train_labels), (test_images, test_labels) = load_dataset("lfw-deepfunneled")

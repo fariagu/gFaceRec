@@ -4,8 +4,10 @@ import os
 
 import keras
 
+from utils import num_classes
+
 # Returns convnet model
-def create_model(num_classes):
+def create_model():
     model = keras.models.Sequential([
         keras.layers.Conv2D(
             filters=32,
@@ -73,9 +75,7 @@ def create_model(num_classes):
         # optimizer=keras.optimizers.Adam(),
         optimizer=keras.optimizers.RMSprop(),
         loss=keras.losses.sparse_categorical_crossentropy,
-        metrics=[
-            'accuracy',
-        ]
+        metrics=['accuracy']
     )
 
     return model

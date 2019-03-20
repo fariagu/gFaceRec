@@ -33,7 +33,7 @@ def main():
     # print(train_batch_generator.shape)
 
     checkpoint_dir = os.path.dirname(os.path.realpath(__file__))
-    checkpoint_path = checkpoint_dir + "/training_5/cp-{epoch:04d}.hdf5"
+    checkpoint_path = checkpoint_dir + "/training_6/cp-{epoch:04d}.hdf5"
     checkpoint_path = checkpoint_path.replace('\\', '/')
 
     # Load Checkpoints
@@ -44,7 +44,7 @@ def main():
         # save weights every N epochs
         period=5
     )
-    tensorboard = keras.callbacks.TensorBoard(log_dir="./logs")
+    tensorboard = keras.callbacks.TensorBoard(log_dir="./training_6/logs")
 
     # model = create_model(get_num_classes())
     model = create_model(100)  # 1000 classes

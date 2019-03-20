@@ -9,13 +9,16 @@ def create_model(num_classes):
     model = keras.models.Sequential([
         keras.layers.Conv2D(
             filters=32,
-            kernel_size=(3,3),
+            kernel_size=(4,4),
             padding='same',
             activation=keras.activations.relu,
             input_shape=(128, 128, 3)
         ),
         keras.layers.MaxPool2D(
             pool_size=(2,2)
+        ),
+        keras.layers.Dropout(
+            rate=0.25
         ),
         keras.layers.Conv2D(
             filters=16,
@@ -26,6 +29,9 @@ def create_model(num_classes):
         keras.layers.MaxPool2D(
             pool_size=(2,2)
         ),
+        keras.layers.Dropout(
+            rate=0.25
+        ),
         keras.layers.Conv2D(
             filters=8,
             kernel_size=(4,4),
@@ -35,6 +41,9 @@ def create_model(num_classes):
         keras.layers.MaxPool2D(
             pool_size=(2,2)
         ),
+        keras.layers.Dropout(
+            rate=0.25
+        ),
         keras.layers.Conv2D(
             filters=4,
             kernel_size=(2,2),
@@ -42,7 +51,7 @@ def create_model(num_classes):
             activation=keras.activations.relu
         ),
         keras.layers.Dropout(
-            rate=0.2
+            rate=0.25
         ),
         keras.layers.Flatten(),
         # Feature Vector Layer
@@ -51,7 +60,7 @@ def create_model(num_classes):
             activation=keras.activations.relu
         ),
         keras.layers.Dropout(
-            rate=0.2
+            rate=0.25
         ),
         # Final Classification Layer
         keras.layers.Dense(

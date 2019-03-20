@@ -37,6 +37,7 @@ Scripts/
 tcl/
 LICENSE.txt
 training/
+tflite_models/
 
 # venv is called keras
 keras/

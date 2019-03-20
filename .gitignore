@@ -30,9 +30,14 @@ tmp/**
 .vs/
 
 .vscode/
+.sonarlint/
 Include/
 Lib/
 Scripts/
 tcl/
 LICENSE.txt
 training/
+
+# venv is called keras
+keras/
+from_source/

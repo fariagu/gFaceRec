@@ -36,10 +36,10 @@ def write_string_labels(labels):
 
     with open(path, 'w') as f:
         for i in range(max(labels)):
-            if i == range(max(labels) - 1):
-                f.write(str(i+1))
+            if i == range(max(labels) - 2):
+                f.write(str(i))
             else:
-                f.write(str(i+1) + "\n")
+                f.write(str(i) + "\n")
 
 def get_num_classes():
     path = cache_dir + "labels.txt"
@@ -56,6 +56,7 @@ def get_num_classes():
 def load_test_v_train(random=True):
     train_v_test = {}
     train_samples = 0
+    val_samples = 0
     test_samples = 0
     path = "C:/datasets/CelebA/list_eval_partition.txt"
     with open(path, 'r') as f:
@@ -63,16 +64,19 @@ def load_test_v_train(random=True):
             tmp = line.split()
 
             if random:
-                if (rand.randint(1, 20)) == 20:
-                    train_v_test[tmp[0]] = "1"
+                seed = rand.randint(1, 20)
+                if seed == 20:
+                    train_v_test[tmp[0]] = "2"
                     test_samples+=1
+                elif seed == 19:
+                    train_v_test[tmp[0]] = "1"
                 else:
                     train_v_test[tmp[0]] = "0"
                     train_samples+=1
             else:
                 train_v_test[tmp[0]] = tmp[1]
     
-    return train_v_test, train_samples, test_samples
+    return train_v_test, train_samples, val_samples, test_samples
 
 def load_labels():
     labels = {}
@@ -83,6 +87,36 @@ def load_labels():
             labels[tmp[0]] = int(tmp[1])
     
     return labels
+
+def load_image_filenames_and_labels():
+    train_images = []
+    train_labels = []
+    val_images = []
+    val_labels = []
+    test_images = []
+    test_labels = []
+
+    train_v_test, train_len, val_len, test_len = load_test_v_train()
+
+    path = "C:/datasets/CelebA/identity_CelebA.txt"
+    with open(path, 'r') as f:
+        for line in f:
+            file_name = line.split()[0]
+            label = line.split()[1]
+
+            if int(label) < 100:
+
+                if train_v_test[file_name] == "0":
+                    train_images.append(raw_dir + file_name)
+                    train_labels.append(int(label)-1)
+                elif train_v_test[file_name] == "1":
+                    val_images.append(raw_dir + file_name)
+                    val_labels.append(int(label)-1)
+                else:
+                    test_images.append(raw_dir + file_name)
+                    test_labels.append(int(label)-1)
+    
+    return train_images, train_labels, val_images, val_labels, test_images, test_labels
 
 def load_raw_dataset():
     # ler ficheiro para ver se é train ou test "list_eval_partition.txt"
@@ -135,6 +169,8 @@ def load_npy_dataset():
     train_labels = train_labels_npz[train_labels_npz.files[0]]
     test_images = test_images_npz[test_images_npz.files[0]]
     test_labels = test_labels_npz[test_labels_npz.files[0]]
+
+    print("Finished loading dataset")
     
     return (train_images, train_labels), (test_images, test_labels)
 
@@ -144,7 +180,7 @@ def load_dataset():
         return load_raw_dataset()
     else:
         return load_npy_dataset()
-    
+
 def main():
     (train_images, train_labels), (test_images, test_labels) = load_dataset()
 
@@ -155,3 +191,7 @@ def main():
     print("Classes: " + str(get_num_classes()))
 
 # main()
+
+labels = load_labels()
+
+write_string_labels(labels.values())

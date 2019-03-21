@@ -26,9 +26,13 @@ if (env_windows):
     raw_dir = "C:/datasets/CelebA/"
     cache_dir = "C:/dataset_cache/CelebA/"
 else:
-    # rhel7 (grid.fe.up.pt)
-    raw_dir = "/homes/up201304501/datasets/CelebA/"
-    cache_dir = "/homes/up201304501/dataset_cache/CelebA/"
+    # # rhel7 (grid.fe.up.pt)
+    # raw_dir = "/homes/up201304501/datasets/CelebA/"
+    # cache_dir = "/homes/up201304501/dataset_cache/CelebA/"
+
+    # gcloud
+    raw_dir = "/home/gustavoduartefaria/datasets/CelebA/"
+    cache_dir = "/home/gustavoduartefaria/dataset_cache/CelebA"
 
 ## OS independent
 images_dir = raw_dir + "img_align_celeba/"

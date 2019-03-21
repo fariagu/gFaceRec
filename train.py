@@ -37,6 +37,7 @@ def main():
         callbacks=[cp_callback, tensorboard],
         verbose=1,
         validation_data=val_batch_generator,
+        use_multiprocessing=True,
     )
 
 main()

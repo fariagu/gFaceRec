@@ -16,18 +16,19 @@ train_batch_generator = Generator(train_images, train_labels, batch_size)
 val_batch_generator = Generator(val_images, val_labels, batch_size)
 
 base_model = load_model("facenet/model.h5")
-base_model.load_weights("facenet/weights.h5")
-base_model.layers.pop()
-base_model.layers.pop()
-base_model.layers.pop()
-base_model.layers.pop()
+# base_model.load_weights("facenet/weights.h5")
+# base_model.layers.pop()
+# base_model.layers.pop()
+# base_model.layers.pop()
+# base_model.layers.pop()
+# base_model.layers.pop()
 base_model.trainable = False
 
 global_average_layer = keras.layers.GlobalAveragePooling2D()
 
 prediction_layer = keras.layers.Dense(
     units=num_classes,
-    activation=keras.activations.relu
+    activation=keras.activations.softmax
 )
 
 model = keras.Sequential([
@@ -41,7 +42,7 @@ model.compile(
     optimizer=keras.optimizers.RMSprop(
         lr=base_learning_rate
     ),
-    loss=keras.losses.binary_crossentropy,
+    loss=keras.losses.sparse_categorical_crossentropy,
     metrics=['accuracy']
 )
 

@@ -2,9 +2,9 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
-env_windows = True
+env_windows = False
 
-training_session    = 9
+training_session    = 11
 num_classes         = 100
 batch_size          = 8
 num_epochs          = 100

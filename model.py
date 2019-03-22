@@ -20,7 +20,7 @@ def create_model():
             pool_size=(2,2)
         ),
         keras.layers.Dropout(
-            rate=0.25
+            rate=0.15
         ),
         keras.layers.Conv2D(
             filters=16,
@@ -32,7 +32,7 @@ def create_model():
             pool_size=(2,2)
         ),
         keras.layers.Dropout(
-            rate=0.25
+            rate=0.15
         ),
         keras.layers.Conv2D(
             filters=8,
@@ -44,8 +44,9 @@ def create_model():
             pool_size=(2,2)
         ),
         keras.layers.Dropout(
-            rate=0.25
+            rate=0.15
         ),
+        # "Bottleneck layer" (last one before the flatten operation)
         keras.layers.Conv2D(
             filters=4,
             kernel_size=(2,2),
@@ -53,7 +54,7 @@ def create_model():
             activation=keras.activations.relu
         ),
         keras.layers.Dropout(
-            rate=0.25
+            rate=0.15
         ),
         keras.layers.Flatten(),
         # Feature Vector Layer
@@ -62,7 +63,7 @@ def create_model():
             activation=keras.activations.relu
         ),
         keras.layers.Dropout(
-            rate=0.25
+            rate=0.15
         ),
         # Final Classification Layer
         keras.layers.Dense(
@@ -72,8 +73,7 @@ def create_model():
     ])
 
     model.compile(
-        # optimizer=keras.optimizers.Adam(),
-        optimizer=keras.optimizers.RMSprop(),
+        optimizer=keras.optimizers.Adam(),
         loss=keras.losses.sparse_categorical_crossentropy,
         metrics=['accuracy']
     )

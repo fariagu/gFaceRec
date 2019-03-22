@@ -3,12 +3,15 @@ from __future__ import absolute_import, division, print_function
 import os
 
 import tensorflow as tf
-from tensorflow import keras
+import keras
+from keras.models import load_model
+
+from keras.applications.inception_v3 import InceptionV3
 
 from model import create_model
 from load_celeba import load_image_filenames_and_labels
 from generator import Generator
-from utils import batch_size, log_dir, checkpoint_path, training_session, cp_period, num_epochs
+from utils import batch_size, log_dir, checkpoint_path, training_session, cp_period, num_epochs, multiprocessing, n_workers
 
 def main():
 
@@ -37,7 +40,16 @@ def main():
         callbacks=[cp_callback, tensorboard],
         verbose=1,
         validation_data=val_batch_generator,
-        use_multiprocessing=True,
+        use_multiprocessing=multiprocessing,
+        workers=n_workers,
     )
 
-main()
+    
+# main()
+
+# base_model = load_model("facenet/model.h5")
+# base_model.layers.pop()
+# base_model.layers.pop()
+# base_model.layers.pop()
+base_model = InceptionV3(include_top=False)
+base_model.summary()

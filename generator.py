@@ -6,6 +6,8 @@ import numpy as np
 
 import keras
 
+from utils import image_width
+
 # Here, `x_set` is list of path to the images
 # and `y_set` are the associated classes. (labels)
 
@@ -23,5 +25,5 @@ class Generator(keras.utils.Sequence):
         label_batch = self.labels[idx * self.batch_size:(idx + 1) * self.batch_size]
 
         return np.array([
-            resize(imread(file_name), (128, 128))
+            resize(imread(file_name), (image_width, image_width))
                for file_name in image_batch]), np.array(label_batch)

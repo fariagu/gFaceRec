@@ -2,20 +2,22 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
-env_windows = False
+env_windows = True
 
-training_session    = 8
+training_session    = 9
 num_classes         = 100
 batch_size          = 8
 num_epochs          = 100
-cp_period           = 5     # save model every <cp_period> epochs
+cp_period           = 10     # save model every <cp_period> epochs
+
+image_width = 160
 
 # root directory full path (os independent i hope)
 base_dir = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 # logs and model checkpoints
 log_dir = base_dir + "/logs/training_" + str(training_session) + "/"
-training_dir = base_dir + "training/training_" + str(training_session) + "/"
+training_dir = base_dir + "/training/training_" + str(training_session) + "/"
 checkpoint_path = training_dir + "cp-{epoch:04d}.hdf5"
 
 ### data directories
@@ -25,6 +27,9 @@ if (env_windows):
     # windows (laptop glintt)
     raw_dir = "C:/datasets/CelebA/"
     cache_dir = "C:/dataset_cache/CelebA/"
+
+    multiprocessing = False
+    n_workers = 1
 else:
     # # rhel7 (grid.fe.up.pt)
     # raw_dir = "/homes/up201304501/datasets/CelebA/"
@@ -32,7 +37,10 @@ else:
 
     # gcloud
     raw_dir = "/home/gustavoduartefaria/datasets/CelebA/"
-    cache_dir = "/home/gustavoduartefaria/dataset_cache/CelebA"
+    cache_dir = "/home/gustavoduartefaria/dataset_cache/CelebA/"
+
+    multiprocessing = True
+    n_workers = 16
 
 ## OS independent
 images_dir = raw_dir + "img_align_celeba/"

@@ -11,7 +11,7 @@ import pickle
 
 from utils import cache_dir, images_dir, labels_path, partition_path, cache_partition_path, num_classes
 
-size = 128, 128
+size = 160, 160
 
 """
     não faz muito porque neste dataset so tenho labels numericas

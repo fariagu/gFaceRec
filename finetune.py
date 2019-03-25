@@ -8,7 +8,7 @@ from keras.models import load_model
 
 from load_celeba import load_image_filenames_and_labels
 from generator import Generator
-from utils import num_classes, checkpoint_path, cp_period, log_dir, num_classes, multiprocessing, n_workers, batch_size, num_epochs
+from utils import num_classes, checkpoint_path, cp_period, log_dir, num_classes, multiprocessing, n_workers, batch_size, num_epochs, base_learning_rate
 
 train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
     
@@ -16,7 +16,7 @@ train_batch_generator = Generator(train_images, train_labels, batch_size)
 val_batch_generator = Generator(val_images, val_labels, batch_size)
 
 base_model = load_model("facenet/model.h5")
-# base_model.load_weights("facenet/weights.h5")
+base_model.load_weights("facenet/weights.h5")
 # base_model.layers.pop()
 # base_model.layers.pop()
 # base_model.layers.pop()
@@ -37,9 +37,8 @@ model = keras.Sequential([
     prediction_layer,
 ])
 
-base_learning_rate = 0.0001
 model.compile(
-    optimizer=keras.optimizers.RMSprop(
+    optimizer=keras.optimizers.Adam(
         lr=base_learning_rate
     ),
     loss=keras.losses.sparse_categorical_crossentropy,

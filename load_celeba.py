@@ -11,8 +11,6 @@ import pickle
 
 from utils import cache_dir, images_dir, labels_path, partition_path, cache_partition_path, num_classes
 
-size = 160, 160
-
 """
     não faz muito porque neste dataset so tenho labels numericas
     (o conteudo do ficheiro vai ser literalmente: 0\n1\n2\n3\n4\n...n)
@@ -50,6 +48,7 @@ def load_train_val_test_from_txt(random=True):
             tmp = line.split()
 
             if random:
+                # 80% train, 10% validation, 10% test
                 seed = rand.randint(1, 20)
                 if seed == 20:
                     train_val_test[tmp[0]] = "2"

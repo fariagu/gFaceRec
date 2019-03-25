@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
-env_windows = False
+env_windows = True
 
 training_session    = 18
 base_learning_rate  = 0.01

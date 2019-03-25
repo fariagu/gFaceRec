@@ -5,6 +5,7 @@ import tensorflow_hub as hub
 
 import keras
 from keras import layers
+from keras.models import load_model
 
 from load_celeba import load_image_filenames_and_labels
 from generator import Generator
@@ -14,7 +15,7 @@ fv_url = "https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/
 
 
 def feature_vector(x):
-    fv_module = hub.Module(fv_url)
+    fv_module = hub.Module(fv_url, trainable=True)
     return fv_module(x)
 
 train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
@@ -22,17 +23,19 @@ train_images, train_labels, val_images, val_labels = load_image_filenames_and_la
 train_batch_generator = Generator(train_images, train_labels, batch_size)
 val_batch_generator = Generator(val_images, val_labels, batch_size)
 
-IMAGE_SIZE = hub.get_expected_image_size(hub.Module(fv_url)) + [3]
+# IMAGE_SIZE = hub.get_expected_image_size(hub.Module(fv_url)) + [3]
 
-feature_vector_layer = layers.Lambda(feature_vector, input_shape=IMAGE_SIZE)
-classification_layer = keras.layers.Dense(
-    units=num_classes,
-    activation=keras.activations.softmax
-)
-model = keras.Sequential([
-    feature_vector_layer,
-    classification_layer
-])
+# feature_vector_layer = layers.Lambda(feature_vector, input_shape=IMAGE_SIZE)
+# classification_layer = keras.layers.Dense(
+#     units=num_classes,
+#     activation=keras.activations.softmax
+# )
+# model = keras.Sequential([
+#     feature_vector_layer,
+#     classification_layer
+# ])
+
+model = load_model("training_/model.h5")
 
 model.compile(
     optimizer=keras.optimizers.Adadelta(

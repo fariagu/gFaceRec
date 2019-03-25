@@ -4,14 +4,18 @@ import os
 
 env_windows = False
 
-training_session    = 14
-base_learning_rate  = 0.001
+training_session    = 18
+base_learning_rate  = 0.01
 num_classes         = 100
-batch_size          = 8
+batch_size          = 32
 num_epochs          = 100
 cp_period           = 10     # save model every <cp_period> epochs
 
-image_width = 160
+# facenet
+# image_width = 160
+
+# mobilenet
+image_width = 224
 
 # root directory full path (os independent i hope)
 base_dir = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')

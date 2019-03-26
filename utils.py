@@ -4,7 +4,7 @@ import os
 
 env_windows = False
 
-training_session    = 20
+training_session    = 21
 base_learning_rate  = 0.5
 num_classes         = 100       # full dataset: 10177
 batch_size          = 32

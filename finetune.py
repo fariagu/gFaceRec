@@ -17,14 +17,7 @@ val_batch_generator = Generator(val_images, val_labels, batch_size)
 
 base_model = load_model("facenet/model.h5")
 base_model.load_weights("facenet/weights.h5")
-# base_model.layers.pop()
-# base_model.layers.pop()
-# base_model.layers.pop()
-# base_model.layers.pop()
-# base_model.layers.pop()
 base_model.trainable = False
-
-global_average_layer = keras.layers.GlobalAveragePooling2D()
 
 prediction_layer = keras.layers.Dense(
     units=num_classes,
@@ -33,15 +26,14 @@ prediction_layer = keras.layers.Dense(
 
 model = keras.Sequential([
     base_model,
-    # global_average_layer,
     prediction_layer,
 ])
 
 model.compile(
-    optimizer=keras.optimizers.Adadelta(
+    optimizer=keras.optimizers.RMSprop(
         lr=base_learning_rate
     ),
-    loss=keras.losses.sparse_categorical_crossentropy,
+    loss=keras.losses.mean_squared_error,
     metrics=['accuracy']
 )
 

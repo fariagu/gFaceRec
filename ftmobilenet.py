@@ -31,10 +31,10 @@ def load_module_as_model():
     ])
 
     model.compile(
-        optimizer=keras.optimizers.Adadelta(
+        optimizer=keras.optimizers.RMSprop(
             lr=base_learning_rate
         ),
-        loss=keras.losses.sparse_categorical_crossentropy,
+        loss=keras.losses.mean_squared_error,
         metrics=['accuracy']
     )
 
@@ -47,7 +47,7 @@ def main():
     val_batch_generator = Generator(val_images, val_labels, batch_size)
 
     model = load_module_as_model()
-
+    # model.load_weights("./mobilenet/model.hdf5")
     model.summary()
 
     tensorboard = keras.callbacks.TensorBoard(log_dir=log_dir)

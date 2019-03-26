@@ -42,7 +42,6 @@ def get_num_classes():
     return -1
 
 def load_train_val_test_from_txt(random=True):
-    print("Loading splits from raw files ...")
 
     train_val_test = {}
     with open(partition_path, 'r') as f:
@@ -66,11 +65,12 @@ def load_train_val_test_from_txt(random=True):
     return train_val_test
 
 def load_train_val_test():
-    print("Loading splits from cache ...")
 
     if os.path.exists(cache_partition_path):
+        print("Loading splits from cache ...")
         return pickle.load(open(cache_partition_path, "rb"))
     else:
+        print("Loading splits from raw files ...")
         return load_train_val_test_from_txt()
 
 def load_image_filenames_and_labels_from_txt():
@@ -89,8 +89,8 @@ def load_image_filenames_and_labels_from_txt():
             label = line.split()[1]
 
             # way of specifying what subset of the dataset being used for training
-            # if int(label) < num_classes:
-            if True:
+            if int(label) < num_classes:
+            # if True:
 
                 # 0: train data
                 # 1: validation data

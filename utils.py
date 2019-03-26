@@ -4,7 +4,7 @@ import os
 
 env_windows = False
 
-training_session    = 21
+training_session    = 24
 base_learning_rate  = 0.5
 num_classes         = 100       # full dataset: 10177
 batch_size          = 32
@@ -45,7 +45,7 @@ else:
     cache_dir = "/home/gustavoduartefaria/dataset_cache/CelebA/"
 
     multiprocessing = True
-    n_workers = 16
+    n_workers = 22
 
 ## OS independent
 images_dir = raw_dir + "img_align_celeba/"

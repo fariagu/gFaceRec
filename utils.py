@@ -6,7 +6,7 @@ env_windows = False
 
 training_session    = 20
 base_learning_rate  = 0.5
-num_classes         = 10176       # full dataset: 10177
+num_classes         = 100       # full dataset: 10177
 batch_size          = 32
 num_epochs          = 100
 cp_period           = 10        # save model every <cp_period> epochs

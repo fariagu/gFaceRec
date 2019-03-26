@@ -42,6 +42,8 @@ def get_num_classes():
     return -1
 
 def load_train_val_test_from_txt(random=True):
+    print("Loading splits from raw files ...")
+
     train_val_test = {}
     with open(partition_path, 'r') as f:
         for line in f:
@@ -64,12 +66,16 @@ def load_train_val_test_from_txt(random=True):
     return train_val_test
 
 def load_train_val_test():
+    print("Loading splits from cache ...")
+
     if os.path.exists(cache_partition_path):
         return pickle.load(open(cache_partition_path, "rb"))
     else:
         return load_train_val_test_from_txt()
 
 def load_image_filenames_and_labels_from_txt():
+    print("Loading images from raw data ...")
+
     train_images = []
     train_labels = []
     val_images = []
@@ -99,24 +105,70 @@ def load_image_filenames_and_labels_from_txt():
 
     pickle.dump(train_images, open(cache_dir + "train_images.pkl", "wb"))
     pickle.dump(train_labels, open(cache_dir + "train_labels.pkl", "wb"))
-    pickle.dump(val_images, open(cache_dir + "test_images.pkl", "wb"))
-    pickle.dump(val_labels, open(cache_dir + "test_labels.pkl", "wb"))
+    pickle.dump(val_images, open(cache_dir + "val_images.pkl", "wb"))
+    pickle.dump(val_labels, open(cache_dir + "val_labels.pkl", "wb"))
     
     return train_images, train_labels, val_images, val_labels
 
 def load_image_filenames_and_labels_from_pkl():
+    print("Loading images from cache ...")
+
     train_images = pickle.load(open(cache_dir + "train_images.pkl", "rb"))
     train_labels = pickle.dump(open(cache_dir + "train_labels.pkl", "rb"))
-    val_images = pickle.dump(open(cache_dir + "test_images.pkl", "rb"))
-    val_labels = pickle.dump(open(cache_dir + "test_labels.pkl", "rb"))
+    val_images = pickle.dump(open(cache_dir + "val_images.pkl", "rb"))
+    val_labels = pickle.dump(open(cache_dir + "val_labels.pkl", "rb"))
     
     return train_images, train_labels, val_images, val_labels
 
 def load_image_filenames_and_labels():
     if os.path.exists(cache_dir + "train_images"):
         if os.path.exists(cache_dir + "train_labels"):
-            if os.path.exists(cache_dir + "test_images"):
-                if os.path.exists(cache_dir + "test_labels"):
+            if os.path.exists(cache_dir + "val_images"):
+                if os.path.exists(cache_dir + "val_labels"):
                     return load_image_filenames_and_labels_from_pkl()
 
     return load_image_filenames_and_labels_from_txt()
+
+def load_test_data_from_txt():
+    print("Loading images from raw data ...")
+
+    test_images = []
+    test_labels = []
+
+    train_val_test = load_train_val_test()
+
+    with open(labels_path, 'r') as f:
+        for line in f:
+            file_name = line.split()[0]
+            label = line.split()[1]
+
+            # way of specifying what subset of the dataset being used for training
+            if int(label) < num_classes:
+            # if True:
+
+                # 0: train data
+                # 1: validation data
+                # 2: test data
+                if train_val_test[file_name] == "2":
+                    test_images.append(images_dir + file_name)
+                    test_labels.append(int(label)-1)
+
+    pickle.dump(test_images, open(cache_dir + "test_images.pkl", "wb"))
+    pickle.dump(test_labels, open(cache_dir + "test_labels.pkl", "wb"))
+    
+    return test_images, test_labels
+
+def load_test_data_from_pkl():
+    print("Loading images from cache ...")
+
+    test_images = pickle.load(open(cache_dir + "test_images.pkl", "rb"))
+    test_labels = pickle.dump(open(cache_dir + "test_labels.pkl", "rb"))
+    
+    return test_images, test_labels
+
+def load_test_data():
+    if os.path.exists(cache_dir + "test_images"):
+        if os.path.exists(cache_dir + "test_labels"):
+            return load_test_data_from_pkl()
+    
+    return load_test_data_from_txt()

@@ -5,7 +5,7 @@ import os
 def read_training_session():
     r = open("training_session.txt", "r")
     training_session = int(r.read())
-    print("Training Session " + training_session)
+    print("Training Session " + str(training_session))
     r.close()
     w = open("training_session.txt", "w")
     w.write(str(training_session+1))

@@ -47,10 +47,10 @@ def main():
     
 # main()
 
-base_model = load_model("facenet/model.h5")
-base_model.layers.pop()
-base_model.layers.pop()
-base_model.layers.pop()
-base_model.layers.pop()
+# base_model = load_model("facenet/model.h5")
+# base_model.layers.pop()
+# base_model.layers.pop()
+# base_model.layers.pop()
+# base_model.layers.pop()
 # base_model = InceptionV3(include_top=False)
-base_model.summary()
+# base_model.summary()

@@ -34,13 +34,13 @@ def load_module_as_model():
         optimizer=keras.optimizers.RMSprop(
             lr=base_learning_rate
         ),
-        loss=keras.losses.mean_squared_error,
+        loss=keras.losses.sparse_categorical_crossentropy,
         metrics=['accuracy']
     )
 
     return model
 
-def main():
+def ftmobilenet():
     train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
         
     train_batch_generator = Generator(train_images, train_labels, batch_size)
@@ -74,4 +74,4 @@ def main():
 
     model.save_weights("./mobilenet/training_{training:04d}/weights.hdf5".format(training=training_session))
 
-main()
+ftmobilenet()

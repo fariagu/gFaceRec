@@ -2,9 +2,22 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
-env_windows = False
+def read_training_session():
+    r = open("training_session.txt", "r")
+    training_session = int(r.read())
+    r.close()
+    w = open("training_session.txt", "w")
+    w.write(str(training_session+1))
+    w.close()
 
-training_session    = 24
+    return training_session
+
+def save_session_params():
+    f = open("logs/training_{sess:04d}.txt".format(sess=training_session))
+
+env_windows = True
+
+training_session    = read_training_session()
 base_learning_rate  = 0.5
 num_classes         = 100       # full dataset: 10177
 batch_size          = 32
@@ -21,8 +34,8 @@ image_width = 224
 base_dir = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 # logs and model checkpoints
-log_dir = base_dir + "/logs/training_" + str(training_session) + "/"
-training_dir = base_dir + "/training/training_" + str(training_session) + "/"
+log_dir = base_dir + "/logs/training_" + "{sess:04d}/".format(sess=training_session)
+training_dir = base_dir + "/training/training_" + "{sess:04d}/".format(sess=training_session)
 checkpoint_path = training_dir + "cp-{epoch:04d}.hdf5"
 
 ### data directories

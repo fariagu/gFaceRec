@@ -21,11 +21,11 @@ def load_module_as_model():
     IMAGE_SIZE = hub.get_expected_image_size(hub.Module(fv_url)) + [3]
 
     feature_vector_layer = layers.Lambda(feature_vector, input_shape=IMAGE_SIZE)
-    inter_layer = keras.layers.Dense(
-        units = 128,
-        activation = keras.activations.relu
-    )
     dropout_layer = keras.layers.Dropout(0.25)
+    classification_layer = keras.layers.Dense(
+        units=num_classes,
+        activation=keras.activations.softmax
+    )
     model = keras.Sequential([
         feature_vector_layer,
         dropout_layer,

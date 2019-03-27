@@ -14,12 +14,19 @@ def read_training_session():
     return training_session
 
 def save_session_params():
-    f = open("logs/training_{sess:04d}.txt".format(sess=training_session))
+    f = open("logs/training_{sess:04d}.txt".format(sess=training_session), "w")
+    f.write("Session: " + training_session)
+    f.write("Base learning rate: " + training_session)
+    f.write("Dropout rate: " + dropout_rate)
+    f.write("Number of classes: " + training_session)
+    f.write("Batch Size: " + training_session)
+    f.write("Epochs: " + training_session)
 
 env_windows = False
 
 training_session    = read_training_session()
 base_learning_rate  = 1.0
+dropout_rate        = 0.75
 num_classes         = 100       # full dataset: 10177
 batch_size          = 32
 num_epochs          = 100
@@ -73,5 +80,7 @@ if not os.path.exists(log_dir):
 
 if not os.path.exists(training_dir):
     os.makedirs(training_dir)
+
+save_session_params()
 
 print(base_dir)

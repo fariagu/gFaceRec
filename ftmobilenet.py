@@ -8,7 +8,7 @@ from keras import layers
 
 from load_celeba import load_image_filenames_and_labels
 from generator import Generator
-from utils import num_classes, batch_size, log_dir, checkpoint_path, base_learning_rate, cp_period, multiprocessing, n_workers, num_epochs, training_session
+from utils import num_classes, batch_size, log_dir, checkpoint_path, base_learning_rate, cp_period, multiprocessing, n_workers, num_epochs, training_session, dropout_rate
 
 fv_url = "https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/2"
 
@@ -21,7 +21,7 @@ def load_module_as_model():
     IMAGE_SIZE = hub.get_expected_image_size(hub.Module(fv_url)) + [3]
 
     feature_vector_layer = layers.Lambda(feature_vector, input_shape=IMAGE_SIZE)
-    dropout_layer = keras.layers.Dropout(0.25)
+    dropout_layer = keras.layers.Dropout(dropout_rate)
     classification_layer = keras.layers.Dense(
         units=num_classes,
         activation=keras.activations.softmax
@@ -74,6 +74,6 @@ def ftmobilenet():
         workers=n_workers,
     )
 
-    model.save_weights("./mobilenet/training_{training:04d}/weights.hdf5".format(training=training_session))
+    # model.save_weights("./mobilenet/training_{training:04d}/weights.hdf5".format(training=training_session))
 
 ftmobilenet()

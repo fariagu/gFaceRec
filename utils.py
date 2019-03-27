@@ -15,7 +15,7 @@ def read_training_session():
 def save_session_params():
     f = open("logs/training_{sess:04d}.txt".format(sess=training_session))
 
-env_windows = True
+env_windows = False
 
 training_session    = read_training_session()
 base_learning_rate  = 0.5

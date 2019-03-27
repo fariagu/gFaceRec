@@ -31,6 +31,7 @@ def load_module_as_model():
     )
     model = keras.Sequential([
         feature_vector_layer,
+        inter_layer,
         classification_layer
     ])
 

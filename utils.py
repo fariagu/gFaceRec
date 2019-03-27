@@ -15,14 +15,14 @@ def read_training_session():
 
 def save_session_params():
     f = open("logs/training_{sess:04d}.txt".format(sess=training_session), "w")
-    f.write("Session: " + training_session)
-    f.write("Base learning rate: " + training_session)
-    f.write("Dropout rate: " + dropout_rate)
-    f.write("Number of classes: " + training_session)
-    f.write("Batch Size: " + training_session)
-    f.write("Epochs: " + training_session)
+    f.write("Session: " + str(training_session) + "\n")
+    f.write("Base learning rate: " + str(base_learning_rate) + "\n")
+    f.write("Dropout rate: " + str(dropout_rate) + "\n")
+    f.write("Number of classes: " + str(num_classes) + "\n")
+    f.write("Batch Size: " + str(batch_size) + "\n")
+    f.write("Epochs: " + str(num_epochs) + "\n")
 
-env_windows = False
+env_windows = True
 
 training_session    = read_training_session()
 base_learning_rate  = 1.0

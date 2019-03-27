@@ -5,6 +5,7 @@ import os
 def read_training_session():
     r = open("training_session.txt", "r")
     training_session = int(r.read())
+    print("Training Session " + training_session)
     r.close()
     w = open("training_session.txt", "w")
     w.write(str(training_session+1))
@@ -18,7 +19,7 @@ def save_session_params():
 env_windows = False
 
 training_session    = read_training_session()
-base_learning_rate  = 0.5
+base_learning_rate  = 1.0
 num_classes         = 100       # full dataset: 10177
 batch_size          = 32
 num_epochs          = 100

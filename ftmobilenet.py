@@ -25,13 +25,10 @@ def load_module_as_model():
         units = 128,
         activation = keras.activations.relu
     )
-    classification_layer = keras.layers.Dense(
-        units=num_classes,
-        activation=keras.activations.softmax
-    )
+    dropout_layer = keras.layers.Dropout(0.25)
     model = keras.Sequential([
         feature_vector_layer,
-        inter_layer,
+        dropout_layer,
         classification_layer
     ])
 

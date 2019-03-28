@@ -25,8 +25,8 @@ def save_session_params():
 env_windows = True
 
 training_session    = read_training_session()
-base_learning_rate  = 1.0
-dropout_rate        = 0.75
+base_learning_rate  = 0.0001
+dropout_rate        = 0.5
 num_classes         = 100       # full dataset: 10177
 batch_size          = 32
 num_epochs          = 100

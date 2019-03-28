@@ -5,10 +5,11 @@ import tensorflow_hub as hub
 
 import keras
 from keras import layers
+from keras.preprocessing.image import ImageDataGenerator
 
 from load_celeba import load_image_filenames_and_labels
 from generator import Generator
-from utils import num_classes, batch_size, log_dir, checkpoint_path, base_learning_rate, cp_period, multiprocessing, n_workers, num_epochs, training_session, dropout_rate
+from utils import raw_dir, num_classes, batch_size, log_dir, checkpoint_path, base_learning_rate, cp_period, multiprocessing, n_workers, num_epochs, training_session, dropout_rate
 
 fv_url = "https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/2"
 
@@ -45,10 +46,35 @@ def load_module_as_model():
     return model
 
 def ftmobilenet():
-    train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
-        
-    train_batch_generator = Generator(train_images, train_labels, batch_size)
-    val_batch_generator = Generator(val_images, val_labels, batch_size)
+    # train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
+    
+    train_datagen = ImageDataGenerator(
+        featurewise_std_normalization=True,
+        rotation_range=90,
+        zoom_range=0.2        
+    )
+
+    val_datagen = ImageDataGenerator(rescale=1./255)
+
+    # Augmented
+    train_batch_generator = train_datagen.flow_from_directory(
+        raw_dir +"train_split_100/",
+        target_size=(224, 224), # TODO
+        batch_size=32,  # TODO
+        class_mode='sparse'
+    )
+
+    # Not augmented
+    # train_batch_generator = Generator(train_images, train_labels, batch_size)
+
+    val_batch_generator = val_datagen.flow_from_directory(
+        raw_dir +"val_split_100/",
+        target_size=(224, 224), # TODO
+        batch_size=32, # TODO
+        class_mode='sparse'
+    )
+
+    # val_batch_generator = Generator(val_images, val_labels, batch_size)
 
     model = load_module_as_model()
     # model.load_weights("./mobilenet/model.hdf5")
@@ -74,6 +100,8 @@ def ftmobilenet():
         validation_data=val_batch_generator,
         use_multiprocessing=multiprocessing,
         workers=n_workers,
+        steps_per_epoch=2025/batch_size, # TODO
+        validation_steps=104 #TODO
     )
 
     # model.save_weights("./mobilenet/training_{training:04d}/weights.hdf5".format(training=training_session))

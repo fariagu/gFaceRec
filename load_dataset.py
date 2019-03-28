@@ -13,7 +13,8 @@ cache_dir = "C:/dataset_cache/"
 
 def load_image(file_path):
     img = Image.open(file_path)
-    img.thumbnail(size)
+    # img.thumbnail(size)
+    img.thumbnail(224)
     img.load()
     data = np.asarray(img, dtype="uint8")
     return data

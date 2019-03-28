@@ -1,0 +1,25 @@
+from __future__ import absolute_import, division, print_function
+
+import os
+from skimage.io import imread
+from skimage.transform import resize
+import numpy as np
+from keras.preprocessing.image import ImageDataGenerator
+
+from matplotlib import pyplot
+
+img = np.array(resize(imread("C:/datasets/CelebA/test_split/1/027827.jpg"), (224, 224)))
+
+# datagen = ImageDataGenerator(featurewise_center=True, featurewise_std_normalization=True)
+datagen = ImageDataGenerator(rotation_range=90, data_format="channels_last")
+datagen.fit([img])
+
+
+for resx in datagen.flow(np.array([img])):
+    pyplot.imshow(resx[0])
+    pyplot.show()
+    break
+# print(array.shape)
+
+# pyplot.imshow(img)
+# pyplot.show()

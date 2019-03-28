@@ -49,9 +49,11 @@ def ftmobilenet():
     # train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
     
     train_datagen = ImageDataGenerator(
-        featurewise_std_normalization=True,
-        rotation_range=90,
-        zoom_range=0.2        
+        # featurewise_center=True,
+        rotation_range=30,
+        shear_range=10.0,
+        width_shift_range=0.1,
+        height_shift_range=0.1,
     )
 
     val_datagen = ImageDataGenerator(rescale=1./255)

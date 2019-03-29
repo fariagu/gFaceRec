@@ -39,7 +39,7 @@ def load_module_as_model():
         optimizer=keras.optimizers.RMSprop(
             lr=base_learning_rate
         ),
-        loss=keras.losses.sparse_categorical_crossentropy,
+        loss=keras.losses.hinge,
         metrics=['accuracy']
     )
 

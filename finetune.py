@@ -5,6 +5,7 @@ import os
 import numpy as np
 import keras
 from keras.models import load_model
+from keras.preprocessing.image import ImageDataGenerator
 
 from load_celeba import load_image_filenames_and_labels
 from generator import Generator

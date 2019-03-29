@@ -22,14 +22,14 @@ def save_session_params():
     f.write("Batch Size: " + str(batch_size) + "\n")
     f.write("Epochs: " + str(num_epochs) + "\n")
 
-env_windows = False
+env_windows = True
 
 training_session    = read_training_session()
 base_learning_rate  = 0.0001
 dropout_rate        = 0.5
 num_classes         = 100       # full dataset: 10177
 batch_size          = 32
-num_epochs          = 1000
+num_epochs          = 100
 cp_period           = 10        # save model every <cp_period> epochs
 
 # facenet

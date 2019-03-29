@@ -49,14 +49,17 @@ def ftmobilenet():
     # train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
     
     train_datagen = ImageDataGenerator(
+        # rescale=1./255
         # featurewise_center=True,
-        rotation_range=30,
-        shear_range=10.0,
-        width_shift_range=0.1,
-        height_shift_range=0.1,
+        rotation_range=5,
+        shear_range=1.0,
+        width_shift_range=0.01,
+        height_shift_range=0.01,
     )
 
-    val_datagen = ImageDataGenerator(rescale=1./255)
+    val_datagen = ImageDataGenerator(
+        # rescale=1./255
+    )
 
     # Augmented
     train_batch_generator = train_datagen.flow_from_directory(
@@ -103,7 +106,7 @@ def ftmobilenet():
         use_multiprocessing=multiprocessing,
         workers=n_workers,
         steps_per_epoch=2025/batch_size, # TODO
-        validation_steps=104 #TODO
+        validation_steps=104/4 #TODO
     )
 
     # model.save_weights("./mobilenet/training_{training:04d}/weights.hdf5".format(training=training_session))

@@ -20,6 +20,8 @@ def finetune():
     base_model.load_weights("facenet/weights.h5")
     base_model.trainable = False
 
+    dropout_layer = keras.layers.Dropout(0.5)
+
     prediction_layer = keras.layers.Dense(
         units=num_classes,
         activation=keras.activations.softmax
@@ -27,6 +29,7 @@ def finetune():
 
     model = keras.Sequential([
         base_model,
+        dropout_layer,
         prediction_layer,
     ])
 

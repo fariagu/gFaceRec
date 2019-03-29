@@ -22,7 +22,7 @@ def save_session_params():
     f.write("Batch Size: " + str(batch_size) + "\n")
     f.write("Epochs: " + str(num_epochs) + "\n")
 
-env_windows = True
+env_windows = False
 
 training_session    = read_training_session()
 base_learning_rate  = 0.0001

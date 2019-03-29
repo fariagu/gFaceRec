@@ -22,7 +22,6 @@ def load_module_as_model():
     IMAGE_SIZE = hub.get_expected_image_size(hub.Module(fv_url)) + [3]
 
     feature_vector_layer = layers.Lambda(feature_vector, input_shape=IMAGE_SIZE)
-    noise_layer = layers.GaussianNoise(0.1)
     dropout_layer = keras.layers.Dropout(dropout_rate)
     classification_layer = keras.layers.Dense(
         units=num_classes,
@@ -30,7 +29,6 @@ def load_module_as_model():
     )
     model = keras.Sequential([
         feature_vector_layer,
-        noise_layer,
         dropout_layer,
         classification_layer
     ])
@@ -39,7 +37,7 @@ def load_module_as_model():
         optimizer=keras.optimizers.RMSprop(
             lr=base_learning_rate
         ),
-        loss=keras.losses.hinge,
+        loss=keras.losses.categorical_hinge,
         metrics=['accuracy']
     )
 

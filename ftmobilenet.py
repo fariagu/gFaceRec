@@ -25,7 +25,7 @@ def load_module_as_model():
     dropout_layer = keras.layers.Dropout(dropout_rate)
     classification_layer = keras.layers.Dense(
         units=num_classes,
-        activation=keras.activations.softmax
+        activation=keras.activations.linear
     )
     model = keras.Sequential([
         feature_vector_layer,
@@ -37,47 +37,46 @@ def load_module_as_model():
         optimizer=keras.optimizers.RMSprop(
             lr=base_learning_rate
         ),
-        loss=keras.losses.categorical_hinge,
+        loss=keras.losses.sparse_categorical_crossentropy,
         metrics=['accuracy']
     )
 
     return model
 
 def ftmobilenet():
-    # train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
     
-    train_datagen = ImageDataGenerator(
-        # rescale=1./255
-        # featurewise_center=True,
-        rotation_range=5,
-        shear_range=1.0,
-        width_shift_range=0.01,
-        height_shift_range=0.01,
-    )
+    # # Augmented
+    # train_datagen = ImageDataGenerator(
+    #     # rotation_range=2,
+    #     # shear_range=5,
+    #     # width_shift_range=2,
+    #     # height_shift_range=2,
+    # )
 
-    val_datagen = ImageDataGenerator(
-        # rescale=1./255
-    )
+    # val_datagen = ImageDataGenerator(
+    #     # rescale=1./255
+    # )
 
-    # Augmented
-    train_batch_generator = train_datagen.flow_from_directory(
-        raw_dir +"train_split_100/",
-        target_size=(224, 224), # TODO
-        batch_size=32,  # TODO
-        class_mode='sparse'
-    )
+    # train_batch_generator = train_datagen.flow_from_directory(
+    #     raw_dir +"train_split_" + str(num_classes) + "/",
+    #     target_size=(224, 224), # TODO
+    #     batch_size=32,  # TODO
+    #     class_mode='sparse',
+    #     shuffle=True,
+    # )
+
+    # val_batch_generator = val_datagen.flow_from_directory(
+    #     raw_dir +"val_split_" + str(num_classes) + "/",
+    #     target_size=(224, 224), # TODO
+    #     batch_size=32, # TODO
+    #     class_mode='sparse',
+    #     shuffle=True,
+    # )
 
     # Not augmented
-    # train_batch_generator = Generator(train_images, train_labels, batch_size)
-
-    val_batch_generator = val_datagen.flow_from_directory(
-        raw_dir +"val_split_100/",
-        target_size=(224, 224), # TODO
-        batch_size=32, # TODO
-        class_mode='sparse'
-    )
-
-    # val_batch_generator = Generator(val_images, val_labels, batch_size)
+    train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
+    train_batch_generator = Generator(train_images, train_labels, batch_size)
+    val_batch_generator = Generator(val_images, val_labels, batch_size)
 
     model = load_module_as_model()
     # model.load_weights("./mobilenet/model.hdf5")
@@ -103,8 +102,8 @@ def ftmobilenet():
         validation_data=val_batch_generator,
         use_multiprocessing=multiprocessing,
         workers=n_workers,
-        steps_per_epoch=2025/batch_size, # TODO
-        validation_steps=104/4 #TODO
+        # steps_per_epoch=187/batch_size, # TODO
+        # validation_steps=8 #TODO
     )
 
     # model.save_weights("./mobilenet/training_{training:04d}/weights.hdf5".format(training=training_session))

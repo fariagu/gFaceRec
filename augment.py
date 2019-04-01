@@ -16,12 +16,10 @@ img = np.array(resize(imread("C:/datasets/CelebA/test_split/1/027827.jpg"), (224
 # datagen = ImageDataGenerator(width_shift_range=0.1)
 # datagen = ImageDataGenerator(height_shift_range=0.1)
 datagen = ImageDataGenerator(
-        # rescale=1./255,
-        # featurewise_center=True,
-        rotation_range=15,
-        shear_range=1.0,
-        width_shift_range=0.05,
-        height_shift_range=0.05,
+        rotation_range=2,
+        shear_range=5,
+        width_shift_range=2,
+        height_shift_range=2,
     )
 
 datagen.fit([img])

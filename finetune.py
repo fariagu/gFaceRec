@@ -9,47 +9,45 @@ from keras.preprocessing.image import ImageDataGenerator
 
 from load_celeba import load_image_filenames_and_labels
 from generator import Generator
-from utils import num_classes, checkpoint_path, cp_period, log_dir, num_classes, multiprocessing, n_workers, batch_size, num_epochs, base_learning_rate
+from utils import num_classes, checkpoint_path, cp_period, raw_dir, log_dir, num_classes, multiprocessing, n_workers, batch_size, num_epochs, base_learning_rate, dropout_rate
 
 def finetune():
     # train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
-        
     # train_batch_generator = Generator(train_images, train_labels, batch_size)
     # val_batch_generator = Generator(val_images, val_labels, batch_size)
 
     train_datagen = ImageDataGenerator(
-        # rescale=1./255
-        # featurewise_center=True,
-        rotation_range=5,
-        shear_range=1.0,
-        width_shift_range=0.01,
-        height_shift_range=0.01,
+        rotation_range=15,
+        shear_range=5,
+        width_shift_range=0.10,
+        height_shift_range=0.10,
     )
 
     val_datagen = ImageDataGenerator(
         # rescale=1./255
     )
 
-    # Augmented
     train_batch_generator = train_datagen.flow_from_directory(
-        raw_dir +"train_split_100/",
-        target_size=(224, 224), # TODO
-        batch_size=32,  # TODO
-        class_mode='sparse'
+        raw_dir +"train_split_" + str(num_classes) + "/",
+        target_size= (160, 160), # TODO
+        batch_size= 64,  # TODO
+        class_mode= "sparse",
+        save_to_dir= raw_dir + "split_aug_" + num_classes + "/",
+        save_format= "jpeg",
     )
 
     val_batch_generator = val_datagen.flow_from_directory(
-        raw_dir +"val_split_100/",
-        target_size=(224, 224), # TODO
-        batch_size=32, # TODO
-        class_mode='sparse'
+        raw_dir +"val_split_" + str(num_classes) + "/",
+        target_size=(160, 160), # TODO
+        batch_size=64, # TODO
+        class_mode='sparse',
     )
 
     base_model = load_model("facenet/model.h5")
     base_model.load_weights("facenet/weights.h5")
     base_model.trainable = False
 
-    dropout_layer = keras.layers.Dropout(0.5)
+    dropout_layer = keras.layers.Dropout(dropout_rate)
 
     prediction_layer = keras.layers.Dense(
         units=num_classes,
@@ -63,7 +61,7 @@ def finetune():
     ])
 
     model.compile(
-        optimizer=keras.optimizers.RMSprop(
+        optimizer=keras.optimizers.Adam(
             lr=base_learning_rate
         ),
         loss=keras.losses.sparse_categorical_crossentropy,
@@ -91,8 +89,8 @@ def finetune():
         validation_data=val_batch_generator,
         use_multiprocessing=multiprocessing,
         workers=n_workers,
-        steps_per_epoch=2025/batch_size, # TODO
-        validation_steps=105/4 #TODO
+        steps_per_epoch=1, # TODO
+        validation_steps=1 #TODO
     )
 
 finetune()

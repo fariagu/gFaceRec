@@ -25,10 +25,10 @@ def save_session_params():
 env_windows = False
 
 training_session    = read_training_session()
-base_learning_rate  = 0.0001
+base_learning_rate  = 0.001
 dropout_rate        = 0.5
 num_classes         = 100       # full dataset: 10177
-batch_size          = 32
+batch_size          = 64
 num_epochs          = 100
 cp_period           = 10        # save model every <cp_period> epochs
 
@@ -73,6 +73,12 @@ images_dir = raw_dir + "img_align_celeba/"
 labels_path = raw_dir + "identity_CelebA.txt"
 partition_path = raw_dir + "list_eval_partition.txt"
 cache_partition_path = cache_dir + "train_val_test.pkl"
+
+# augmentation dirs
+split_dir = raw_dir + "split_" + str(num_classes) + "/"
+train_dir = split_dir + "train_aug/"
+val_dir = split_dir + "val_aug/"
+test_dir = split_dir + "test_aug/"
 
 # initialize necessary directories
 if not os.path.exists(log_dir):

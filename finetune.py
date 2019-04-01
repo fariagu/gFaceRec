@@ -9,7 +9,7 @@ from keras.preprocessing.image import ImageDataGenerator
 
 from load_celeba import load_image_filenames_and_labels
 from generator import Generator
-from utils import num_classes, checkpoint_path, cp_period, raw_dir, log_dir, num_classes, multiprocessing, n_workers, batch_size, num_epochs, base_learning_rate, dropout_rate
+from utils import num_classes, checkpoint_path, cp_period, train_dir, train_dir_aug, raw_dir, log_dir, num_classes, multiprocessing, n_workers, batch_size, num_epochs, base_learning_rate, dropout_rate
 
 def finetune():
     # train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
@@ -17,6 +17,7 @@ def finetune():
     # val_batch_generator = Generator(val_images, val_labels, batch_size)
 
     train_datagen = ImageDataGenerator(
+        rescale=1./255,
         rotation_range=15,
         shear_range=5,
         width_shift_range=0.10,
@@ -24,15 +25,15 @@ def finetune():
     )
 
     val_datagen = ImageDataGenerator(
-        # rescale=1./255
+        rescale=1./255
     )
 
     train_batch_generator = train_datagen.flow_from_directory(
-        raw_dir +"train_split_" + str(num_classes) + "/",
+        train_dir,
         target_size= (160, 160), # TODO
         batch_size= 64,  # TODO
         class_mode= "sparse",
-        save_to_dir= raw_dir + "split_aug_" + num_classes + "/",
+        save_to_dir= train_dir_aug,
         save_format= "jpeg",
     )
 

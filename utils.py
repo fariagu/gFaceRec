@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+import platform
 
 def read_training_session():
     r = open("training_session.txt", "r")
@@ -22,10 +23,10 @@ def save_session_params():
     f.write("Batch Size: " + str(batch_size) + "\n")
     f.write("Epochs: " + str(num_epochs) + "\n")
 
-env_windows = False
+env_windows = True if platform.system() == "Windows" else False
 
 training_session    = read_training_session()
-base_learning_rate  = 0.001
+base_learning_rate  = 0.0001
 dropout_rate        = 0.5
 num_classes         = 100       # full dataset: 10177
 batch_size          = 64
@@ -57,10 +58,6 @@ if (env_windows):
     multiprocessing = False
     n_workers = 1
 else:
-    # # rhel7 (grid.fe.up.pt)
-    # raw_dir = "/homes/up201304501/datasets/CelebA/"
-    # cache_dir = "/homes/up201304501/dataset_cache/CelebA/"
-
     # gcloud
     raw_dir = "/home/gustavoduartefaria/datasets/CelebA/"
     cache_dir = "/home/gustavoduartefaria/dataset_cache/CelebA/"
@@ -76,9 +73,10 @@ cache_partition_path = cache_dir + "train_val_test.pkl"
 
 # augmentation dirs
 split_dir = raw_dir + "split_" + str(num_classes) + "/"
-train_dir = split_dir + "train_aug/"
-val_dir = split_dir + "val_aug/"
-test_dir = split_dir + "test_aug/"
+train_dir = split_dir + "train/"
+val_dir = split_dir + "val/"
+test_dir = split_dir + "test/"
+train_dir_aug = split_dir + "train_aug/"
 
 # initialize necessary directories
 if not os.path.exists(log_dir):

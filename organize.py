@@ -7,7 +7,7 @@ from PIL import Image
 import numpy as np
 
 from load_celeba import load_train_val_test
-from utils import split_dir, train_dir, val_dir, test_dir, images_dir, labels_path, num_classes
+from utils import split_dir, train_dir, val_dir, test_dir, train_dir_aug, images_dir, labels_path, num_classes
 
 def load_labels_dict():
     labels_dict = {}
@@ -35,6 +35,9 @@ def from_labels_to_folders():
 
     if not os.path.exists(test_dir):
         os.makedirs(test_dir)
+    
+    if not os.path.exists(train_dir_aug):
+        os.makedirs(train_dir_aug)
 
     train_examples = 0
     val_examples = 0
@@ -72,5 +75,5 @@ def from_folders_to_labels():
                     for file in os.listdir(split_dir + folder + "/" + subfolder):
                         labels.write(file + " " + subfolder + "\n")
 
-# from_labels_to_folders()
-from_folders_to_labels()
+from_labels_to_folders()
+# from_folders_to_labels()

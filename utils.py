@@ -22,6 +22,8 @@ def save_session_params():
     f.write("Number of classes: " + str(num_classes) + "\n")
     f.write("Batch Size: " + str(batch_size) + "\n")
     f.write("Epochs: " + str(num_epochs) + "\n")
+    f.write("Model: " + model_in_use + "\n")
+    f.write("Env: " + platform.system() + "\n")
 
 env_windows = True if platform.system() == "Windows" else False
 
@@ -33,11 +35,21 @@ batch_size          = 64
 num_epochs          = 100
 cp_period           = 10        # save model every <cp_period> epochs
 
-# facenet
-# image_width = 160
+FACENET = "Facenet"
+MOBILENET = "Mobilenet"
 
-# mobilenet
-image_width = 224
+AUGMENTATION = False
+
+# FACENET || MOBILENET
+model_in_use = MOBILENET
+image_width = 160
+
+if model_in_use == FACENET:
+    image_width = 160
+else:
+    image_width = 224
+
+mobilenet_feature_vector_url = "https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/2"
 
 # root directory full path (os independent i hope)
 base_dir = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')

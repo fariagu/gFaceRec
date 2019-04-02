@@ -12,13 +12,14 @@ from load_celeba import load_test_data
 from generator import Generator
 from utils import batch_size
 from ftmobilenet import load_module_as_model
+from finetune import load_model
 
 test_images, test_labels = load_test_data()
     
 test_batch_generator = Generator(test_images, test_labels, batch_size)
 
-model = load_module_as_model()
-model.load_weights("./mobilenet/model.hdf5")
+# model = load_module_as_model()
+# model.load_weights("./mobilenet/model.hdf5")
 
 result = model.predict_generator(test_batch_generator, verbose=1)
 

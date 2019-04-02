@@ -73,6 +73,14 @@ def load_mobilenet_model():
 
     return model
 
+def load_local_model():
+    if utils.model_in_use == utils.FACENET:
+        return load_facenet_model()
+    else:
+        return load_mobilenet_model()
+        # se quiser retomar checkpoint:
+        # model.load_weights("./mobilenet/model.hdf5")
+
 def finetune():
 
     if utils.AUGMENTATION:
@@ -107,14 +115,8 @@ def finetune():
         train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
         train_batch_generator = Generator(train_images, train_labels, utils.batch_size)
         val_batch_generator = Generator(val_images, val_labels, utils.batch_size)
-
     
-    if utils.model_in_use == utils.FACENET:
-        model = load_facenet_model()
-    else:
-        model = load_mobilenet_model()
-        # se quiser retomar checkpoint:
-        # model.load_weights("./mobilenet/model.hdf5")
+    model = load_local_model()
 
     model.summary()
     tensorboard = keras.callbacks.TensorBoard(log_dir=utils.log_dir)

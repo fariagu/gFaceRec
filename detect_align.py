@@ -30,14 +30,14 @@ def main(file_name):
 	# Run the HOG face detector on the image data
 	detected_faces = face_detector(image, 1)
 
-	print("Found {} faces in the image file {}".format(len(detected_faces), file_name))
+	# print("Found {} faces in the image file {}".format(len(detected_faces), file_name))
 
 	# Loop through each face we found in the image
 	for i, face_rect in enumerate(detected_faces):
 
 		# Detected faces are returned as an object with the coordinates 
 		# of the top, left, right and bottom edges
-		print("- Face #{} found at Left: {} Top: {} Right: {} Bottom: {}".format(i, face_rect.left(), face_rect.top(), face_rect.right(), face_rect.bottom()))
+		# print("- Face #{} found at Left: {} Top: {} Right: {} Bottom: {}".format(i, face_rect.left(), face_rect.top(), face_rect.right(), face_rect.bottom()))
 
 		# Get the the face's pose
 		pose_landmarks = face_pose_predictor(image, face_rect)

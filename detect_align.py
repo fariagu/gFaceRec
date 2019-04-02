@@ -7,13 +7,13 @@ import openface
 
 import utils
 
-def main(file_path, file_name):
+def main(file_name):
 	# You can download the required pre-trained face detection model here:
 	# http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
 	predictor_model = "shape_predictor_68_face_landmarks.dat"
 
 	# Take the image file name from the command line
-	# file_path = sys.argv[1]
+	# file_name = sys.argv[1]
 
 	# Create a HOG face detector using the built-in dlib class
 	face_detector = dlib.get_frontal_face_detector()
@@ -21,15 +21,15 @@ def main(file_path, file_name):
 	face_aligner = openface.AlignDlib(predictor_model)
 
 	# Take the image file name from the command line
-	# file_path = sys.argv[1]
+	# file_name = sys.argv[1]
 
 	# Load the image
-	image = cv2.imread(file_path)
+	image = cv2.imread(file_name)
 
 	# Run the HOG face detector on the image data
 	detected_faces = face_detector(image, 1)
 
-	print("Found {} faces in the image file {}".format(len(detected_faces), file_path))
+	print("Found {} faces in the image file {}".format(len(detected_faces), file_name))
 
 	# Loop through each face we found in the image
 	for i, face_rect in enumerate(detected_faces):
@@ -46,6 +46,6 @@ def main(file_path, file_name):
 
 		# Save the aligned image to a file
 		# cv2.imwrite("aligned_face_{}.jpg".format(i), alignedFace)
-		cv2.imwrite(utils.crop_dir + file_name, alignedFace)
+		cv2.imwrite(utils.crop_dir + file_name.split("/")[-1], alignedFace)
 
 				

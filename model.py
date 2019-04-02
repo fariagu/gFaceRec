@@ -4,7 +4,7 @@ import os
 
 import keras
 
-from utils import num_classes
+import utils
 
 # Returns convnet model
 def create_model():
@@ -67,7 +67,7 @@ def create_model():
         ),
         # Final Classification Layer
         keras.layers.Dense(
-            units=num_classes,
+            units=utils.num_classes,
             activation=keras.activations.softmax
         )
     ])

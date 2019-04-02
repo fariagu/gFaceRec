@@ -66,7 +66,9 @@ def ftmobilenet():
         batch_size=32,  # TODO
         class_mode='sparse',
         shuffle=True,
-        save_to_dir=train_dir_aug
+        save_to_dir=train_dir_aug,
+        save_format="jpeg",
+        follow_links=True,
     )
 
     val_batch_generator = val_datagen.flow_from_directory(
@@ -76,6 +78,10 @@ def ftmobilenet():
         class_mode='sparse',
         shuffle=True,
     )
+
+    ## ARRANJA MANEIRA DE GUARDAR AS LABELS AO AUMENTAR O DATASET
+    ## OU
+    ## VE COMO É A MERDA DO CATEGORICAL PORQUE FICO MUITO LIMITADO SEMPRE A USAR O SPARSE E TOU A FICAR FODIDO
 
     # # Not augmented
     # train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()

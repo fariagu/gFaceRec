@@ -67,6 +67,7 @@ else:
 
 ## OS independent
 images_dir = raw_dir + "img_align_celeba/"
+crop_dir = raw_dir + "img_crop/"
 labels_path = raw_dir + "identity_CelebA.txt"
 partition_path = raw_dir + "list_eval_partition.txt"
 cache_partition_path = cache_dir + "train_val_test.pkl"

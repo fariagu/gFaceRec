@@ -134,10 +134,8 @@ def load_test_data_from_txt():
         for line in f:
             file_name = line.split()[0]
             label = line.split()[1]
-
             # way of specifying what subset of the dataset being used for training
-            if int(label) < utils.num_classes:
-            # if True:
+            if int(label) < utils.num_classes and file_name in train_val_test:
 
                 # 0: train data
                 # 1: validation data

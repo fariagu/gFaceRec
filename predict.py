@@ -18,8 +18,7 @@ test_batch_generator = Generator(test_images, test_labels, utils.batch_size)
 
 model = load_local_model()
 if utils.model_in_use == utils.FACENET:
-    # nao existe
-    # model.load_weights("./facenet/model.hdf5")
+    model.load_weights("./facenet/fn-70-no_aug.hdf5")
     pass
 else:
     model.load_weights("./mobilenet/model.hdf5")

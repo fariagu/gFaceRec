@@ -101,7 +101,7 @@ def finetune():
             utils.train_dir,
             target_size= (utils.image_width, utils.image_width),
             batch_size= utils.batch_size,
-            # class_mode= "sparse",
+            class_mode= "sparse",
             # save_to_dir= utils.train_dir_aug,
             # save_format= "jpeg",
         )
@@ -110,7 +110,7 @@ def finetune():
             utils.val_dir,
             target_size=(utils.image_width, utils.image_width),
             batch_size=utils.batch_size,
-            # class_mode='sparse',
+            class_mode='sparse',
         )
     else:
         train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
@@ -141,8 +141,8 @@ def finetune():
             validation_data=val_batch_generator,
             use_multiprocessing=utils.multiprocessing,
             workers=utils.n_workers,
-            steps_per_epoch=63, # TODO
-            validation_steps=4 #TODO
+            steps_per_epoch=2000/utils.batch_size, # TODO
+            validation_steps=110/utils.base_dir #TODO
         )
     else:
         model.fit_generator(

@@ -12,7 +12,7 @@ import pickle
 import utils
 
 """
-    não faz muito porque neste dataset so tenho labels numericas
+    nao faz muito porque neste dataset so tenho labels numericas
     (o conteudo do ficheiro vai ser literalmente: 0\n1\n2\n3\n4\n...n)
     NOTA: labels neste ficheiro estao desfazadas uma unidade (as labels para o keras comecam no 0,
             nas anotacoes do dataset celebA comecam no 1)
@@ -41,25 +41,20 @@ def get_num_classes():
     
     return -1
 
-def load_train_val_test_from_txt(random=True):
+def load_train_val_test_from_txt():
 
     train_val_test = {}
-    with open(utils.partition_path, 'r') as f:
-        for line in f:
-            tmp = line.split()
+    for file in os.listdir(utils.images_dir):
+        print(file)
+        # 80% train, 10% validation, 10% test
+        seed = rand.randint(1, 20)
+        if seed == 20:
+            train_val_test[file] = "2"
+        elif seed == 19:
+            train_val_test[file] = "1"
+        else:
+            train_val_test[file] = "0"
 
-            if random:
-                # 80% train, 10% validation, 10% test
-                seed = rand.randint(1, 20)
-                if seed == 20:
-                    train_val_test[tmp[0]] = "2"
-                elif seed == 19:
-                    train_val_test[tmp[0]] = "1"
-                else:
-                    train_val_test[tmp[0]] = "0"
-            else:
-                train_val_test[tmp[0]] = tmp[1]
-    
     pickle.dump(train_val_test, open(utils.cache_partition_path, "wb"))
     
     return train_val_test
@@ -172,3 +167,5 @@ def load_test_data():
             return load_test_data_from_pkl()
     
     return load_test_data_from_txt()
+
+load_train_val_test_from_txt()

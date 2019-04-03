@@ -142,7 +142,7 @@ def finetune():
             use_multiprocessing=utils.multiprocessing,
             workers=utils.n_workers,
             steps_per_epoch=2000/utils.batch_size, # TODO
-            validation_steps=110/utils.base_dir #TODO
+            validation_steps=110/utils.batch_size #TODO
         )
     else:
         model.fit_generator(

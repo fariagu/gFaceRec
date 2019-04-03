@@ -45,7 +45,6 @@ def load_train_val_test_from_txt():
 
     train_val_test = {}
     for file in os.listdir(utils.images_dir):
-        print(file)
         # 80% train, 10% validation, 10% test
         seed = rand.randint(1, 20)
         if seed == 20:

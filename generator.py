@@ -8,9 +8,6 @@ import keras
 
 import utils
 
-# Here, `x_set` is list of path to the images
-# and `y_set` are the associated classes. (labels)
-
 class Generator(keras.utils.Sequence):
 
     def __init__(self, image_filenames, labels, batch_size):
@@ -24,6 +21,14 @@ class Generator(keras.utils.Sequence):
         image_batch = self.images[idx * self.batch_size:(idx + 1) * self.batch_size]
         label_batch = self.labels[idx * self.batch_size:(idx + 1) * self.batch_size]
 
-        return np.array([
-            resize(imread(file_name), (utils.image_width, utils.image_width))
-               for file_name in image_batch]), np.array(label_batch)
+        image_array = []
+        for file_name in image_batch:
+            image_array.append(resize(imread(file_name), (utils.image_width, utils.image_width)))
+        
+        return np.array(image_array), np.array(label_batch)
+
+        # return np.array([
+        #     resize(imread(file_name), (utils.image_width, utils.image_width))
+        #        for file_name in image_batch]
+        # ),
+        # np.array(label_batch)

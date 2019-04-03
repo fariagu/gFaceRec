@@ -34,14 +34,14 @@ training_session    = read_training_session()
 base_learning_rate  = 0.001
 dropout_rate        = 0.75
 num_classes         = 100       # full dataset: 10177
-batch_size          = 32*4*4
+batch_size          = 32
 num_epochs          = 100
 cp_period           = 10        # save model every <cp_period> epochs
 
 FACENET = "Facenet"
 MOBILENET = "Mobilenet"
 
-AUGMENTATION = True
+AUGMENTATION = False
 CROPPED = True
 
 # FACENET || MOBILENET

@@ -11,6 +11,23 @@ from keras.preprocessing.image import ImageDataGenerator
 
 import utils
 
+def get_transform():
+    range_shift = int(5 * 160 / 100)
+
+    theta = rand.randint(-15, 15)
+    tx = rand.randint(-range_shift, range_shift)
+    ty = rand.randint(-range_shift, range_shift)
+    flip = rand.randint(0, 1)
+
+    transform = {
+        "theta": theta,
+        "tx": tx,
+        "ty": ty,
+        "flip_horizontal": True if flip == 0 else False
+    }
+
+    return transform
+
 class Generator(keras.utils.Sequence):
 
     def __init__(self, image_filenames, labels, batch_size):
@@ -33,31 +50,12 @@ class Generator(keras.utils.Sequence):
 
         image_array = []
         for file_name in image_batch:
-            seed = rand.randint(1, 4)
-            if seed == 1:
-                transform = {
-                    "flip_horizontal": True,
-                    "brightness": 0.01
-                }
-            elif seed == 2:
-                transform = {
-                    "flip_horizontal": False,
-                    "brightness": 0.01
-                }
-            elif seed == 3:
-                transform = {
-                    "flip_horizontal": False,
-                }
-            else:
-                transform = {
-                    "flip_horizontal": True,
-                }
 
             image_array.append(
                 resize(
                     im_gen.apply_transform(
                         x=imread(file_name),
-                        transform_parameters=transform
+                        transform_parameters=get_transform()
                     ),
                     (utils.image_width, utils.image_width)
                 )

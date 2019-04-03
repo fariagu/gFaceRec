@@ -101,7 +101,7 @@ def finetune():
             utils.train_dir,
             target_size= (utils.image_width, utils.image_width),
             batch_size= utils.batch_size,
-            class_mode= "sparse",
+            # class_mode= "sparse",
             # save_to_dir= utils.train_dir_aug,
             # save_format= "jpeg",
         )
@@ -110,7 +110,7 @@ def finetune():
             utils.val_dir,
             target_size=(utils.image_width, utils.image_width),
             batch_size=utils.batch_size,
-            class_mode='sparse',
+            # class_mode='sparse',
         )
     else:
         train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()

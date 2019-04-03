@@ -83,8 +83,7 @@ def load_image_filenames_and_labels_from_txt():
             label = line.split()[1]
 
             # way of specifying what subset of the dataset being used for training
-            if int(label) < utils.num_classes:
-            # if True:
+            if int(label) < utils.num_classes and file_name in train_val_test:
 
                 # 0: train data
                 # 1: validation data

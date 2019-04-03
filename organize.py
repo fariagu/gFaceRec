@@ -114,6 +114,6 @@ def crop_dataset():
     
 
 
-# from_labels_to_folders()
+from_labels_to_folders()
 # from_folders_to_labels()
-crop_dataset()
+# crop_dataset()

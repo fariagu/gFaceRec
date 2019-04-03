@@ -46,7 +46,7 @@ def from_labels_to_folders():
     for key in tvt:
         if int(labels[key]) <= utils.num_classes:
             if tvt[key] == "0":
-                if not os.path.exists(train_dir + labels[key]):
+                if not os.path.exists(utils.train_dir + labels[key]):
                     os.makedirs(utils.train_dir + labels[key])
                 shutil.copy2(utils.images_dir + key, utils.train_dir + labels[key])
                 train_examples += 1

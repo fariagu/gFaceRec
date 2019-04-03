@@ -31,7 +31,7 @@ def save_session_params():
 env_windows = True if platform.system() == "Windows" else False
 
 training_session    = read_training_session()
-base_learning_rate  = 0.0001
+base_learning_rate  = 0.001
 dropout_rate        = 0.5
 num_classes         = 100       # full dataset: 10177
 batch_size          = 64
@@ -45,7 +45,7 @@ AUGMENTATION = False
 CROPPED = True
 
 # FACENET || MOBILENET
-model_in_use = MOBILENET
+model_in_use = FACENET
 image_width = 160
 
 if model_in_use == FACENET:

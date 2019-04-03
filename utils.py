@@ -24,6 +24,8 @@ def save_session_params():
     f.write("Epochs: " + str(num_epochs) + "\n")
     f.write("Model: " + model_in_use + "\n")
     f.write("Env: " + platform.system() + "\n")
+    f.write("AUG: TRUE\n") if AUGMENTATION == True else f.write("AUG: FALSE\n")
+    f.write("CROPPED: TRUE\n") if CROPPED == True else f.write("CROPPED: FALSE\n")
     # TODO: guardar optimizer usado
 
 env_windows = True if platform.system() == "Windows" else False

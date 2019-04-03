@@ -14,10 +14,10 @@ import utils
 def get_transform():
     range_shift = int(5 * 160 / 100)
 
-    theta = rand.randint(-15, 15)
+    theta = rand.randint(-10, 10)
     tx = rand.randint(-range_shift, range_shift)
     ty = rand.randint(-range_shift, range_shift)
-    flip = rand.randint(0, 1)
+    flip = rand.randint(0, 3)
 
     transform = {
         "theta": theta,

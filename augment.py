@@ -10,16 +10,12 @@ from matplotlib import pyplot
 
 img = np.array(resize(imread("C:/datasets/CelebA/test_split/1/027827.jpg"), (224, 224)))
 
-# datagen = ImageDataGenerator(featurewise_center=True, featurewise_std_normalization=True)
-# datagen = ImageDataGenerator(rotation_range=90)
-# datagen = ImageDataGenerator(shear_range=10.0)
-# datagen = ImageDataGenerator(width_shift_range=0.1)
-# datagen = ImageDataGenerator(height_shift_range=0.1)
 datagen = ImageDataGenerator(
-        rotation_range=2,
-        shear_range=5,
-        width_shift_range=2,
-        height_shift_range=2,
+        # rotation_range=2,
+        # shear_range=5,
+        # width_shift_range=2,
+        # height_shift_range=2,
+        horizontal_flip=True,
     )
 
 datagen.fit([img])

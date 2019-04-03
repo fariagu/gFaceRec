@@ -87,9 +87,9 @@ def finetune():
         train_datagen = ImageDataGenerator(
             rescale=1./255,
             rotation_range=15,
-            shear_range=5,
-            width_shift_range=0.10,
-            height_shift_range=0.10,
+            # shear_range=5,
+            width_shift_range=0.05,
+            height_shift_range=0.05,
         )
 
         val_datagen = ImageDataGenerator(

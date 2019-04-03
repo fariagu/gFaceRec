@@ -106,7 +106,7 @@ def finetune():
         )
 
         val_batch_generator = val_datagen.flow_from_directory(
-            utils.raw_dir +"val_split_" + str(utils.num_classes) + "/",
+            utils.val_dir,
             target_size=(utils.image_width, utils.image_width),
             batch_size=utils.batch_size,
             class_mode='sparse',

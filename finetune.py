@@ -86,10 +86,11 @@ def finetune():
     if utils.AUGMENTATION:
         train_datagen = ImageDataGenerator(
             rescale=1./255,
-            rotation_range=15,
+            # rotation_range=15,
             # shear_range=5,
-            width_shift_range=0.05,
-            height_shift_range=0.05,
+            # width_shift_range=0.05,
+            # height_shift_range=0.05,
+            # horizontal_flip=True,
         )
 
         val_datagen = ImageDataGenerator(

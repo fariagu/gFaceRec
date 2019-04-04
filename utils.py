@@ -41,7 +41,7 @@ cp_period           = 10        # save model every <cp_period> epochs
 FACENET = "Facenet"
 MOBILENET = "Mobilenet"
 
-AUGMENTATION = False
+AUGMENTATION = True
 CROPPED = True
 
 # FACENET || MOBILENET

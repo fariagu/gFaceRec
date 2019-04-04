@@ -65,16 +65,17 @@ class Generator(keras.utils.Sequence):
                 (utils.image_width, utils.image_width)
             )
 
-            # 25% chance of shift, rotate or flip
-            # 25% chance of patch
-            # 50% chance of no augmentation
-            seed = rand.randint(0, 3)
+            if utils.AUGMENTATION:
+                # 25% chance of shift, rotate or flip
+                # 25% chance of patch
+                # 50% chance of no augmentation
+                seed = rand.randint(0, 3)
 
-            if seed == 0:
-                img = im_gen.apply_transform(img, get_transform())
-            elif seed == 1:
-                img = get_patched_image(img)
-            # else: do nothing
+                if seed == 0:
+                    img = im_gen.apply_transform(img, get_transform())
+                elif seed == 1:
+                    img = get_patched_image(img)
+                # else: do nothing
             
             image_array.append(img)
         

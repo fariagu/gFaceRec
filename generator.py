@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function
 from skimage.io import imread
 from skimage.transform import resize
 import numpy as np
+import cv2
 
 import random as rand
 
@@ -12,12 +13,19 @@ from keras.preprocessing.image import ImageDataGenerator
 import utils
 
 def get_transform():
-    range_shift = int(15 * 160 / 100)
+    range_shift = int(15 * utils.image_width / 100)
+    range_patch = int(utils.image_width / 2)
 
     theta = rand.randint(-15, 15)
     tx = rand.randint(-range_shift, range_shift)
     ty = rand.randint(-range_shift, range_shift)
     flip = rand.randint(0, 3)
+    
+    x_patch = rand.randint(0, range_patch)
+    y_patch = rand.randint(0, range_patch)
+
+
+    # meter aqui noise 
 
     transform = {
         "theta": theta,
@@ -27,6 +35,13 @@ def get_transform():
     }
 
     return transform
+
+def get_patched_image(img):
+    range_patch = int(utils.image_width / 3)
+    x_patch = rand.randint(0, utils.image_width - range_patch)
+    y_patch = rand.randint(0, utils.image_width - range_patch)
+
+    return cv2.rectangle(img, (x_patch, y_patch), (x_patch + range_patch, y_patch + range_patch), (240, 234, 214), -1)
 
 class Generator(keras.utils.Sequence):
 
@@ -41,25 +56,27 @@ class Generator(keras.utils.Sequence):
         image_batch = self.images[idx * self.batch_size:(idx + 1) * self.batch_size]
         label_batch = self.labels[idx * self.batch_size:(idx + 1) * self.batch_size]
 
-        transform = {
-            "flip_horizontal": True,
-            "brightness": 0.01
-        }
-
         im_gen = ImageDataGenerator()
 
         image_array = []
         for file_name in image_batch:
-
-            image_array.append(
-                resize(
-                    im_gen.apply_transform(
-                        x=imread(file_name),
-                        transform_parameters=get_transform()
-                    ),
-                    (utils.image_width, utils.image_width)
-                )
+            img = resize(
+                imread(file_name),
+                (utils.image_width, utils.image_width)
             )
+
+            # 25% chance of shift, rotate or flip
+            # 25% chance of patch
+            # 50% chance of no augmentation
+            seed = rand.randint(0, 3)
+
+            if seed == 0:
+                img = im_gen.apply_transform(img, get_transform())
+            elif seed == 1:
+                img = get_patched_image(img)
+            # else: do nothing
+            
+            image_array.append(img)
         
         return np.array(image_array), np.array(label_batch)
 

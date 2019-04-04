@@ -4,13 +4,22 @@ import os
 from skimage.io import imread
 from skimage.transform import resize
 import numpy as np
+import cv2
 from keras.preprocessing.image import ImageDataGenerator
 
 import random as r
 
 from matplotlib import pyplot
 
-img = np.array(resize(imread("C:/datasets/CelebA/test_split/1/027827.jpg"), (224, 224)))
+import utils
+
+img = np.array(resize(imread("C:/Users/gustavo.faria/Downloads/067807.jpg"), (160, 160)))
+
+range_patch = int(160 / 3)
+x_patch = r.randint(0, utils.image_width - range_patch)
+y_patch = r.randint(0, utils.image_width - range_patch)
+
+img = cv2.rectangle(img, (x_patch, y_patch), (x_patch + range_patch, y_patch + range_patch), (240, 234, 214), -1)
 
 datagen = ImageDataGenerator(
         # rotation_range=2,

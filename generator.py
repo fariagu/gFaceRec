@@ -12,9 +12,9 @@ from keras.preprocessing.image import ImageDataGenerator
 import utils
 
 def get_transform():
-    range_shift = int(5 * 160 / 100)
+    range_shift = int(15 * 160 / 100)
 
-    theta = rand.randint(-10, 10)
+    theta = rand.randint(-15, 15)
     tx = rand.randint(-range_shift, range_shift)
     ty = rand.randint(-range_shift, range_shift)
     flip = rand.randint(0, 3)

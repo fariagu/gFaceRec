@@ -42,7 +42,7 @@ FACENET = "Facenet"
 MOBILENET = "Mobilenet"
 
 AUGMENTATION = True
-CROPPED = False
+CROPPED = True
 
 # FACENET || MOBILENET
 model_in_use = FACENET

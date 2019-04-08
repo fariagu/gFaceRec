@@ -9,7 +9,8 @@ if not os.path.exists(utils.crop_dir):
     os.makedirs(utils.crop_dir)
 
 p = Pool(22)
-p.map(detect_align.main, os.listdir(utils.images_dir))
+# p.map(detect_align.main, os.listdir(utils.images_dir))
+p.map(detect_align.main, os.listdir("C:/datasets/CelebA/tmp/"))
 
 # for file in os.listdir(utils.images_dir):
 #     detect_align.main(utils.images_dir + file)

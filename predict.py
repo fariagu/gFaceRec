@@ -11,22 +11,32 @@ from keras.models import load_model
 import utils
 from load_celeba import load_test_data
 from generator import Generator
-from finetune import load_local_model
+from load_local_model import load_local_model, load_facenet_fv
 
 test_images, test_labels = load_test_data()
 test_batch_generator = Generator(test_images, test_labels, utils.batch_size)
 
-model = load_local_model()
-if utils.model_in_use == utils.FACENET:
-    model.load_weights("./facenet/fn-70-no_aug.hdf5")
-    pass
-else:
-    model.load_weights("./mobilenet/model.hdf5")
+model = load_facenet_fv()
 
-result = model.predict_generator(test_batch_generator, verbose=1)
+# # caga nisto para já. quero ver como é só com o feature vector
+# 
+# model = load_local_model()
+# 
+# if utils.model_in_use == utils.FACENET:
+#     model.load_weights("./facenet/fn-70-no_aug.hdf5")
+#     pass
+# else:
+#     model.load_weights("./mobilenet/model.hdf5")
+# 
+# result = model.predict_generator(test_batch_generator, verbose=1)
+
+result = model.predict(img, verbose=1)
 
 correct_guesses = 0
 for i, prediction in enumerate(result):
+    if i < 1:
+        print(prediction)
+
     guess = np.argmax(prediction)
     answer = test_labels[i]
 

@@ -52,15 +52,30 @@ def validate():
     # print(train_data["1"].shape)
     # print(val_data["1"].shape)
 
+    total_samples = 0
+    accurate_predictions = 0
     for key, value in val_data.items():
         for fv in value:
-            print(fv.shape)
-            print("########################")
+            total_samples += 1
+            # print("########################")
+            # distances = []
+            lowest_distance = float("inf")
+            prediction = "0"
             for t_key, t_value in train_data.items():
                 dist = np.linalg.norm(fv-t_value)
-                print("distance between " + key + " and " + t_key + ": " + str(dist))
+                if dist < lowest_distance:
+                    lowest_distance = dist
+                    prediction = t_key
+            # distances.append((dist, t_key))
+            
+            # print("distance between " + key + " and " + t_key + ": " + str(dist))
+            if prediction == key:
+                accurate_predictions += 1
+            # else:
+                # print("Failed prediction: " + )
 
-    # print(
-# load_train_split()
-# predict_on_train_split()
+    accuracy = accurate_predictions * 100 / total_samples
+    print(accuracy)
+
+
 validate()

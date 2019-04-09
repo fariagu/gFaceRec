@@ -11,11 +11,6 @@ from skimage.transform import resize
 import utils
 from load_local_model import load_facenet_fv
 
-# hard coded FOR NOW
-# split_dir = "C:/Users/gustavo.faria/Downloads/split_100/"
-# split_dir = "C:/datasets/CelebA/split_10/"
-split_dir = "/home/gustavoduartefaria/datasets/CelebA/split_100/"
-
 TRAIN = "train/"
 VAL = "val/"
 
@@ -24,10 +19,10 @@ bias = 1.0
 def load_split(dir):
     train_split_dict = {}
 
-    for folder in os.listdir(split_dir + dir):
+    for folder in os.listdir(utils.split_dir + dir):
         train_split_dict[folder] = []
-        for file in os.listdir(split_dir + dir + folder):
-            file_name = split_dir + dir + folder + "/" + file
+        for file in os.listdir(utils.split_dir + dir + folder):
+            file_name = utils.split_dir + dir + folder + "/" + file
             train_split_dict[folder].append(
                 resize(imread(file_name),(utils.image_width, utils.image_width))
             )
@@ -75,7 +70,7 @@ def validate():
             prediction = distances[0][1]
             
             # print("distance between " + key + " and " + t_key + ": " + str(dist))
-            if abs(distances[0][0] - distances[1][0]) > bias:   #unsure
+            if abs(distances[0][0] - distances[1][0]) < bias:   #unsure
                 unsure += 1
             else:
                 if prediction == key:

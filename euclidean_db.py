@@ -93,9 +93,9 @@ def validate():
     unsure_rate = unsure * 100 / total_samples
     
     print("#############################")
-    print("Accuracy: " + accuracy)
-    print("False positive rate: " + false_positive_rate)
-    print("Unsure rate: " + unsure_rate)
+    print("Accuracy: " + str(accuracy))
+    print("False positive rate: " + str(false_positive_rate))
+    print("Unsure rate: " + str(unsure_rate))
 
 
 validate()

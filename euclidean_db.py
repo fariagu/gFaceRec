@@ -75,7 +75,7 @@ def validate():
             prediction = distances[0][1]
             
             # print("distance between " + key + " and " + t_key + ": " + str(dist))
-            if abs(distances[0][1] - distances[1][1]) > bias:   #unsure
+            if abs(distances[0][0] - distances[1][0]) > bias:   #unsure
                 unsure += 1
             else:
                 if prediction == key:

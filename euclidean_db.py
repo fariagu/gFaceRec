@@ -11,11 +11,15 @@ from skimage.transform import resize
 import utils
 from load_local_model import load_facenet_fv
 
-split_dir = "C:/datasets/CelebA/split_10/"
 # hard coded FOR NOW
+# split_dir = "C:/Users/gustavo.faria/Downloads/split_100/"
+# split_dir = "C:/datasets/CelebA/split_10/"
+split_dir = "/home/gustavoduartefaria/datasets/CelebA/split_100/"
 
 TRAIN = "train/"
 VAL = "val/"
+
+bias = 1.0
 
 def load_split(dir):
     train_split_dict = {}
@@ -49,33 +53,49 @@ def validate():
     train_data = predict(TRAIN, mean=True)
     val_data = predict(VAL, mean=False)
 
-    # print(train_data["1"].shape)
-    # print(val_data["1"].shape)
-
     total_samples = 0
     accurate_predictions = 0
+    unsure = 0
+    accurate_and_sure = 0
+    inacurate_but_sure = 0
     for key, value in val_data.items():
         for fv in value:
             total_samples += 1
-            # print("########################")
-            # distances = []
+            distances = []
             lowest_distance = float("inf")
             prediction = "0"
             for t_key, t_value in train_data.items():
                 dist = np.linalg.norm(fv-t_value)
                 if dist < lowest_distance:
                     lowest_distance = dist
-                    prediction = t_key
-            # distances.append((dist, t_key))
+                    # prediction = t_key
+                distances.append((dist, t_key))
+            # sort by distance
+            distances.sort(key=lambda tuple: tuple[0])
+            prediction = distances[0][1]
             
             # print("distance between " + key + " and " + t_key + ": " + str(dist))
-            if prediction == key:
-                accurate_predictions += 1
-            # else:
-                # print("Failed prediction: " + )
+            if abs(distances[0][1] - distances[1][1]) > bias:   #unsure
+                unsure += 1
+            else:
+                if prediction == key:
+                    # accurate_predictions += 1
+                    accurate_and_sure += 1
+                else:
+                    inacurate_but_sure += 1
+                    # print("######### Failed prediction #########")
+                    # print("Expected: " + key + "-- got: " + prediction)
+                    # print(distances)
 
-    accuracy = accurate_predictions * 100 / total_samples
-    print(accuracy)
+    # accuracy = accurate_predictions * 100 / total_samples
+    accuracy = accurate_and_sure * 100 / total_samples
+    false_positive_rate = inacurate_but_sure * 100 / total_samples
+    unsure_rate = unsure * 100 / total_samples
+    
+    print("#############################")
+    print("Accuracy: " + accuracy)
+    print("False positive rate: " + false_positive_rate)
+    print("Unsure rate: " + unsure_rate)
 
 
 validate()

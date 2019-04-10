@@ -6,6 +6,30 @@ import keras
 
 import utils
 
+def binary_classification_svm():
+    model = keras.models.Sequential([
+        keras.layers.Dense(
+            units=256,
+            activation=keras.activations.relu,
+            input_shape=(256,),
+        ),
+        keras.layers.Dropout(
+            utils.dropout_rate,
+        ),
+        keras.layers.Dense(
+            units=1,
+            activation=keras.activations.sigmoid,
+        )
+    ])
+
+    model.compile(
+        optimizer=keras.optimizers.Adam(),
+        loss=keras.losses.binary_crossentropy,
+        metrics=['accuracy']
+    )
+
+    return model
+
 # Returns convnet model
 def create_model():
     model = keras.models.Sequential([

@@ -80,9 +80,3 @@ class Generator(keras.utils.Sequence):
             image_array.append(img)
         
         return np.array(image_array), np.array(label_batch)
-
-        # return np.array([
-        #     resize(imread(file_name), (utils.image_width, utils.image_width))
-        #        for file_name in image_batch]
-        # ),
-        # np.array(label_batch)

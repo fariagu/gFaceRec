@@ -8,83 +8,142 @@ import keras
 from skimage.io import imread
 from skimage.transform import resize
 
+import pickle
+
 import utils
 from load_local_model import load_facenet_fv
 
-TRAIN = "train/"
-VAL = "val/"
+# split_str
+TRAIN = "train"
+VAL = "val"
 
-bias = 1.0
+cache_split = utils.cache_dir + "split_" + str(utils.num_classes) + "/"
 
-def load_split(dir):
-    train_split_dict = {}
+bias = 0.55
 
-    for folder in os.listdir(utils.split_dir + dir):
-        train_split_dict[folder] = []
-        for file in os.listdir(utils.split_dir + dir + folder):
-            file_name = utils.split_dir + dir + folder + "/" + file
-            train_split_dict[folder].append(
+def load_split(split_str):
+    if not os.path.exists(cache_split + split_str + "_data_mean.pkl"):
+        return load_split_raw(split_str)
+    else:
+        return pickle.load(open(cache_split + split_str + "_data.pkl", "rb"))
+
+
+def load_split_raw(split_str):
+    split_dict = {}
+
+    for folder in os.listdir(utils.split_dir + split_str):
+        split_dict[folder] = []
+        for file in os.listdir(utils.split_dir + split_str + "/" + folder):
+            file_name = utils.split_dir + split_str + "/" + folder + "/" + file
+            split_dict[folder].append(
                 resize(imread(file_name),(utils.image_width, utils.image_width))
             )
 
-    return train_split_dict
+    if not os.path.exists(cache_split):
+        os.mkdir(cache_split)
 
-def predict(split_str, mean):
+    pickle.dump(split_dict, open(cache_split + split_str + "_data.pkl", "wb"))
+
+    return split_dict
+
+def predict_raw(split_str):
     split = load_split(split_str)
     model = load_facenet_fv()
 
     split_fv_result = {}
+    split_fv_result_mean = {}
+    split_fv_result_std = {}
 
-    if mean:
-        for key in split:
-            split_fv_result[key] = np.mean(model.predict(np.array(split[key]), verbose=1), 0)
-    else:
-        for key in split:
-            split_fv_result[key] = model.predict(np.array(split[key]), verbose=1)
+    for key in split:
+        data = model.predict(np.array(split[key]), verbose=1)
+        split_fv_result[key] = data
+        split_fv_result_mean[key] = [np.nanmean(data, 0)]
+        split_fv_result_std[key] = [np.nanstd(data, 0)]
+    
+    pickle.dump(split_fv_result, open(cache_split + split_str + "_fv.pkl", "wb"))
+    pickle.dump(split_fv_result_mean, open(cache_split + split_str + "_fv_mean.pkl", "wb"))
+    pickle.dump(split_fv_result_std, open(cache_split + split_str + "_fv_std.pkl", "wb"))
 
-    return split_fv_result
+    return split_fv_result, split_fv_result_mean, split_fv_result_std
+
+def predict(split_str):
+    if os.path.exists(cache_split + split_str + "_fv.pkl"):
+        if os.path.exists(cache_split + split_str + "_fv_mean.pkl"):
+            if os.path.exists(cache_split + split_str + "_fv_std.pkl"):
+                fv = pickle.load(open(cache_split + split_str + "_fv.pkl", "rb")),
+                fv_mean = pickle.load(open(cache_split + split_str + "_fv_mean.pkl", "rb")),
+                fv_std = pickle.load(open(cache_split + split_str + "_fv_std.pkl", "rb")),
+                
+                return fv, fv_mean, fv_std
+    
+    return predict_raw(split_str)
+
+def trim_array(sorted_array, bias):
+    cut_off = sorted_array[0][0] + bias
+    for i, elem in enumerate(sorted_array):
+        if elem[0] > cut_off:
+            return sorted_array[:i]
+
 
 def validate():
-    train_data = predict(TRAIN, mean=True)
-    val_data = predict(VAL, mean=False)
+    train_data, train_data_mean, train_data_std = predict(TRAIN)
+    val_data, val_data_mean, val_data_std = predict(VAL)
 
     total_samples = 0
-    accurate_predictions = 0
+    # accurate_predictions = 0
     unsure = 0
-    accurate_and_sure = 0
-    inacurate_but_sure = 0
-    for key, value in val_data.items():
+    accurate = 0
+    inacurate = 0
+    for key, value in val_data[0].items():
         for fv in value:
             total_samples += 1
             distances = []
-            lowest_distance = float("inf")
             prediction = "0"
-            for t_key, t_value in train_data.items():
-                dist = np.linalg.norm(fv-t_value)
-                if dist < lowest_distance:
-                    lowest_distance = dist
-                    # prediction = t_key
-                distances.append((dist, t_key))
+            for t_key, t_value_arr in train_data_mean[0].items():
+            # for t_key, t_value_arr in train_data.items():
+                for t_value in t_value_arr:
+                    dist = np.linalg.norm(fv-t_value)
+                    distances.append((dist, t_key))
             # sort by distance
             distances.sort(key=lambda tuple: tuple[0])
             prediction = distances[0][1]
+
+            distances = trim_array(distances, bias)
             
             # print("distance between " + key + " and " + t_key + ": " + str(dist))
-            if abs(distances[0][0] - distances[1][0]) < bias:   #unsure
+            if len(distances) > 1 and abs(distances[0][0] - distances[1][0]) < bias:   #unsure
                 unsure += 1
+                sec_distances = []
+                for sec_key, sec_value_arr in train_data[0].items():
+                # for sec_key, sec_value_arr in train_data_mean.items():
+                    for sec_value in sec_value_arr:
+                        dist = np.linalg.norm(fv-sec_value)
+                        sec_distances.append((dist, sec_key))
+                    
+                sec_distances.sort(key=lambda tuple: tuple[0])
+                # sec_distances = trim_array(sec_distances, bias)
+
+                if len(distances) > 0:
+                    for dist in distances:
+                        sec_dists, sec_keys = zip(*sec_distances)
+                        if dist[1] in sec_keys:
+                            prediction = dist[1]
+
+                # else do nothing
+
+                preditction = sec_distances[0][1]
+
+            if prediction == key:
+                accurate += 1
             else:
-                if prediction == key:
-                    # accurate_predictions += 1
-                    accurate_and_sure += 1
-                else:
-                    inacurate_but_sure += 1
-                    # print("######### Failed prediction #########")
-                    # print("Expected: " + key + "-- got: " + prediction)
-                    # print(distances)
+                inacurate += 1
+                # print("######### Failed prediction #########")
+                # print("Expected: " + key + "-- got: " + prediction)
+                # print(distances)
 
     # accuracy = accurate_predictions * 100 / total_samples
-    accuracy = accurate_and_sure * 100 / total_samples
-    false_positive_rate = inacurate_but_sure * 100 / total_samples
+    accuracy = accurate * 100 / total_samples
+    false_positive_rate = inacurate * 100 / total_samples
     unsure_rate = unsure * 100 / total_samples
     
     print("#############################")
@@ -93,4 +152,4 @@ def validate():
     print("Unsure rate: " + str(unsure_rate))
 
 
-validate()
+# validate()

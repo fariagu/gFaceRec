@@ -10,6 +10,13 @@ import numpy as np
 import pickle
 
 import utils
+from euclidean_db import predict, TRAIN, VAL
+
+SAME = 0
+DIFF = 1
+
+VECTOR = 0
+LABEL = 1
 
 """
     nao faz muito porque neste dataset so tenho labels numericas
@@ -103,6 +110,58 @@ def load_image_filenames_and_labels_from_txt():
     
     return train_images, train_labels, val_images, val_labels
 
+def generate_image_pairs(split_str):
+    train_data, train_data_mean, train_data_std = predict(split_str)
+
+    face_pairs = []
+    vectors = []
+
+    for person in train_data[0].items():
+        identity = person[0]
+        face_vectors = person[1]
+
+        for i, vector in enumerate(face_vectors):
+            if i + 2 < len(face_vectors) and i < 30:
+                two_in_one = np.concatenate((face_vectors[i], face_vectors[i+1]), axis=None)
+                face_pairs.append((two_in_one, SAME))
+            
+            vectors.append((vector, identity))
+
+    # shuffle 
+    rand.shuffle(vectors)
+
+    for i in range(0, len(vectors)-2):
+        two_in_one = np.concatenate((vectors[i][VECTOR], vectors[i+1][VECTOR]), axis=None)
+        face_pairs.append((
+            two_in_one,
+            SAME if vectors[i][LABEL] == vectors[i+1][LABEL] else DIFF
+        ))
+        i += 2
+
+    rand.shuffle(face_pairs)
+
+    # just for testing
+    pairs_same = 0
+    pairs_diff = 0
+    for pair in face_pairs:
+        if pair[1] == SAME:
+            pairs_same += 1
+        else:
+            pairs_diff += 1
+
+
+    pickle.dump(face_pairs, open(utils.cache_dir + "face_pairs_" + split_str + "_" + str(utils.num_classes) + ".pkl", "wb"))
+
+    return zip(*face_pairs)
+
+def get_face_pairs(split_str):
+    path = utils.cache_dir + "face_pairs_" + split_str + "_" + str(utils.num_classes) + ".pkl"
+    if os.path.exists(path):
+        return zip(*pickle.load(open(path, "rb")))
+
+    return generate_image_pairs(split_str)
+
+
 def load_image_filenames_and_labels_from_pkl():
     print("Loading images from cache ...")
 
@@ -164,4 +223,6 @@ def load_test_data():
     
     return load_test_data_from_txt()
 
-load_train_val_test_from_txt()
+# load_train_val_test_from_txt()
+get_face_pairs(TRAIN)
+get_face_pairs(VAL)

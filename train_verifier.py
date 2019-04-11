@@ -7,17 +7,28 @@ from keras import layers
 
 import numpy as np
 
-from load_celeba import get_face_pairs
+from load_celeba import create_pairs
 from model import binary_classification_svm
 from euclidean_db import TRAIN, VAL
+from vector_generator import VectorGenerator
 import utils
 
 def train_verifier():
-    train_vectors, train_labels = get_face_pairs(TRAIN)
-    val_vectors, val_labels = get_face_pairs(VAL)
-
-    val_data = (np.array(val_vectors), np.array(val_labels))
+    vector_pairs, labels = create_pairs()
+    train_split_index = int(len(labels)*0.8)
     
+    train_generator = VectorGenerator(
+        vector_pairs[:train_split_index],
+        labels[:train_split_index],
+        utils.batch_size
+    )
+
+    val_generator = VectorGenerator(
+        vector_pairs[train_split_index:],
+        labels[train_split_index:],
+        utils.batch_size
+    )
+
     model = binary_classification_svm()
 
     model.summary()
@@ -33,20 +44,17 @@ def train_verifier():
 
     model.save_weights(utils.checkpoint_path.format(epoch=0))
 
-    model.fit(
-        np.array(train_vectors),
-        np.array(train_labels),
-        batch_size=utils.batch_size,
+    model.fit_generator(
+        generator=train_generator,
         epochs=utils.num_epochs,
-        verbose=1,
         callbacks=[cp_callback, tensorboard],
-        validation_data=val_data,
-        shuffle=False, # i do that already
+        verbose=1,
+        validation_data=val_generator,
+        use_multiprocessing=utils.multiprocessing,
+        workers=utils.n_workers,
+        shuffle=False, # I do that already
     )
 
-    predictions = model.predict(np.array(val_vectors))
-
-    i=0
-
+    # predictions = model.predict(np.array(val_vectors))
 
 train_verifier()

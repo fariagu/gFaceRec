@@ -168,19 +168,67 @@ def load_vectors_into_disk():
         file_name = path.split("/")[-1].split(".")[0]
         pickle.dump(fv, open(utils.vector_dir + file_name + ".pkl", "wb"))
 
+# chamar isto para ter a info a passar ao vector_generator
 def load_vectors():
     identity_dict = filenames_and_labels()
-    vectors = []
+    vector_paths = []
+    labels = []
 
     if os.path.exists(utils.vector_dir):
         for vector in os.listdir(utils.vector_dir):
             index = vector.split(".")[0] + ".jpg"
-            vectors.append((pickle.load(open(utils.vector_dir + vector, "rb")), identity_dict[index]))
-            # file
-            pass
+            vector_paths.append(utils.vector_dir + vector)
+            labels.append(identity_dict[index])
     
-    return vectors
+    aggregated_vl = list(zip(vector_paths, labels))
+    rand.shuffle(aggregated_vl)
 
+    return zip(*aggregated_vl)
+
+def create_pairs():
+    # MACROS
+    VECTOR = 0
+    LABEL = 1
+    SAME = 0
+    DIFF = 1
+
+    pairs = []
+    vector_paths, labels = load_vectors()
+    it = list(range(len(labels)))
+    rand.shuffle(it)
+    agg = list(zip(vector_paths, labels))
+
+    # random pairing (will be mostly pairs of different faces)
+    for i in it:
+        face1 = agg[i]
+        for j in range(i+1, i+5):
+            # for when j is out of range
+            j = j - len(labels) if j >= len(labels) else j
+
+            face2 = agg[j]
+
+            binary_label = SAME if face1[LABEL] == face2[LABEL] else DIFF
+            pairs.append(((face1[VECTOR],face2[VECTOR]), binary_label))
+    
+    #specific pairing
+    # sort by label
+    agg.sort(key=lambda tuple: tuple[LABEL])
+
+    for i in range(len(labels)-1):
+        face1 = agg[i]
+        face2 = agg[i+1]
+
+        binary_label = SAME if face1[LABEL] == face2[LABEL] else DIFF
+        pairs.append(((face1[VECTOR],face2[VECTOR]), binary_label))
+        i += 2
+    
+    rand.shuffle(pairs)
+
+    return zip(*pairs)
+
+# usei isto para o euclidean. O de cima é melhor: 
+# vai buscar já os vecs (da bypass a imagens)
+# e usa generators (não fico sem memoria assim))
 def generate_image_pairs(split_str):
     train_data, train_data_mean, train_data_std = predict(split_str)
 
@@ -298,6 +346,7 @@ def load_test_data():
 # get_face_pairs(TRAIN)
 # get_face_pairs(VAL)
 # load_test_data_from_txt()
-load_vectors_into_disk()
-# load_vectors()
+# load_vectors_into_disk()
+# a, b, = load_vectors()
 # filenames_and_labels_from_disk()
+create_pairs()

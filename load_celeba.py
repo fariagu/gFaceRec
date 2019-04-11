@@ -298,6 +298,6 @@ def load_test_data():
 # get_face_pairs(TRAIN)
 # get_face_pairs(VAL)
 # load_test_data_from_txt()
-# load_vectors_into_disk()
-load_vectors()
+load_vectors_into_disk()
+# load_vectors()
 # filenames_and_labels_from_disk()

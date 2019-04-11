@@ -47,18 +47,28 @@ def load_split_raw(split_str):
     return split_dict
 
 def predict_raw(split_str):
-    split = load_split(split_str)
+    # split = load_split(split_str)
     model = load_facenet_fv()
 
     split_fv_result = {}
     split_fv_result_mean = {}
     split_fv_result_std = {}
 
-    for key in split:
-        data = model.predict(np.array(split[key]), verbose=1)
-        split_fv_result[key] = data
-        split_fv_result_mean[key] = [np.nanmean(data, 0)]
-        split_fv_result_std[key] = [np.nanstd(data, 0)]
+    key = "1"
+    # for key in split:
+        # data = model.predict(np.array(split[key]), verbose=1)
+
+    # return model.predict_generator(
+    #     generator=train_batch_generator,
+    #     verbose=1,
+    #     use_multiprocessing=utils.multiprocessing,
+    #     workers=utils.n_workers,
+    # )
+
+    data = nn_train_predict(predict=True)
+    split_fv_result[key] = data
+    split_fv_result_mean[key] = [np.nanmean(data, 0)]
+    split_fv_result_std[key] = [np.nanstd(data, 0)]
     
     pickle.dump(split_fv_result, open(cache_split + split_str + "_fv.pkl", "wb"))
     pickle.dump(split_fv_result_mean, open(cache_split + split_str + "_fv_mean.pkl", "wb"))

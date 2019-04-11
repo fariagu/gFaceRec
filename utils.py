@@ -42,7 +42,7 @@ FACENET = "Facenet"
 MOBILENET = "Mobilenet"
 
 AUGMENTATION = True
-CROPPED = True
+CROPPED = False
 
 # FACENET || MOBILENET
 model_in_use = FACENET
@@ -97,6 +97,9 @@ train_dir = split_dir + "train/"
 val_dir = split_dir + "val/"
 test_dir = split_dir + "test/"
 train_dir_aug = split_dir + "train_aug/"
+
+# extracted info dirs
+vector_dir = cache_dir + model_in_use + "_vectors/"
 
 # initialize necessary directories
 if not os.path.exists(log_dir):

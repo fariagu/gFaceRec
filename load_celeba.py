@@ -8,13 +8,17 @@ import random as rand
 # from PIL import Image
 import numpy as np
 import pickle
+from keras.models import load_model
 
 import utils
 from euclidean_db import predict, TRAIN, VAL
+from generator import Generator
+from load_local_model import load_facenet_fv
 
 SAME = 0
 DIFF = 1
 
+FILENAME = 0
 VECTOR = 0
 LABEL = 1
 
@@ -109,6 +113,46 @@ def load_image_filenames_and_labels_from_txt():
     pickle.dump(val_labels, open(utils.cache_dir + "val_labels.pkl", "wb"))
     
     return train_images, train_labels, val_images, val_labels
+
+# every image (no splits)
+def filenames_and_labels():
+    image_paths = []
+    labels = []
+
+    with open(utils.labels_path, 'r') as f:
+        for line in f:
+            line_split = line.split()
+            label = line_split[LABEL]
+
+            # temporary (while testing)
+            # if int(label) < 10:
+            image_paths.append(utils.images_dir + line_split[FILENAME])
+            labels.append(int(line_split[LABEL])-1)
+    
+    return image_paths, labels
+
+
+def load_vectors_into_disk():
+    paths, labels = filenames_and_labels()
+    full_generator = Generator(paths, labels, utils.batch_size)
+
+    model = load_facenet_fv()
+
+    model.summary()
+
+    predictions = model.predict_generator(
+        generator=full_generator,
+        verbose=1,
+        use_multiprocessing=utils.multiprocessing,
+        workers=utils.n_workers,
+    )
+
+    if not os.path.exists(utils.vector_dir):
+        os.mkdir(utils.vector_dir)
+
+    for fv, path in zip(predictions, paths):
+        file_name = path.split("/")[4].split(".")[0]
+        pickle.dump(fv, open(utils.vector_dir + file_name + ".pkl", "wb"))
 
 def generate_image_pairs(split_str):
     train_data, train_data_mean, train_data_std = predict(split_str)
@@ -224,5 +268,7 @@ def load_test_data():
     return load_test_data_from_txt()
 
 # load_train_val_test_from_txt()
-get_face_pairs(TRAIN)
-get_face_pairs(VAL)
+# get_face_pairs(TRAIN)
+# get_face_pairs(VAL)
+# load_test_data_from_txt()
+load_vectors_into_disk()

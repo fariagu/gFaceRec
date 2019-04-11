@@ -165,7 +165,7 @@ def load_vectors_into_disk():
         os.mkdir(utils.vector_dir)
 
     for fv, path in zip(predictions, paths):
-        file_name = path.split("/")[4].split(".")[0]
+        file_name = path.split("/")[-1].split(".")[0]
         pickle.dump(fv, open(utils.vector_dir + file_name + ".pkl", "wb"))
 
 def load_vectors():

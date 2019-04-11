@@ -114,26 +114,40 @@ def load_image_filenames_and_labels_from_txt():
     
     return train_images, train_labels, val_images, val_labels
 
-# every image (no splits)
-def filenames_and_labels():
-    image_paths = []
-    labels = []
+def filenames_and_labels_from_disk():
+    identity_dict = {}
 
     with open(utils.labels_path, 'r') as f:
         for line in f:
             line_split = line.split()
-            label = line_split[LABEL]
 
             # temporary (while testing)
-            # if int(label) < 10:
-            image_paths.append(utils.images_dir + line_split[FILENAME])
-            labels.append(int(line_split[LABEL])-1)
+            if int(line_split[LABEL]) < 10:
+                identity_dict[line_split[FILENAME]] = int(line_split[LABEL])-1
     
-    return image_paths, labels
+    pickle.dump(identity_dict, open(utils.identity_cache_dir, "wb"))
 
+    return identity_dict
+
+# every image (no splits)
+def filenames_and_labels():
+    if os.path.exists(utils.identity_cache_dir):
+        return pickle.load(open(utils.identity_cache_dir, "rb"))
+    else:
+        return filenames_and_labels_from_disk()
+
+def prepend_string_to_array(string, array):
+    res = []
+    for elem in array:
+        res.append(string + elem)
+    
+    return res
 
 def load_vectors_into_disk():
-    paths, labels = filenames_and_labels()
+    identity_dict = filenames_and_labels()
+    file_names = list(identity_dict.keys())
+    labels = list(identity_dict.values())
+    paths = prepend_string_to_array(utils.images_dir, file_names)
     full_generator = Generator(paths, labels, utils.batch_size)
 
     model = load_facenet_fv()
@@ -153,6 +167,19 @@ def load_vectors_into_disk():
     for fv, path in zip(predictions, paths):
         file_name = path.split("/")[4].split(".")[0]
         pickle.dump(fv, open(utils.vector_dir + file_name + ".pkl", "wb"))
+
+def load_vectors():
+    identity_dict = filenames_and_labels()
+    vectors = []
+
+    if os.path.exists(utils.vector_dir):
+        for vector in os.listdir(utils.vector_dir):
+            index = vector.split(".")[0] + ".jpg"
+            vectors.append((pickle.load(open(utils.vector_dir + vector, "rb")), identity_dict[index]))
+            # file
+            pass
+    
+    return vectors
 
 def generate_image_pairs(split_str):
     train_data, train_data_mean, train_data_std = predict(split_str)
@@ -184,14 +211,14 @@ def generate_image_pairs(split_str):
 
     rand.shuffle(face_pairs)
 
-    # just for testing
-    pairs_same = 0
-    pairs_diff = 0
-    for pair in face_pairs:
-        if pair[1] == SAME:
-            pairs_same += 1
-        else:
-            pairs_diff += 1
+    # # just for testing
+    # pairs_same = 0
+    # pairs_diff = 0
+    # for pair in face_pairs:
+    #     if pair[1] == SAME:
+    #         pairs_same += 1
+    #     else:
+    #         pairs_diff += 1
 
 
     pickle.dump(face_pairs, open(utils.cache_dir + "face_pairs_" + split_str + "_" + str(utils.num_classes) + ".pkl", "wb"))
@@ -271,4 +298,6 @@ def load_test_data():
 # get_face_pairs(TRAIN)
 # get_face_pairs(VAL)
 # load_test_data_from_txt()
-load_vectors_into_disk()
+# load_vectors_into_disk()
+load_vectors()
+# filenames_and_labels_from_disk()

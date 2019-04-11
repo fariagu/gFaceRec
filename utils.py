@@ -99,6 +99,7 @@ test_dir = split_dir + "test/"
 train_dir_aug = split_dir + "train_aug/"
 
 # extracted info dirs
+identity_cache_dir = cache_dir + "identity_dict.pkl"
 vector_dir = cache_dir + model_in_use + "_vectors/"
 
 # initialize necessary directories

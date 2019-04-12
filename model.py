@@ -18,13 +18,14 @@ def binary_classification_svm():
         ),
         keras.layers.Dense(
             units=1,
-            activation=keras.activations.sigmoid,
+            activation=utils.activations[utils.activation],
         )
     ])
 
+
     model.compile(
-        optimizer=keras.optimizers.RMSprop(),
-        loss=keras.losses.binary_crossentropy,
+        optimizer=utils.optimizers[utils.optimizer],
+        loss=utils.losses[utils.loss],
         metrics=['accuracy']
     )
 
@@ -103,3 +104,5 @@ def create_model():
     )
 
     return model
+
+binary_classification_svm()

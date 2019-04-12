@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
 import os
 import platform
 
+import keras
+
 def read_training_session():
     r = open("training_session.txt", "r")
     training_session = int(r.read())
@@ -15,7 +17,7 @@ def read_training_session():
     return training_session
 
 def save_session_params():
-    f = open("logs/training_{sess:04d}.txt".format(sess=training_session), "w")
+    f = open("logs/training_{sess:04d}/params.txt".format(sess=training_session), "w")
     f.write("Session: " + str(training_session) + "\n")
     f.write("Base learning rate: " + str(base_learning_rate) + "\n")
     f.write("Dropout rate: " + str(dropout_rate) + "\n")
@@ -23,10 +25,12 @@ def save_session_params():
     f.write("Batch Size: " + str(batch_size) + "\n")
     f.write("Epochs: " + str(num_epochs) + "\n")
     f.write("Model: " + model_in_use + "\n")
+    f.write("Optimizer: " + optimizer + "\n")
+    f.write("Final Layer Activation: " + activation + "\n")
+    f.write("Loss: " + loss + "\n")
     f.write("Env: " + platform.system() + "\n")
     f.write("AUG: TRUE\n") if AUGMENTATION == True else f.write("AUG: FALSE\n")
     f.write("CROPPED: TRUE\n") if CROPPED == True else f.write("CROPPED: FALSE\n")
-    # TODO: guardar optimizer usado
 
 env_windows = True if platform.system() == "Windows" else False
 
@@ -37,6 +41,30 @@ num_classes         = 100       # full dataset: 10177
 batch_size          = 512
 num_epochs          = 100
 cp_period           = 10        # save model every <cp_period> epochs
+
+optimizers = {
+    "rmsprop": keras.optimizers.RMSprop(lr=base_learning_rate),
+    "adam": keras.optimizers.Adam(lr=base_learning_rate),
+    "adagrad": keras.optimizers.Adagrad(lr=base_learning_rate),
+    "adadelta": keras.optimizers.Adadelta(lr=base_learning_rate),
+}
+
+activations = {
+    "sigmoid": keras.activations.sigmoid,
+    "softmax": keras.activations.softmax,
+    "relu": keras.activations.relu,
+}
+
+losses = {
+    "binary_crossentropy": keras.losses.binary_crossentropy,
+    "categorical_crossentropy": keras.losses.categorical_crossentropy,
+    "sparse_crossentropy": keras.losses.sparse_categorical_crossentropy,
+}
+
+# choose optimizer, activation and loss here
+optimizer = "rmsprop"
+activation = "sigmoid"
+loss = "binary_crossentropy"
 
 FACENET = "Facenet"
 MOBILENET = "Mobilenet"

@@ -68,28 +68,28 @@ def finetune():
 
     model.save_weights(utils.checkpoint_path.format(epoch=0))
 
-    if utils.AUGMENTATION:
-        model.fit_generator(
-            generator=train_batch_generator,
-            epochs=utils.num_epochs,
-            callbacks=[cp_callback, tensorboard],
-            verbose=1,
-            validation_data=val_batch_generator,
-            use_multiprocessing=utils.multiprocessing,
-            workers=utils.n_workers,
-            steps_per_epoch=(2000/utils.batch_size)+1, # TODO
-            validation_steps=(110/utils.batch_size)+1 # TODO
-        )
-    else:
-        model.fit_generator(
-            generator=train_batch_generator,
-            epochs=utils.num_epochs,
-            callbacks=[cp_callback, tensorboard],
-            verbose=1,
-            validation_data=val_batch_generator,
-            use_multiprocessing=utils.multiprocessing,
-            workers=utils.n_workers,
-        )
+    # if utils.AUGMENTATION:
+    #     model.fit_generator(
+    #         generator=train_batch_generator,
+    #         epochs=utils.num_epochs,
+    #         callbacks=[cp_callback, tensorboard],
+    #         verbose=1,
+    #         validation_data=val_batch_generator,
+    #         use_multiprocessing=utils.multiprocessing,
+    #         workers=utils.n_workers,
+    #         steps_per_epoch=(2000/utils.batch_size)+1, # TODO
+    #         validation_steps=(110/utils.batch_size)+1 # TODO
+    #     )
+    # else:
+    model.fit_generator(
+        generator=train_batch_generator,
+        epochs=utils.num_epochs,
+        callbacks=[cp_callback, tensorboard],
+        verbose=1,
+        validation_data=val_batch_generator,
+        use_multiprocessing=utils.multiprocessing,
+        workers=utils.n_workers,
+    )
     
 
 finetune()

@@ -18,13 +18,13 @@ def binary_classification_svm():
         ),
         keras.layers.Dense(
             units=1,
-            activation=keras.activations.softmax,
+            activation=keras.activations.sigmoid,
         )
     ])
 
     model.compile(
         optimizer=keras.optimizers.Adam(),
-        loss=keras.losses.binary_crossentropy,
+        loss=keras.losses.hinge,
         metrics=['accuracy']
     )
 

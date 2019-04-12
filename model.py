@@ -24,7 +24,7 @@ def binary_classification_svm():
 
     model.compile(
         optimizer=keras.optimizers.Adam(),
-        loss=keras.losses.hinge,
+        loss=keras.losses.cosine_proximity,
         metrics=['accuracy']
     )
 

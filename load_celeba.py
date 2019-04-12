@@ -201,7 +201,7 @@ def create_pairs():
     # random pairing (will be mostly pairs of different faces)
     for i in it:
         face1 = agg[i]
-        for j in range(i+1, i+5):
+        for j in range(i+1, i+3):
             # for when j is out of range
             j = j - len(labels) if j >= len(labels) else j
 

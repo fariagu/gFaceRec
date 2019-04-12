@@ -18,7 +18,7 @@ def binary_classification_svm():
         ),
         keras.layers.Dense(
             units=1,
-            activation=keras.activations.sigmoid,
+            activation=keras.activations.tanh,
         )
     ])
 

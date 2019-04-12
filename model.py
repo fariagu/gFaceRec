@@ -23,8 +23,8 @@ def binary_classification_svm():
     ])
 
     model.compile(
-        optimizer=keras.optimizers.Adam(),
-        loss=keras.losses.cosine_proximity,
+        optimizer=keras.optimizers.RMSprop(),
+        loss=keras.losses.binary_crossentropy,
         metrics=['accuracy']
     )
 

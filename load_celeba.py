@@ -224,6 +224,20 @@ def create_pairs():
     
     rand.shuffle(pairs)
 
+    print("#######################")
+    same_face = 0
+    diff_face = 0
+    for pair in pairs:
+        if pair[1] == SAME:
+            same_face += 1
+        else:
+            diff_face += 1
+
+    print("Pairs of same face: " + same_face)
+    print("Pairs of diff face: " + diff_face)
+    print("#######################")
+
+
     return zip(*pairs)
 
 # usei isto para o euclidean. O de cima é melhor: 

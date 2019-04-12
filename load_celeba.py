@@ -201,14 +201,14 @@ def create_pairs():
     # random pairing (will be mostly pairs of different faces)
     for i in it:
         face1 = agg[i]
-        for j in range(i+1, i+3):
+        for j in range(i+1, i+5):
             # for when j is out of range
             j = j - len(labels) if j >= len(labels) else j
 
             face2 = agg[j]
 
             binary_label = SAME if face1[LABEL] == face2[LABEL] else DIFF
-            pairs.append(((face1[VECTOR],face2[VECTOR]), binary_label))
+            pairs.append(((face1[VECTOR], face2[VECTOR]), binary_label))
     
     #specific pairing
     # sort by label
@@ -216,11 +216,14 @@ def create_pairs():
 
     for i in range(len(labels)-1):
         face1 = agg[i]
-        face2 = agg[i+1]
+        for j in range(i+1, i+3):
+            j = j - len(labels) if j >= len(labels) else j
+            face2 = agg[j]
 
-        binary_label = SAME if face1[LABEL] == face2[LABEL] else DIFF
-        pairs.append(((face1[VECTOR],face2[VECTOR]), binary_label))
-        i += 2
+            binary_label = SAME if face1[LABEL] == face2[LABEL] else DIFF
+            pairs.append(((face1[VECTOR], face2[VECTOR]), binary_label))
+        
+        i += 1
     
     rand.shuffle(pairs)
 

@@ -233,8 +233,8 @@ def create_pairs():
         else:
             diff_face += 1
 
-    print("Pairs of same face: " + same_face)
-    print("Pairs of diff face: " + diff_face)
+    print("Pairs of same face: " + str(same_face))
+    print("Pairs of diff face: " + str(diff_face))
     print("#######################")
 
 

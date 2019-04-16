@@ -14,7 +14,6 @@ import tensorflow as tf
 import tensorflow_hub as hub
 
 import utils
-from vgg_face import vgg_face
 
 def load_vgg_face():
     vgg_model = VGGFace(include_top=False, input_shape=(224, 224, 3), pooling='avg')

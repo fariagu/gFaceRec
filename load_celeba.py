@@ -13,7 +13,7 @@ from keras.models import load_model
 import utils
 # from euclidean_db import predict, TRAIN, VAL
 from generator import Generator
-from load_local_model import load_facenet_fv
+from load_local_model import load_facenet_fv, load_vgg_face_fv
 
 SAME = 0
 DIFF = 1

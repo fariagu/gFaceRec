@@ -29,7 +29,7 @@ tmp/**
 .python-version
 .vs/
 
-.vscode/
+#.vscode/
 .sonarlint/
 Include/
 Lib/

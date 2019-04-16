@@ -1,0 +1,19 @@
+{
+    "python.pythonPath": "keras\\Scripts\\python.exe",
+    "git.ignoreLimitWarning": true,
+    "python.venvPath": "C:\\code\\keras\\keras\\Scripts",
+    "python.terminal.activateEnvironment": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "sshfs.configs": [
+        {
+            "host": "104.196.143.63",
+            "label": "Google VM",
+            "name": "gcp-instance",
+            "passphrase": "12qwaszx",
+            "password": "12qwaszx",
+            "putty": true,
+            "username": "gustavoduartefaria"
+        }
+    ],
+}

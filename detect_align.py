@@ -50,4 +50,4 @@ def main(file_name):
 		# cv2.imwrite("aligned_face_{}.jpg".format(i), alignedFace)
 		cv2.imwrite(utils.crop_dir + file_name.split("/")[-1], alignedFace)
 
-				
+main("C:/datasets/CelebA/img_align_celeba/000001.jpg")

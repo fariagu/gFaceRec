@@ -41,6 +41,7 @@ logs/
 tflite_models/
 facenet/
 mobilenet/
+vgg_face/
 training_session.txt
 
 # venv is called keras

@@ -14,6 +14,7 @@ def main(file_name):
 
 	# Take the image file name from the command line
 	# file_name = sys.argv[1]
+
 	file_name = utils.images_dir + file_name
 
 	# Create a HOG face detector using the built-in dlib class

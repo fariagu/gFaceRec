@@ -77,6 +77,11 @@ class Generator(keras.utils.Sequence):
                     img = get_patched_image(img)
                 # else: do nothing
             
+            if utils.model_in_use == utils.VGGFACE:
+                np.transpose(img, (2, 0, 1))
+
             image_array.append(img)
+            x = img.shape
+            pass
         
         return np.array(image_array), np.array(label_batch)

@@ -6,10 +6,48 @@ from keras import layers
 from keras.models import load_model
 from keras.preprocessing.image import ImageDataGenerator
 
+from keras.engine import  Model
+from keras.layers import Flatten, Dense, Input
+from keras_vggface.vggface import VGGFace
+
 import tensorflow as tf
 import tensorflow_hub as hub
 
 import utils
+from vgg_face import vgg_face
+
+def load_vgg_face():
+    vgg_model = VGGFace(include_top=False, input_shape=(224, 224, 3), pooling='avg')
+    vgg_model.trainable = False
+    # vgg_model.summary()
+    # last_layer = vgg_model.get_layer('avg_pool').output
+    # x = Flatten(name='flatten')#(last_layer)
+    # out = Dense(utils.num_classes, activation='softmax', name='classifier')(x)
+    # return Model(vgg_model.input, out)
+
+    dropout_layer = keras.layers.Dropout(utils.dropout_rate)
+
+    prediction_layer = keras.layers.Dense(
+        units=utils.num_classes,
+        activation=keras.activations.softmax
+    )
+
+    model = keras.Sequential([
+        vgg_model,
+        dropout_layer,
+        prediction_layer,
+    ])
+
+    model.compile(
+        optimizer=keras.optimizers.Adam(
+            lr=utils.base_learning_rate
+        ),
+        loss=keras.losses.sparse_categorical_crossentropy,
+        metrics=['accuracy']
+    )
+
+    return model
+
 
 def load_facenet_fv():
     model = load_model("facenet/model.h5")
@@ -79,6 +117,8 @@ def load_mobilenet_model():
 def load_local_model():
     if utils.model_in_use == utils.FACENET:
         return load_facenet_model()
+    elif utils.model_in_use == utils.VGGFACE:
+        return load_vgg_face()
     else:
         return load_mobilenet_model()
         # se quiser retomar checkpoint:

@@ -38,7 +38,7 @@ training_session    = read_training_session()
 base_learning_rate  = 0.001
 dropout_rate        = 0.8
 num_classes         = 100       # full dataset: 10177
-batch_size          = 512
+batch_size          = 256
 num_epochs          = 100
 cp_period           = 10        # save model every <cp_period> epochs
 
@@ -68,16 +68,19 @@ loss = "binary_crossentropy"
 
 FACENET = "Facenet"
 MOBILENET = "Mobilenet"
+VGGFACE = "VggFace"
 
 AUGMENTATION = True
-CROPPED = False
+CROPPED = True
 
 # FACENET || MOBILENET
-model_in_use = FACENET
+model_in_use = VGGFACE
 image_width = 160
 
 if model_in_use == FACENET:
     image_width = 160
+elif model_in_use == VGGFACE:
+    image_width = 224
 else:
     image_width = 224
 

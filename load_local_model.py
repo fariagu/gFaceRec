@@ -47,6 +47,11 @@ def load_vgg_face():
 
     return model
 
+def load_vgg_face_fv():
+    vgg_model = VGGFace(include_top=False, input_shape=(224, 224, 3), pooling='avg')
+    vgg_model.trainable = False
+
+    return vgg_model
 
 def load_facenet_fv():
     model = load_model("facenet/model.h5")

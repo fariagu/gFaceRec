@@ -35,10 +35,10 @@ def save_session_params():
 env_windows = True if platform.system() == "Windows" else False
 
 training_session    = read_training_session()
-base_learning_rate  = 0.001
-dropout_rate        = 0.8
-num_classes         = 10       # full dataset: 10177
-batch_size          = 256
+base_learning_rate  = 0.025
+dropout_rate        = 0.5
+num_classes         = 100       # full dataset: 10177
+batch_size          = 64
 num_epochs          = 100
 cp_period           = 10        # save model every <cp_period> epochs
 
@@ -70,11 +70,11 @@ FACENET = "Facenet"
 MOBILENET = "Mobilenet"
 VGGFACE = "VggFace"
 
-AUGMENTATION = True
+AUGMENTATION = False
 CROPPED = False
 
 # FACENET || MOBILENET || VGGFACE
-model_in_use = FACENET
+model_in_use = VGGFACE
 image_width = 160
 
 if model_in_use == FACENET:
@@ -86,7 +86,7 @@ else:
 
 mobilenet_feature_vector_url = "https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/2"
 
-# root directory full path (os independent i hope)
+# root directory full path (os independent)
 base_dir = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 # logs and model checkpoints

@@ -37,7 +37,7 @@ env_windows = True if platform.system() == "Windows" else False
 training_session    = read_training_session()
 base_learning_rate  = 0.001
 dropout_rate        = 0.8
-num_classes         = 100       # full dataset: 10177
+num_classes         = 10       # full dataset: 10177
 batch_size          = 256
 num_epochs          = 100
 cp_period           = 10        # save model every <cp_period> epochs
@@ -71,10 +71,10 @@ MOBILENET = "Mobilenet"
 VGGFACE = "VggFace"
 
 AUGMENTATION = True
-CROPPED = True
+CROPPED = False
 
-# FACENET || MOBILENET
-model_in_use = VGGFACE
+# FACENET || MOBILENET || VGGFACE
+model_in_use = FACENET
 image_width = 160
 
 if model_in_use == FACENET:

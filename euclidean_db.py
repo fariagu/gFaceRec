@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import os
 import numpy as np
+from scipy import spatial
 
 import keras
 
@@ -21,7 +22,7 @@ splits = [TRAIN, VAL]
 
 cache_split = utils.cache_dir + "split_" + str(utils.num_classes) + "/"
 
-bias = 0.0
+bias = 0.1
 
 def load_split(split_str):
     if not os.path.exists(cache_split + split_str + "_data_mean.pkl"):
@@ -115,7 +116,8 @@ def validate():
     unsure = 0
     accurate = 0
     inacurate = 0
-    for key, value in val_data.items():
+    for key, value in val_data_mean.items():
+    # for key, value in val_data.items():
         for fv in value:
             total_samples += 1
             distances = []
@@ -123,7 +125,10 @@ def validate():
             for t_key, t_value_arr in train_data_mean.items():
             # for t_key, t_value_arr in train_data.items():
                 for t_value in t_value_arr:
-                    dist = np.linalg.norm(fv-t_value)
+                    # # euclidean distance
+                    # dist = np.linalg.norm(fv-t_value)
+                    # cosine difference
+                    dist = spatial.distance.cosine(fv, t_value)
                     distances.append((dist, t_key))
             # sort by distance
             distances.sort(key=lambda tuple: tuple[0])

@@ -49,7 +49,7 @@ def vgg_svm():
 
     model.compile(
         optimizer=utils.optimizers[utils.optimizer],
-        loss=utils.losses[utils.loss],
+        loss=keras.losses.sparse_categorical_crossentropy,
         metrics=['accuracy']
     )
 

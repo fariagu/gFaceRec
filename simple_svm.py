@@ -8,7 +8,7 @@ from keras import layers
 import numpy as np
 
 from load_celeba import load_vectors
-from model import binary_classification_svm
+from model import vgg_svm
 from euclidean_db import TRAIN, VAL
 from vector_generator import VectorGenerator
 import utils
@@ -29,7 +29,7 @@ def svm():
         utils.batch_size
     )
 
-    model = binary_classification_svm()
+    model = vgg_svm()
 
     model.summary()
     tensorboard = keras.callbacks.TensorBoard(log_dir=utils.log_dir)

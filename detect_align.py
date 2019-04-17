@@ -10,7 +10,7 @@ import utils
 def main(file_name):
 	# You can download the required pre-trained face detection model here:
 	# http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
-	predictor_model = "shape_predictor_68_face_landmarks.dat"
+	predictor_model = "./shape_predictor_68_face_landmarks.dat"
 
 	# Take the image file name from the command line
 	# file_name = sys.argv[1]

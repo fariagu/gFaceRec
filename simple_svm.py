@@ -7,24 +7,24 @@ from keras import layers
 
 import numpy as np
 
-from load_celeba import create_pairs
+from load_celeba import load_vectors
 from model import binary_classification_svm
 from euclidean_db import TRAIN, VAL
-from pair_generator import PairGenerator
+from vector_generator import VectorGenerator
 import utils
 
-def train_verifier():
-    vector_pairs, labels = create_pairs()
+def svm():
+    vector_paths, labels = load_vectors()
     train_split_index = int(len(labels)*0.8)
     
-    train_generator = PairGenerator(
-        vector_pairs[:train_split_index],
+    train_generator = VectorGenerator(
+        vector_paths[:train_split_index],
         labels[:train_split_index],
         utils.batch_size
     )
 
-    val_generator = PairGenerator(
-        vector_pairs[train_split_index:],
+    val_generator = VectorGenerator(
+        vector_paths[train_split_index:],
         labels[train_split_index:],
         utils.batch_size
     )
@@ -57,4 +57,4 @@ def train_verifier():
 
     # predictions = model.predict(np.array(val_vectors))
 
-train_verifier()
+svm()

@@ -31,6 +31,30 @@ def binary_classification_svm():
 
     return model
 
+def vgg_svm():
+    model = keras.models.Sequential([
+        keras.layers.Dense(
+            units=512,
+            activation=keras.activations.relu,
+            input_shape=(512,),
+        ),
+        keras.layers.Dropout(
+            utils.dropout_rate,
+        ),
+        keras.layers.Dense(
+            units=1,
+            activation=keras.activations.softmax,
+        )
+    ])
+
+    model.compile(
+        optimizer=utils.optimizers[utils.optimizer],
+        loss=utils.losses[utils.loss],
+        metrics=['accuracy']
+    )
+
+    return model
+
 # Returns convnet model
 def create_model():
     model = keras.models.Sequential([
@@ -105,4 +129,4 @@ def create_model():
 
     return model
 
-binary_classification_svm()
+# binary_classification_svm()

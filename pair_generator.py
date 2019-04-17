@@ -7,7 +7,7 @@ import keras
 
 import utils
 
-class VectorGenerator(keras.utils.Sequence):
+class PairGenerator(keras.utils.Sequence):
 
     def __init__(self, vector_filenames, labels, batch_size):
         self.vectors, self.labels = vector_filenames, labels
@@ -21,8 +21,15 @@ class VectorGenerator(keras.utils.Sequence):
         label_batch = self.labels[idx * self.batch_size:(idx + 1) * self.batch_size]
 
         vector_array = []
-        for vector in vector_batch:
-            with open(vector, "rb") as v:
-                vector_array.append(pickle.load(v))
+        # two halves make a whole... get it?
+        for two_halves in vector_batch:
+            with open(two_halves[0], "rb") as v1:
+                vector1 = pickle.load(v1)
+            with open(two_halves[1], "rb") as v2:
+                vector2 = pickle.load(v2)
+            
+            whole = np.concatenate((vector1, vector2), axis=None)
+
+            vector_array.append(whole)
         
         return np.array(vector_array), np.array(label_batch)

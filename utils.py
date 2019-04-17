@@ -71,7 +71,7 @@ MOBILENET = "Mobilenet"
 VGGFACE = "VggFace"
 
 AUGMENTATION = False
-CROPPED = False
+CROPPED = True
 
 # [0, 100] for when cropping the dataset
 margin_percentage = 20
@@ -136,7 +136,8 @@ train_dir_aug = split_dir + "train_aug/"
 identity_cache_dir = cache_dir + "identity_dict.pkl"
 vector_dir = cache_dir + model_in_use + "_vectors"
 
-vector_dir = vector_dir + "_crop_" + margin_percentage + "/" if CROPPED else vector_dir + "/"
+vector_dir = vector_dir + "_crop_" + str(margin_percentage) + "/" if CROPPED else vector_dir + "/"
+pass
 
 # initialize necessary directories
 if not os.path.exists(log_dir):

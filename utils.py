@@ -38,7 +38,7 @@ training_session    = read_training_session()
 base_learning_rate  = 0.025
 dropout_rate        = 0.5
 num_classes         = 100       # full dataset: 10177
-batch_size          = 64
+batch_size          = 1024
 num_epochs          = 100
 cp_period           = 10        # save model every <cp_period> epochs
 

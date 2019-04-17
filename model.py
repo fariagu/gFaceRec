@@ -44,7 +44,7 @@ def vgg_svm():
         keras.layers.Dense(
             units=utils.num_classes,
             activation=keras.activations.softmax,
-            # kernel_initializer=
+            kernel_initializer=keras.initializers.he_normal(seed=None),
         )
     ])
 
@@ -52,7 +52,7 @@ def vgg_svm():
         optimizer=utils.optimizers[utils.optimizer],
         loss=keras.losses.sparse_categorical_crossentropy,
         metrics=['accuracy'],
-        kernel_initializer=keras.initializers.he_normal(seed=None)
+        # kernel_initializer=keras.initializers.he_normal(seed=None),
     )
 
     return model

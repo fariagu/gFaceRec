@@ -44,7 +44,7 @@ def vgg_svm():
         keras.layers.Dense(
             units=utils.num_classes,
             activation=keras.activations.softmax,
-            kernel_initializer=keras.initializers.he_normal(seed=None),
+            kernel_initializer=keras.initializers.he_uniform(seed=None),
         )
     ])
 

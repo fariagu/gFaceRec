@@ -39,8 +39,8 @@ base_learning_rate  = 0.025
 dropout_rate        = 0.5
 num_classes         = 100       # full dataset: 10177
 batch_size          = 1024
-num_epochs          = 100
-cp_period           = 10        # save model every <cp_period> epochs
+num_epochs          = 200
+cp_period           = num_epochs / 10        # save model every <cp_period> epochs
 
 optimizers = {
     "rmsprop": keras.optimizers.RMSprop(lr=base_learning_rate),

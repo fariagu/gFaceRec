@@ -178,4 +178,4 @@ def validate():
     print("Unsure rate: " + str(unsure_rate))
 
 
-validate()
+# validate()

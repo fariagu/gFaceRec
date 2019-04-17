@@ -225,10 +225,11 @@ def load_vectors():
 
     if os.path.exists(utils.vector_dir):
         for vector in os.listdir(utils.vector_dir):
-            index = vector.split(".")[0] + ".jpg"
-            vector_paths.append(utils.vector_dir + vector)
-            labels.append(identity_dict[index])
-    
+            if identity_dict[index] < utils.num_classes:
+                index = vector.split(".")[0] + ".jpg"
+                vector_paths.append(utils.vector_dir + vector)
+                labels.append(identity_dict[index])
+        
     aggregated_vl = list(zip(vector_paths, labels))
     rand.shuffle(aggregated_vl)
 

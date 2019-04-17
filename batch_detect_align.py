@@ -8,9 +8,6 @@ import utils
 if not os.path.exists(utils.crop_dir):
     os.makedirs(utils.crop_dir)
 
-p = Pool(1)
-# p.map(detect_align.main, os.listdir(utils.images_dir))
-p.map(detect_align.main, os.listdir("C:/datasets/CelebA/tmp/"))
-
-# for file in os.listdir(utils.images_dir):
-#     detect_align.main(utils.images_dir + file)
+p = Pool(utils.n_workers)
+p.map(detect_align.main, os.listdir(utils.images_dir))
+# p.map(detect_align.main, os.listdir("C:/datasets/CelebA/tmp/"))

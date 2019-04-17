@@ -73,6 +73,9 @@ VGGFACE = "VggFace"
 AUGMENTATION = False
 CROPPED = False
 
+# [0, 100] for when cropping the dataset
+margin_percentage = 20
+
 # FACENET || MOBILENET || VGGFACE
 model_in_use = VGGFACE
 image_width = 160
@@ -114,7 +117,7 @@ else:
 
 ## OS independent
 images_dir = raw_dir + "img_align_celeba/"
-crop_dir = raw_dir + "img_crop/"
+crop_dir = raw_dir + "img_crop/" if margin_percentage == 0 else raw_dir + "img_crop_" + str(margin_percentage) + "/"
 labels_path = raw_dir + "identity_CelebA.txt"
 partition_path = raw_dir + "list_eval_partition.txt"
 cache_partition_path = cache_dir + "train_val_test.pkl"

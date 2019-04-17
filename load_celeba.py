@@ -13,7 +13,7 @@ from keras.models import load_model
 import utils
 # from euclidean_db import predict, TRAIN, VAL
 from generator import Generator
-from load_local_model import load_facenet_fv
+from load_local_model import load_facenet_fv, load_vgg_face_fv
 
 SAME = 0
 DIFF = 1
@@ -147,17 +147,20 @@ def prepend_string_to_array(string, array):
 def load_vectors_into_disk():
     identity_dict = filenames_and_labels()
 
-    trim_iden_dict = {}
-    for key, label in identity_dict.items():
-        if label < utils.num_classes:
-            trim_iden_dict[key] = label
+    # trim_iden_dict = {}
+    # for key, label in identity_dict.items():
+    #     if label < utils.num_classes:
+    #         trim_iden_dict[key] = label
+    #
+    # file_names = list(trim_iden_dict.keys())
+    # labels = list(trim_iden_dict.values())
 
-    file_names = list(trim_iden_dict.keys())
-    labels = list(trim_iden_dict.values())
+    file_names = list(identity_dict.keys())
+    labels = list(identity_dict.values())
     paths = prepend_string_to_array(utils.images_dir, file_names)
     full_generator = Generator(paths, labels, utils.batch_size)
 
-    model = load_facenet_fv()
+    model = load_facenet_fv() if utils.model_in_use == utils.FACENET else load_vgg_face_fv()
 
     model.summary()
 
@@ -350,4 +353,4 @@ def load_test_data():
     
     return load_test_data_from_txt()
 
-# load_vectors_into_disk()
+load_vectors_into_disk()

@@ -353,4 +353,4 @@ def load_test_data():
     
     return load_test_data_from_txt()
 
-load_vectors_into_disk()
+# load_vectors_into_disk()

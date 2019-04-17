@@ -42,7 +42,7 @@ def vgg_svm():
             utils.dropout_rate,
         ),
         keras.layers.Dense(
-            units=1,
+            units=utils.num_classes,
             activation=keras.activations.softmax,
         )
     ])

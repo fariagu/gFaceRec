@@ -36,7 +36,7 @@ env_windows = True if platform.system() == "Windows" else False
 
 training_session    = read_training_session()
 base_learning_rate  = 0.001
-dropout_rate        = 0.66
+dropout_rate        = 0.5
 num_classes         = 100       # full dataset: 10177
 batch_size          = 128        # 1024 for vectors, 64 for images
 num_epochs          = 200
@@ -74,11 +74,11 @@ AUGMENTATION = False
 CROPPED = True
 
 # [0, 100] for when cropping the dataset
-margin_percentage = 10
+margin_percentage = 25
 
 # FACENET || MOBILENET || VGGFACE
 model_in_use = VGGFACE
-image_width = 160
+image_width = 224
 
 if model_in_use == FACENET:
     image_width = 160
@@ -117,6 +117,7 @@ else:
 
 ## OS independent
 images_dir = raw_dir + "img_align_celeba/"
+og_images_dir = images_dir
 crop_dir = raw_dir + "img_crop/" if margin_percentage == 0 else raw_dir + "img_crop_" + str(margin_percentage) + "/"
 labels_path = raw_dir + "identity_CelebA.txt"
 partition_path = raw_dir + "list_eval_partition.txt"

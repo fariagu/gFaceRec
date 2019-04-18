@@ -12,10 +12,12 @@ def main(file_name):
 	# http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
 	predictor_model = "./shape_predictor_68_face_landmarks.dat"
 
+	print("Cropping image " + file_name)
+
 	# Take the image file name from the command line
 	# file_name = sys.argv[1]
 
-	file_name = utils.images_dir + file_name
+	file_name = utils.og_images_dir + file_name
 
 	# Create a HOG face detector using the built-in dlib class
 	face_detector = dlib.get_frontal_face_detector()

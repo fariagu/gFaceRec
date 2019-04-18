@@ -177,7 +177,7 @@ def load_vectors_into_disk():
 
     model = load_facenet_fv() if utils.model_in_use == utils.FACENET else load_vgg_face_fv()
 
-    # model.summary()
+    model.summary()
 
     predictions = model.predict_generator(
         generator=full_generator,

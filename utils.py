@@ -35,10 +35,10 @@ def save_session_params():
 env_windows = True if platform.system() == "Windows" else False
 
 training_session    = read_training_session()
-base_learning_rate  = 0.001
-dropout_rate        = 0.5
+base_learning_rate  = 0.01
+dropout_rate        = 0.75
 num_classes         = 100       # full dataset: 10177
-batch_size          = 128        # 1024 for vectors, 64 for images
+batch_size          = 64        # 1024 for vectors, 64 for images
 num_epochs          = 200
 cp_period           = num_epochs / 10        # save model every <cp_period> epochs
 
@@ -74,7 +74,7 @@ AUGMENTATION = False
 CROPPED = True
 
 # [0, 100] for when cropping the dataset
-margin_percentage = 25
+margin_percentage = 40
 
 # FACENET || MOBILENET || VGGFACE
 model_in_use = VGGFACE

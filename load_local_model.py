@@ -48,7 +48,7 @@ def load_vgg_face():
     return model
 
 def load_vgg_face_fv():
-    vgg_model = VGGFace(include_top=False, input_shape=(224, 224, 3), pooling='avg')
+    vgg_model = VGGFace(model='resnet50', include_top=False, input_shape=(224, 224, 3), pooling='avg')
     vgg_model.trainable = False
 
     return vgg_model
@@ -56,7 +56,6 @@ def load_vgg_face_fv():
 def load_facenet_fv():
     model = load_model("facenet/model.h5")
     model.load_weights("facenet/weights.h5")
-    # true maybe se a euclidean distance se portar bem? treino limitadamente as camadas mais superficiais (tipo uma noite inteira a treinar e vejo se valeu a pena) (mas como é que treino um feature vector tho=? fds)
     model.trainable = False
 
     return model

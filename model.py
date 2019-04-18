@@ -34,9 +34,9 @@ def binary_classification_svm():
 def vgg_svm():
     model = keras.models.Sequential([
         keras.layers.Dense(
-            units=512,
+            units=2048,
             activation=keras.activations.relu,
-            input_shape=(512,),
+            input_shape=(2048,),
         ),
         keras.layers.Dropout(
             utils.dropout_rate,

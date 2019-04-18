@@ -122,8 +122,8 @@ def filenames_and_labels_from_disk():
             line_split = line.split()
 
             # temporary (while testing)
-            # if int(line_split[LABEL]) < 10:
-            identity_dict[line_split[FILENAME]] = int(line_split[LABEL])-1
+            if int(line_split[LABEL]) < utils.num_classes:
+                identity_dict[line_split[FILENAME]] = int(line_split[LABEL])-1
     
     pickle.dump(identity_dict, open(utils.identity_cache_dir, "wb"))
 

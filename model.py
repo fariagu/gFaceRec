@@ -57,6 +57,32 @@ def vgg_svm():
 
     return model
 
+def facenet_svm():
+    model = keras.models.Sequential([
+        keras.layers.Dense(
+            units=128,
+            activation=keras.activations.relu,
+            input_shape=(128,),
+        ),
+        keras.layers.Dropout(
+            utils.dropout_rate,
+        ),
+        keras.layers.Dense(
+            units=utils.num_classes,
+            activation=keras.activations.softmax,
+            kernel_initializer=keras.initializers.he_uniform(seed=None),
+        )
+    ])
+
+    model.compile(
+        optimizer=utils.optimizers[utils.optimizer],
+        loss=keras.losses.sparse_categorical_crossentropy,
+        metrics=['accuracy'],
+        # kernel_initializer=keras.initializers.he_normal(seed=None),
+    )
+
+    return model
+
 # Returns convnet model
 def create_model():
     model = keras.models.Sequential([

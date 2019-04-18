@@ -8,7 +8,7 @@ from keras import layers
 import numpy as np
 
 from load_celeba import load_vectors
-from model import vgg_svm
+from model import vgg_svm, facenet_svm
 from euclidean_db import TRAIN, VAL
 from vector_generator import VectorGenerator
 import utils
@@ -29,7 +29,10 @@ def svm():
         utils.batch_size
     )
 
-    model = vgg_svm()
+    if utils.model_in_use == utils.FACENET:
+        model = facenet_svm()
+    else:
+        model = vgg_svm()
 
     model.summary()
     tensorboard = keras.callbacks.TensorBoard(log_dir=utils.log_dir)

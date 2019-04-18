@@ -147,6 +147,9 @@ def prepend_string_to_array(string, array):
 def load_vectors_into_disk():
     identity_dict = filenames_and_labels()
 
+    print("####################")
+    print(utils.images_dir)
+
     # trim_iden_dict = {}
     # for key, label in identity_dict.items():
     #     if label < utils.num_classes:
@@ -164,6 +167,8 @@ def load_vectors_into_disk():
         if file not in files_that_exist:
             identity_dict.pop(file)
 
+    print(len(identity_dict))
+
     file_names = list(identity_dict.keys())
     labels = list(identity_dict.values())
 
@@ -172,7 +177,7 @@ def load_vectors_into_disk():
 
     model = load_facenet_fv() if utils.model_in_use == utils.FACENET else load_vgg_face_fv()
 
-    model.summary()
+    # model.summary()
 
     predictions = model.predict_generator(
         generator=full_generator,
@@ -364,4 +369,4 @@ def load_test_data():
     
     return load_test_data_from_txt()
 
-load_vectors_into_disk()
+# load_vectors_into_disk()

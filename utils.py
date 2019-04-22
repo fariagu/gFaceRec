@@ -74,7 +74,7 @@ AUGMENTATION = False
 CROPPED = True
 
 # [0, 100] for when cropping the dataset
-margin_percentage = 40
+margin_percentage = 20
 
 # FACENET || MOBILENET || VGGFACE
 model_in_use = VGGFACE

@@ -44,6 +44,7 @@ mobilenet/
 vgg_face/
 detector/
 training_session.txt
+logs.zip
 
 # venv is called keras
 keras/

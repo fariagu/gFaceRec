@@ -15,6 +15,13 @@ import tensorflow_hub as hub
 
 import utils
 
+def load_face_detector():
+    model = load_model("detector/yolov2_tiny-face.h5")
+    # model = load_model("detector/YOLO_Face.h5")
+    model.trainable = False
+
+    return model
+
 def load_vgg_face():
     vgg_model = VGGFace(model="resnet50", include_top=False, input_shape=(224, 224, 3), pooling='avg')
     vgg_model.trainable = False

@@ -42,6 +42,7 @@ tflite_models/
 facenet/
 mobilenet/
 vgg_face/
+detector/
 training_session.txt
 logs.zip
 

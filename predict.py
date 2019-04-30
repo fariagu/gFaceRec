@@ -42,7 +42,8 @@ model = load_face_detector()
 model.summary()
 
 # img = resize(imread("C:/datasets/CelebA/img_align_celeba/000001.jpg"),(416, 416))
-img = cv2.resize(cv2.imread("C:/datasets/CelebA/img_align_celeba/000007.jpg"), (416, 416))
+# img = cv2.resize(cv2.imread("C:/datasets/CelebA/img_align_celeba/001197.jpg"), (416, 416))
+img = cv2.resize(cv2.imread("C:/Users/gustavo.faria/Desktop/training_summaries/people.jpg"), (416, 416))
 nimg = np.zeros((416, 416))
 nimg = cv2.normalize(img, nimg, 0, 1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32FC1)
 
@@ -56,16 +57,17 @@ print(res)
 # print(result)
 # print(nimg)
 
-left = int(res[0][1] - (res[0][4] / 2))
-right = int(res[0][1] + (res[0][4] / 2))
-top = int(res[0][2] - (res[0][3] / 2))
-bottom = int(res[0][2] + (res[0][3] / 2))
+for face in res:
+    left = int(face[2] - (face[4] / 2))
+    right = int(face[2] + (face[4] / 2))
+    top = int(face[1] - (face[3] / 2))
+    bottom = int(face[1] + (face[3] / 2))
 
-tl = (top, left)
-br = (bottom, right)
+    tl = (top, left)
+    br = (bottom, right)
 
-#tmp
-cv2.rectangle(img, tl, br, (0, 0, 255), 3)
+    #tmp
+    cv2.rectangle(img, tl, br, (0, 0, 255), 3)
 
 cv2.imshow("predict", img)
 cv2.waitKey(0)

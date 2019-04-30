@@ -22,9 +22,6 @@ def protobuf_to_checkpoint_conversion(pb_model, ckpt_dir):
             constant_ops = [op for op in graph.get_operations() if op.type == "Const"]
             vars_dict = {}
             ass = []
-            
-            # desperate times
-            # vars_dict["global_step"] = 0
 
             for constant_op in constant_ops:
                 name = constant_op.name
@@ -33,6 +30,14 @@ def protobuf_to_checkpoint_conversion(pb_model, ckpt_dir):
                 var = tf.get_variable(name, shape, dtype=const.dtype, initializer=tf.zeros_initializer())
                 vars_dict[name] = var
                 pass
+            
+            # desperate times
+            vars_dict["global_step"] = tf.get_variable(
+                "global_step",
+                shape=shape,
+                dtype=tf.int32,
+                initializer=tf.zeros_initializer()
+            )
 
             print('INFO:Initializing variables')
             init = tf.global_variables_initializer()
@@ -84,4 +89,5 @@ def protobuf_to_checkpoint_conversion(pb_model, ckpt_dir):
 #             ckpt_path = os.path.join(ckpt_dir, 'model.ckpt')
 #             saver.save(sess, ckpt_path)
 
+# protobuf_to_checkpoint_conversion("C:/code/tensorflow-face-detection/model/frozen_inference_graph_face.pb", "C:/tflite/")
 protobuf_to_checkpoint_conversion("/home/gustavoduartefaria/frozen_inference_graph_face.pb", "/home/gustavoduartefaria/")

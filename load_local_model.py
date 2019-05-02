@@ -55,7 +55,7 @@ def load_vgg_face():
     return model
 
 def load_vgg_face_fv():
-    vgg_model = VGGFace(model='resnet50', include_top=False, input_shape=(224, 224, 3), pooling='avg')
+    vgg_model = VGGFace(model='vgg16', include_top=False, input_shape=(224, 224, 3), pooling='avg')
     vgg_model.trainable = False
 
     return vgg_model

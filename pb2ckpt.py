@@ -35,7 +35,7 @@ def protobuf_to_checkpoint_conversion(pb_model, ckpt_dir):
             vars_dict["global_step"] = tf.get_variable(
                 "global_step",
                 shape=shape,
-                dtype=tf.int32,
+                dtype=tf.int64,
                 initializer=tf.zeros_initializer()
             )
 

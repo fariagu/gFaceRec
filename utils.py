@@ -38,7 +38,7 @@ training_session    = read_training_session()
 base_learning_rate  = 0.01
 dropout_rate        = 0.75
 num_classes         = 100       # full dataset: 10177
-batch_size          = 64        # 1024 for vectors, 64 for images
+batch_size          = 32        # 64 for images (gcloud)
 num_epochs          = 200
 cp_period           = num_epochs / 10        # save model every <cp_period> epochs
 
@@ -70,8 +70,10 @@ FACENET = "Facenet"
 MOBILENET = "Mobilenet"
 VGGFACE = "VggFace"
 
-AUGMENTATION = False
-CROPPED = True
+AUGMENTATION    = True
+CROPPED         = True
+
+SAVE_TO_DIR     = True
 
 # [0, 100] for when cropping the dataset
 margin_percentage = 25
@@ -132,6 +134,7 @@ train_dir = split_dir + "train/"
 val_dir = split_dir + "val/"
 test_dir = split_dir + "test/"
 train_dir_aug = split_dir + "train_aug/"
+created_aug_imgs = raw_dir + "new_aug_imgs/"
 
 # extracted info dirs
 identity_cache_dir = cache_dir + "identity_dict.pkl"

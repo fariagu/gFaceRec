@@ -23,7 +23,7 @@ def load_face_detector():
     return model
 
 def load_vgg_face():
-    vgg_model = VGGFace(model="resnet50", include_top=False, input_shape=(224, 224, 3), pooling='avg')
+    vgg_model = VGGFace(model="vgg16", include_top=False, input_shape=(224, 224, 3), pooling='avg')
     vgg_model.trainable = False
     # vgg_model.summary()
     # last_layer = vgg_model.get_layer('avg_pool').output

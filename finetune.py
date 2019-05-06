@@ -10,7 +10,7 @@ from generator import Generator
 from load_local_model import load_local_model
 import utils
 
-def finetune():
+def finetune(epochs):
     train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
     train_batch_generator = Generator(train_images, train_labels, utils.batch_size)
     val_batch_generator = Generator(val_images, val_labels, utils.batch_size)
@@ -32,7 +32,7 @@ def finetune():
 
     model.fit_generator(
         generator=train_batch_generator,
-        epochs=utils.num_epochs,
+        epochs=epochs,
         callbacks=[cp_callback, tensorboard],
         verbose=1,
         validation_data=val_batch_generator,
@@ -40,4 +40,4 @@ def finetune():
         workers=utils.n_workers,
     )
     
-finetune()
+# finetune(utils.num_epochs)

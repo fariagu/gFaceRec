@@ -6,14 +6,14 @@ import tensorflow as tf
 import keras
 from keras.models import load_model
 
-from keras.applications.inception_v3 import InceptionV3
+from keras_applications.inception_v3 import InceptionV3
 
 from model import create_model
 from load_celeba import load_image_filenames_and_labels
 from generator import Generator
 import utils
 
-def main():
+def train(epochs):
 
     train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
     
@@ -36,7 +36,7 @@ def main():
 
     model.fit_generator(
         generator=train_batch_generator,
-        epochs=utils.num_epochs,
+        epochs=epochs,
         callbacks=[cp_callback, tensorboard],
         verbose=1,
         validation_data=val_batch_generator,
@@ -45,7 +45,7 @@ def main():
     )
 
     
-# main()
+# train(utils.num_epochs)
 
 # base_model = load_model("facenet/model.h5")
 # base_model.layers.pop()

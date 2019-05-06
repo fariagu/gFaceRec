@@ -1,11 +1,15 @@
 from __future__ import absolute_import, division, print_function
 
-from skimage.io import imread
+import os
+
+from skimage.io import imread, imsave
 from skimage.transform import resize
 import numpy as np
+import scipy.misc
 import cv2
 
 import random as rand
+import time
 
 import keras
 from keras.preprocessing.image import ImageDataGenerator
@@ -24,9 +28,6 @@ def get_transform():
     x_patch = rand.randint(0, range_patch)
     y_patch = rand.randint(0, range_patch)
 
-
-    # meter aqui noise 
-
     transform = {
         "theta": theta,
         "tx": tx,
@@ -41,7 +42,19 @@ def get_patched_image(img):
     x_patch = rand.randint(0, utils.image_width - range_patch)
     y_patch = rand.randint(0, utils.image_width - range_patch)
 
-    return cv2.rectangle(img, (x_patch, y_patch), (x_patch + range_patch, y_patch + range_patch), (240, 234, 214), -1)
+    return cv2.rectangle(
+        img,
+        (x_patch, y_patch),
+        (x_patch + range_patch, y_patch + range_patch),
+        (0.9412, 0.9176, 0.8392),    #   (240, 234, 214)
+        -1
+    )
+
+def get_timestamp():
+    timestamp = str(time.time())
+    timestamp = timestamp.split(".")[0] + timestamp.split(".")[1] + "_"
+
+    return timestamp
 
 class Generator(keras.utils.Sequence):
 
@@ -81,7 +94,16 @@ class Generator(keras.utils.Sequence):
                 np.transpose(img, (2, 0, 1))
 
             image_array.append(img)
-            x = img.shape
-            pass
+            
+            if utils.SAVE_TO_DIR:
+                path = utils.created_aug_imgs
+                if not os.path.exists(path):
+                    os.mkdir(path)
+                
+                file_name = file_name.split("/")[-1]
+                x = path + get_timestamp() + file_name
+                # scipy.misc.toimage(img, cmin=0.0, cmax=...).save(x)
+                imsave(x, img)
+                pass
         
         return np.array(image_array), np.array(label_batch)

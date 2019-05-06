@@ -249,7 +249,7 @@ def load_vectors():
 
     if os.path.exists(utils.vector_dir):
         for vector in os.listdir(utils.vector_dir):
-            index = vector.split(".")[0] + ".jpg"
+            index = vector.split("_")[-1].split(".")[0] + ".jpg" if utils.AUGMENTATION else vector.split(".")[0]
             if identity_dict[index] < utils.num_classes:
                 vector_paths.append(utils.vector_dir + vector)
                 labels.append(identity_dict[index])

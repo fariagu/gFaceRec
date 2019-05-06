@@ -14,6 +14,10 @@ from vector_generator import VectorGenerator
 import utils
 
 def svm():
+    print("#############################")
+    print("#############################")
+    print(utils.vector_dir)
+
     vector_paths, labels = load_vectors()
     train_split_index = int(len(labels)*0.8)
     

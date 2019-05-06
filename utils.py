@@ -140,9 +140,12 @@ created_aug_imgs = raw_dir + "new_aug_imgs/"
 identity_cache_dir = cache_dir + "identity_dict.pkl"
 vector_dir = cache_dir + model_in_use + "_vectors"
 
-vector_dir = vector_dir + "_crop_" + str(margin_percentage) + "/" if CROPPED else vector_dir + "/"
-pass
+if AUGMENTATION:
+    vector_dir = vector_dir + "_crop_" + str(margin_percentage) + "_aug" + "/" if CROPPED else vector_dir + "_aug" + "/"
+else:
+    vector_dir = vector_dir + "_crop_" + str(margin_percentage) + "/" if CROPPED else vector_dir + "/"
 
+pass
 # initialize necessary directories
 if not os.path.exists(log_dir):
     os.makedirs(log_dir)

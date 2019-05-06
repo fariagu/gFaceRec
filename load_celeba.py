@@ -159,9 +159,11 @@ def load_vectors_into_disk():
     # labels = list(trim_iden_dict.values())
 
     files_that_exist = []
-    # for file in os.listdir("C:/datasets/CelebA/img_crop"):
-    for file in os.listdir(utils.images_dir):
-        files_that_exist.append(file)
+    final_dict = {}
+    for file in os.listdir(raw_dir + "img_crop_25_aug_times_5/"):
+    # for file in os.listdir(utils.images_dir):
+        files_that_exist.append(file.split("_")[-1])
+        final_dict[file] = -1
 
     for file in list(identity_dict.keys()):
         if file not in files_that_exist:
@@ -169,8 +171,14 @@ def load_vectors_into_disk():
 
     print(len(identity_dict))
 
-    file_names = list(identity_dict.keys())
-    labels = list(identity_dict.values())
+    
+    for file in list(final_dict.keys()):
+        if file.split("_")[-1] in identity_dict.keys():
+            final_dict[file] = identity_dict[file.split("_")[-1]]
+            pass
+
+    file_names = list(final_dict.keys())
+    labels = list(final_dict.values())
 
     paths = prepend_string_to_array(utils.images_dir, file_names)
     full_generator = Generator(paths, labels, utils.batch_size)
@@ -369,4 +377,4 @@ def load_test_data():
     
     return load_test_data_from_txt()
 
-# load_vectors_into_disk()
+load_vectors_into_disk()

@@ -36,7 +36,7 @@ env_windows = True if platform.system() == "Windows" else False
 
 training_session    = read_training_session()
 base_learning_rate  = 0.001
-dropout_rate        = 0.75
+dropout_rate        = 0.5
 num_classes         = 100       # full dataset: 10177
 batch_size          = 32        # 64 for images (gcloud)
 num_epochs          = 200

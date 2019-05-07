@@ -22,7 +22,7 @@ from generator import Generator
 from load_local_model import load_local_model, load_facenet_fv, load_face_detector
 
 test_images, test_labels = load_test_data()
-test_batch_generator = Generator(test_images, test_labels, utils.batch_size)
+test_batch_generator = Generator(test_images, test_labels, utils.batch_size, save_to_dir=False)
 
 # model = load_facenet_fv()
 model = load_face_detector()

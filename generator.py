@@ -58,9 +58,10 @@ def get_timestamp():
 
 class Generator(keras.utils.Sequence):
 
-    def __init__(self, image_filenames, labels, batch_size):
+    def __init__(self, image_filenames, labels, batch_size, save_to_dir=False):
         self.images, self.labels = image_filenames, labels
         self.batch_size = batch_size
+        self.save_to_dir = save_to_dir
 
     def __len__(self):
         return int(np.ceil(len(self.labels) / float(self.batch_size)))
@@ -95,14 +96,13 @@ class Generator(keras.utils.Sequence):
 
             image_array.append(img)
             
-            if utils.SAVE_TO_DIR:
+            if save_to_dir:
                 path = utils.created_aug_imgs
                 if not os.path.exists(path):
                     os.mkdir(path)
                 
                 file_name = file_name.split("/")[-1]
                 x = path + get_timestamp() + file_name
-                # scipy.misc.toimage(img, cmin=0.0, cmax=...).save(x)
                 imsave(x, img)
                 pass
         

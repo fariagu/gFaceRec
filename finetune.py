@@ -38,7 +38,7 @@ def finetune(epochs):
         period=utils.cp_period
     )
 
-    model.save_weights(utils.checkpoint_path.format(epoch=0))
+    # model.save_weights(utils.checkpoint_path.format(epoch=0))
 
     model.fit_generator(
         generator=train_batch_generator,

@@ -78,6 +78,8 @@ SAVE_TO_DIR     = True
 # [0, 100] for when cropping the dataset
 margin_percentage = 25
 
+AUG_MULT = 15
+
 # FACENET || MOBILENET || VGGFACE
 model_in_use = VGGFACE
 image_width = 224
@@ -120,7 +122,8 @@ else:
 ## OS independent
 images_dir = raw_dir + "img_align_celeba/"
 og_images_dir = images_dir
-crop_dir = raw_dir + "img_crop/" if margin_percentage == 0 else raw_dir + "img_crop_" + str(margin_percentage) + "/"
+crop_str = "img_crop" if margin_percentage == 0 else "img_crop_" + str(margin_percentage)
+crop_dir = raw_dir + crop_str + "/"
 labels_path = raw_dir + "identity_CelebA.txt"
 partition_path = raw_dir + "list_eval_partition.txt"
 cache_partition_path = cache_dir + "train_val_test.pkl"
@@ -134,7 +137,7 @@ train_dir = split_dir + "train/"
 val_dir = split_dir + "val/"
 test_dir = split_dir + "test/"
 train_dir_aug = split_dir + "train_aug/"
-created_aug_imgs = raw_dir + "new_aug_imgs/"
+created_aug_imgs = raw_dir + crop_str + "_aug_" + str(AUG_MULT) + "/"
 
 # extracted info dirs
 identity_cache_dir = cache_dir + "identity_dict.pkl"

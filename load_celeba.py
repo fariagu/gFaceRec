@@ -144,7 +144,7 @@ def prepend_string_to_array(string, array):
     
     return res
 
-def load_vectors_into_disk():
+def load_vectors_into_disk(from_dir=utils.raw_dir + "placeholder_dir"):
     identity_dict = filenames_and_labels()
 
     print("####################")
@@ -160,7 +160,7 @@ def load_vectors_into_disk():
 
     files_that_exist = []
     final_dict = {}
-    for file in os.listdir(utils.raw_dir + "img_crop_25_aug_times_20/"):
+    for file in os.listdir(from_dir):
     # for file in os.listdir(utils.images_dir):
         files_that_exist.append(file.split("_")[-1])
         final_dict[file] = -1
@@ -181,7 +181,7 @@ def load_vectors_into_disk():
     labels = list(final_dict.values())
 
     # paths = prepend_string_to_array(utils.images_dir, file_names)
-    paths = prepend_string_to_array(utils.raw_dir + "img_crop_25_aug_times_20/", file_names)
+    paths = prepend_string_to_array(from_dir, file_names)
     full_generator = Generator(paths, labels, utils.batch_size, save_to_dir=False)
 
     model = load_facenet_fv() if utils.model_in_use == utils.FACENET else load_vgg_face_fv()
@@ -378,4 +378,4 @@ def load_test_data():
     
     return load_test_data_from_txt()
 
-load_vectors_into_disk()
+# load_vectors_into_disk()

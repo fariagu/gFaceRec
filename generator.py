@@ -32,6 +32,7 @@ def get_transform():
         "theta": theta,
         "tx": tx,
         "ty": ty,
+        "sheer": theta,
         "flip_horizontal": True if flip == 0 else False
     }
 
@@ -80,10 +81,10 @@ class Generator(keras.utils.Sequence):
             )
 
             if utils.AUGMENTATION:
-                # 25% chance of shift, rotate or flip
-                # 25% chance of patch
-                # 50% chance of no augmentation
-                seed = rand.randint(0, 3)
+                # 33% chance of shift, rotate, flip or sheer
+                # 33% chance of patch
+                # 33% chance of no augmentation
+                seed = rand.randint(0, 2)
 
                 if seed == 0:
                     img = im_gen.apply_transform(img, get_transform())
@@ -96,7 +97,7 @@ class Generator(keras.utils.Sequence):
 
             image_array.append(img)
             
-            if save_to_dir:
+            if self.save_to_dir:
                 path = utils.created_aug_imgs
                 if not os.path.exists(path):
                     os.mkdir(path)

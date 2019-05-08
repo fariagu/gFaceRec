@@ -102,6 +102,11 @@ def import_celeba_from_base_folder(images_path, output_dir, labels_dict):
         copyfile(images_path + file, sub_dir + file)
 
 def batch_detect_and_crop(src_dir):
+    """ Crops pictures into different margins around the detected face (yes, also detects faces)
+    
+    Arguments:
+        src_dir {string} -- location for the no_crop folder (slash terminated)
+    """
 
     folders = src_dir.split("/")
     foldersmenosum = folders[:-2]

@@ -120,11 +120,14 @@ def batch_detect_and_crop(src_dir):
         if not os.path.exists(dst_dir):
             os.mkdir(dst_dir)
 
-        p = Pool(2)
-        func = partial(detect_and_crop, src_dir, dst_dir, percentage)
-        p.map(func, images)
-        p.close()
-        p.join()
+        # p = Pool(2)
+        # func = partial(detect_and_crop, src_dir=src_dir, dst_dir=dst_dir, percentage=percentage)
+        # p.map(func, images)
+        # p.close()
+        # p.join()
+
+        for image in images:
+            detect_and_crop(src_dir, dst_dir, percentage, image)
 
 ##############################################################
 ##############################################################

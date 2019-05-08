@@ -8,7 +8,6 @@ from functools import partial
 import numpy as np
 import pickle
 
-import utils
 from detect_and_crop import detect_and_crop
 
 CELEBA_NUM_IDENTITIES = 10177
@@ -125,35 +124,39 @@ def batch_detect_and_crop(src_dir):
         if not os.path.exists(dst_dir):
             os.mkdir(dst_dir)
 
-        # p = Pool(2)
-        # func = partial(detect_and_crop, src_dir=src_dir, dst_dir=dst_dir, percentage=percentage)
-        # p.map(func, images)
-        # p.close()
-        # p.join()
+        p = Pool(8)
+        func = partial(detect_and_crop, src_dir=src_dir, dst_dir=dst_dir, percentage=percentage)
+        p.map(func, images)
+        p.close()
+        p.join()
 
-        for image in images:
-            detect_and_crop(src_dir, dst_dir, percentage, image)
+        # for image in images:
+        #     detect_and_crop(src_dir, dst_dir, percentage, image)
 
 ##############################################################
 ##############################################################
 
-num_classes = 1000
-base_dir = "C:/datasets/CelebA/test/"
-cropped_dir = "C:/datasets/CelebA/test_output_dir/no_crop/"
+def main():
+    num_classes = 1000
+    base_dir = "C:/datasets/CelebA/test/"
+    cropped_dir = "C:/datasets/CelebA/test_output_dir/no_crop/"
 
-structured_dir = "C:/datasets/CelebA/test_structured_dir/"
+    structured_dir = "C:/datasets/CelebA/test_structured_dir/"
 
-labels_dict = identity_dict("C:/datasets/CelebA/identity_CelebA.txt")
+    labels_dict = identity_dict("C:/datasets/CelebA/identity_CelebA.txt")
 
-# # faz isto para ter so 1000 classes no maximo
-# crop_celeba_identities(base_dir, labels_dict, cropped_dir, num_classes)
+    # # faz isto para ter so 1000 classes no maximo
+    # crop_celeba_identities(base_dir, labels_dict, cropped_dir, num_classes)
 
-# # depois falta fazer crops as fotos (margin: 0, 5, 10, 15, 20, 25, 30)
-batch_detect_and_crop(cropped_dir)
+    # # depois falta fazer crops as fotos (margin: 0, 5, 10, 15, 20, 25, 30)
+    batch_detect_and_crop(cropped_dir)
 
-# e depois falta dividir em train/val (90/10)
+    # e depois falta dividir em train/val (90/10)
 
-# e depois gerar augs
+    # e depois gerar augs
 
-# # e so depois dividir em subpastas (uma pasta por iden)
-# import_celeba_from_base_folder(cropped_dir, structured_dir, labels_dict)
+    # # e so depois dividir em subpastas (uma pasta por iden)
+    # import_celeba_from_base_folder(cropped_dir, structured_dir, labels_dict)
+
+if __name__ == "__main__":
+    main()

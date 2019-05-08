@@ -5,9 +5,7 @@
 # import openface
 import cv2
 
-# import utils
-
-def detect_and_crop(src_dir, dst_dir, percentage, file_name):
+def detect_and_crop(file_name, src_dir, dst_dir, percentage):
 	# testing on windows
 	file_path = src_dir + file_name
 	image = cv2.imread(file_path)

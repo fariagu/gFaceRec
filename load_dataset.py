@@ -2,11 +2,14 @@ from __future__ import absolute_import, division, print_function
 
 import os
 from shutil import copyfile
+from multiprocessing import Pool
+from functools import partial
 
 import numpy as np
 import pickle
 
 import utils
+from detect_and_crop import detect_and_crop
 
 CELEBA_NUM_IDENTITIES = 10177
 
@@ -98,10 +101,35 @@ def import_celeba_from_base_folder(images_path, output_dir, labels_dict):
         
         copyfile(images_path + file, sub_dir + file)
 
+def batch_detect_and_crop(src_dir):
+
+    folders = src_dir.split("/")
+    foldersmenosum = folders[:-2]
+    parent_dir = ""
+    for folder in foldersmenosum:
+        parent_dir += folder + "/"
+
+    images = os.listdir(src_dir)
+
+    crop_pctgs = [0, 5, 10, 15, 20, 25, 30]
+
+    for percentage in crop_pctgs:
+        
+        dst_dir = parent_dir + "crop_{pctg:02d}/".format(pctg=percentage)
+
+        if not os.path.exists(dst_dir):
+            os.mkdir(dst_dir)
+
+        p = Pool(2)
+        func = partial(detect_and_crop, src_dir, dst_dir, percentage)
+        p.map(func, images)
+        p.close()
+        p.join()
 
 ##############################################################
 ##############################################################
 
+num_classes = 1000
 base_dir = "C:/datasets/CelebA/test/"
 cropped_dir = "C:/datasets/CelebA/test_output_dir/no_crop/"
 
@@ -109,14 +137,15 @@ structured_dir = "C:/datasets/CelebA/test_structured_dir/"
 
 labels_dict = identity_dict("C:/datasets/CelebA/identity_CelebA.txt")
 
-# faz isto para ter so 1000 classes no maximo
-# crop_celeba_identities(base_dir, labels_dict, cropped_dir, 1000)
+# # faz isto para ter so 1000 classes no maximo
+# crop_celeba_identities(base_dir, labels_dict, cropped_dir, num_classes)
 
-# depois falta fazer crops as fotos (margin: 0, 5, 10, 15, 20, 25, 30)
+# # depois falta fazer crops as fotos (margin: 0, 5, 10, 15, 20, 25, 30)
+batch_detect_and_crop(cropped_dir)
 
 # e depois falta dividir em train/val (90/10)
 
 # e depois gerar augs
 
-# e so depois dividir em subpastas (uma pasta por iden)
-import_celeba_from_base_folder(cropped_dir, structured_dir, labels_dict)
+# # e so depois dividir em subpastas (uma pasta por iden)
+# import_celeba_from_base_folder(cropped_dir, structured_dir, labels_dict)

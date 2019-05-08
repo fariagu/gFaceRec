@@ -18,7 +18,7 @@ from model import facenet_svm, vgg_svm
 vgg_layer = load_vgg_face_fv()
 
 prediction_layer = vgg_svm()
-prediction_layer.load_weights("/home/gustavoduartefaria/gFaceRec/training/training_0473/cp-0100.hdf5")
+prediction_layer.load_weights("/home/gustavoduartefaria/gFaceRec/training/training_0481/cp-0200.hdf5")
 
 model = keras.Sequential([
     vgg_layer,
@@ -35,4 +35,4 @@ model.compile(
 
 model.summary()
 
-model.save('/home/gustavoduartefaria/stacked_model-98.hdf5')
+model.save('/home/gustavoduartefaria/stacked_model_sheer.hdf5')

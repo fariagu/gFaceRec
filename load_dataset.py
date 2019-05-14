@@ -327,8 +327,10 @@ def main():
     num_classes = 500 # temp on windows (should be 500)
     aug_mult = 10
     val_percentage = 10
-    base_dir = "C:/datasets/CelebA/img_align_celeba/"
-    filtered_dir = "C:/datasets/CelebA/filter_{}_classes/".format(num_classes)
+    root_dir = "C:/" if platform.system() == "Windows" else "/home/gustavoduartefaria/"
+    dataset_dir = "{}datasets/CelebA/".format(root_dir)
+    base_dir = "{}img_align_celeba/".format(dataset_dir)
+    filtered_dir = "{}filter_{}_classes/".format(dataset_dir, num_classes)
 
     if not os.path.exists(filtered_dir):
         os.mkdir(filtered_dir)
@@ -341,9 +343,9 @@ def main():
         cropped_dirs.append("{}crop_{pctg:02d}/".format(filtered_dir, pctg=pctg))
 
     
-    structured_dir = "C:/datasets/CelebA/test_structured_dir/"
+    structured_dir = "{}test_structured_dir/".format(dataset_dir)
 
-    labels_dict = identity_dict("C:/datasets/CelebA/identity_CelebA.txt")
+    labels_dict = identity_dict("{}identity_CelebA.txt".format(dataset_dir))
 
     # faz isto para ter so 1000 classes no maximo
     filter_celeba_identities(base_dir, labels_dict, cropped_dirs[0], num_classes)

@@ -59,10 +59,11 @@ def get_timestamp():
 
 class Generator(keras.utils.Sequence):
 
-    def __init__(self, image_filenames, labels, batch_size, save_to_dir=False):
+    def __init__(self, image_filenames, labels, batch_size, save_to_dir=False, mode=NO_AUG):
         self.images, self.labels = image_filenames, labels
         self.batch_size = batch_size
         self.save_to_dir = save_to_dir
+        self.mode = mode
 
     def __len__(self):
         return int(np.ceil(len(self.labels) / float(self.batch_size)))
@@ -80,17 +81,10 @@ class Generator(keras.utils.Sequence):
                 (utils.image_width, utils.image_width)
             )
 
-            if utils.AUGMENTATION:
-                # 33% chance of shift, rotate, flip or sheer
-                # 33% chance of patch
-                # 33% chance of no augmentation
-                seed = rand.randint(0, 2)
-
-                if seed == 0:
-                    img = im_gen.apply_transform(img, get_transform())
-                elif seed == 1:
-                    img = get_patched_image(img)
-                # else: do nothing
+            if self.mode == TRANSFORM:
+                img = im_gen.apply_transform(img, get_transform())
+            elif self.mode = FACE_PATCH:
+                img = get_patched_image(img)
             
             if utils.model_in_use == utils.VGGFACE:
                 np.transpose(img, (2, 0, 1))

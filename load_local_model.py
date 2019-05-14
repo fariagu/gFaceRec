@@ -124,10 +124,10 @@ def load_mobilenet_model():
 
     return model
 
-def load_local_model():
-    if utils.model_in_use == utils.FACENET:
+def load_local_model(model):
+    if model == utils.FACENET:
         return load_facenet_model()
-    elif utils.model_in_use == utils.VGGFACE:
+    elif model == utils.VGGFACE:
         return load_vgg_face()
     else:
         return load_mobilenet_model()

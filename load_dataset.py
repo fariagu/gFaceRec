@@ -344,8 +344,11 @@ def main():
     for pctg in crop_pctgs:
         cropped_dirs.append("{}crop_{pctg:02d}/".format(filtered_dir, pctg=pctg))
 
+    for dir in cropped_dirs:
+        if nos os.path.exists(dir):
+            os.mkdir(dir)
     
-    structured_dir = "{}test_structured_dir/".format(dataset_dir)
+    # structured_dir = "{}test_structured_dir/".format(dataset_dir)
 
     labels_dict = identity_dict("{}identity_CelebA.txt".format(dataset_dir))
 

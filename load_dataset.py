@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
 import os
-import platform
 
 from shutil import copyfile
 from multiprocessing import Pool
@@ -11,6 +10,7 @@ from random import shuffle
 import numpy as np
 import pickle
 
+from new_utils import Consts, Dirs
 from generate_augmented_data import augment_image
 from detect_and_crop import detect_and_crop
 
@@ -337,43 +337,28 @@ def generate_augmentation(filtered_dir, aug_mult):
 ##############################################################
 
 def main():
-    num_classes = 500 # temp on windows (should be 500)
-    aug_mult = 10
-    val_percentage = 10
-    root_dir = "C:/" if platform.system() == "Windows" else "/home/gustavoduartefaria/"
-    dataset_dir = "{}datasets/CelebA/".format(root_dir)
-    base_dir = "{}img_celeba/".format(dataset_dir)
-    filtered_dir = "{}filter_{}_classes/".format(dataset_dir, num_classes)
+    filtered_dir = Dirs.get_raw_filter_dir()
 
     if not os.path.exists(filtered_dir):
         os.mkdir(filtered_dir)
     
-    crop_pctgs = [0, 5, 10, 15, 20, 25, 30]
-    cropped_dirs = [
-        "{}no_crop/".format(filtered_dir),
-    ]
-    for pctg in crop_pctgs:
-        cropped_dirs.append("{}crop_{pctg:02d}/".format(filtered_dir, pctg=pctg))
+    cropped_dirs = []
+    for pctg in Consts.CROP_PCTGS:
+        cropped_dirs.append(getCrop)
 
-    # for dir in cropped_dirs:
-    #     if not os.path.exists(dir):
-    #         os.mkdir(dir)
-    
-    # structured_dir = "{}test_structured_dir/".format(dataset_dir)
+    labels_dict = identity_dict("{}identity_CelebA.txt".format(Dirs.DATASET_DIR))
 
-    labels_dict = identity_dict("{}identity_CelebA.txt".format(dataset_dir))
+    # faz isto para ter so 500 classes no maximo
+    filter_celeba_identities(Dirs.ORIGINAL_DIR, labels_dict, cropped_dirs[0], Consts.NUM_CLASSES)
 
-    # faz isto para ter so 1000 classes no maximo
-    filter_celeba_identities(base_dir, labels_dict, cropped_dirs[0], num_classes)
-
-    labels_dict = filter_identity_dict(labels_dict, num_classes)
+    labels_dict = filter_identity_dict(labels_dict, Consts.NUM_CLASSES)
 
     # depois falta fazer crops as fotos (margin: 0, 5, 10, 15, 20, 25, 30)
     batch_detect_and_crop(cropped_dirs)
     
     for dir in cropped_dirs:
         # e depois falta dividir em train/val (90/10)
-        train_val_split(dir, 10, labels_dict)
+        train_val_split(dir, Consts.VAL_PERCENTAGE, labels_dict)
 
         # e so depois dividir em subpastas (uma pasta por iden)
         sub_dirs = [
@@ -384,7 +369,7 @@ def main():
         for sub_dir in sub_dirs:
             organize_folder(sub_dir, labels_dict)
     
-    generate_augmentation(filtered_dir, aug_mult)
+    generate_augmentation(filtered_dir, Consts.AUG_MULT)
 
 if __name__ == "__main__":
     # load_image_filenames_and_labels(

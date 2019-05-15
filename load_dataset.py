@@ -324,12 +324,12 @@ def generate_augmentation(filtered_dir, aug_mult):
 ##############################################################
 
 def main():
-    num_classes = 500 # temp on windows (should be 500)
+    num_classes = 3 # temp on windows (should be 500)
     aug_mult = 10
     val_percentage = 10
     root_dir = "C:/" if platform.system() == "Windows" else "/home/gustavoduartefaria/"
     dataset_dir = "{}datasets/CelebA/".format(root_dir)
-    base_dir = "{}img_align_celeba/".format(dataset_dir)
+    base_dir = "{}img_celeba/".format(dataset_dir)
     filtered_dir = "{}filter_{}_classes/".format(dataset_dir, num_classes)
 
     if not os.path.exists(filtered_dir):

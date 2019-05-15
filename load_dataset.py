@@ -1,6 +1,8 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+import platform
+
 from shutil import copyfile
 from multiprocessing import Pool
 from functools import partial

@@ -24,20 +24,31 @@ def generate_cache_tree(root_dir, num_classes=Consts.NUM_CLASSES):
             if not os.path.exists(crop_dir):
                 os.mkdir(crop_dir)
 
-            splits = ["train", "val"]
-            for split in splits:
+            for split in Consts.SPLITS:
                 split_dir = "{}{}/".format(crop_dir, split)
                 if not os.path.exists(split_dir):
                     os.mkdir(split_dir)
                 
-                versions = ["original", "transform", "face_patch"]
-                for version in versions:
+                for version in Consts.VERSIONS:
                     version_dir = "{}{}/".format(split_dir, version)
                     if not os.path.exists(version_dir):
                         os.mkdir(version_dir)
 
 def main():
-    generate_cache_tree(Dirs.DATASET_CACHE_DIR)
+    # generate_cache_tree(Dirs.DATASET_CACHE_DIR)
+    # final_dir = Dirs.getVectorModelCropSplitVersionDir(
+    #     model=Consts.VGG16,
+    #     crop_pctg=0,
+    #     split=Consts.TRAIN,
+    #     version=Consts.ORIGINAL
+    # )
+    final_dir = Dirs.getImageCropSplitVersionDir(
+        crop_pctg=0,
+        split=Consts.TRAIN,
+        version=Consts.ORIGINAL
+    )
+
+    print(final_dir)
 
 if __name__ == "__main__":
     main()

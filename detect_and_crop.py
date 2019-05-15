@@ -1,8 +1,8 @@
 # CREDIT: https://github.com/ageitgey/
 
-# import sys
-# import dlib
-# import openface
+import sys
+import dlib
+import openface
 import cv2
 
 def detect_and_crop(file_name, src_dir, dst_dir, percentage):
@@ -33,6 +33,10 @@ def detect_and_crop(file_name, src_dir, dst_dir, percentage):
 
 	# print("Found {} faces in the image file {}".format(len(detected_faces), file_path))
 
+	biggest_face_area = 0
+
+	final_top, final_bottom, final_left, final_right = -1, -1, -1, -1
+
 	# Loop through each face we found in the image
 	for i, face_rect in enumerate(detected_faces):
 
@@ -51,4 +55,11 @@ def detect_and_crop(file_name, src_dir, dst_dir, percentage):
 		right = int(face_rect.right() + margin_x) if face_rect.right() + margin_x <= width else width
 		bottom = int(face_rect.bottom() + margin_y) if face_rect.bottom() + margin_y <= height else height
 
-		cv2.imwrite(dst_dir + file_name, image[top:bottom, left:right])
+		face_area = (right - left) * (bottom - top)
+
+		if face_area > biggest_face_area:
+			biggest_face_area = face_area
+			final_top, final_bottom, final_left, final_right = top, bottom, left, right
+
+	if biggest_face_area > 0:
+		cv2.imwrite(dst_dir + file_name, image[final_top:final_bottom, final_left:final_right])

@@ -94,7 +94,7 @@ def filter_celeba_identities(images_path, labels_dict, output_dir, num_identitie
     """
 
     if not os.path.exists(images_path):
-        print("USER ERROR: invalid images_path value.")
+        print("USER ERROR: invalid images_path value: {}".format(images_path))
         return
 
     if os.path.exists(output_dir):
@@ -298,10 +298,21 @@ def load_image_filenames_and_labels(filtered_dir, crop_percentage, original_trai
     return train_filenames, train_labels, val_filenames, val_labels
 
 def generate_augmentation(filtered_dir, aug_mult):
+    """ Traverses through the now structured directory of face pictures and generates augmented copies of every one
+    
+    Arguments:
+        filtered_dir {string} -- base directory of organized face pictures
+        aug_mult {integer} -- number of times each face pic will be augmented
+    """
+
+    print("NOW GENERATING AUGMENTED EXAMPLES...")
+
     TRANSFORM   = 0
     FACE_PATCH  = 1
     
     for dir in os.listdir(filtered_dir):
+        print("AUGMENTING {}".format(dir))
+
         source_dirs = [
             "{}{}/train/original/".format(filtered_dir, dir),
             "{}{}/val/original/".format(filtered_dir, dir)
@@ -326,7 +337,7 @@ def generate_augmentation(filtered_dir, aug_mult):
 ##############################################################
 
 def main():
-    num_classes = 3 # temp on windows (should be 500)
+    num_classes = 500 # temp on windows (should be 500)
     aug_mult = 10
     val_percentage = 10
     root_dir = "C:/" if platform.system() == "Windows" else "/home/gustavoduartefaria/"
@@ -344,9 +355,9 @@ def main():
     for pctg in crop_pctgs:
         cropped_dirs.append("{}crop_{pctg:02d}/".format(filtered_dir, pctg=pctg))
 
-    for dir in cropped_dirs:
-        if nos os.path.exists(dir):
-            os.mkdir(dir)
+    # for dir in cropped_dirs:
+    #     if not os.path.exists(dir):
+    #         os.mkdir(dir)
     
     # structured_dir = "{}test_structured_dir/".format(dataset_dir)
 

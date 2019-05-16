@@ -121,7 +121,9 @@ def main():
             for split in Consts.SPLITS:
                 # for version in Consts.VERSIONS:
                     # generateVectors(model, crop_pctg, split, version)
-                generateVectors(model, crop_pctg, split, Consts.VERSIONS[0]) # enquanto so estou no windows
+                version = Consts.VERSIONS[0] # enquanto so estou no windows
+                print("GENERATING VECTORS FOR {} crop_{p:02d} {} {}".format(model, p=crop_pctg, split, version))
+                generateVectors(model, crop_pctg, split, version)
                     
 
     # generateVectors(

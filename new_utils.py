@@ -10,6 +10,10 @@ class Consts:
     NUM_CLASSES = 500
     AUG_MULT = 10
     VAL_PERCENTAGE = 10
+    DROPOUT_RATE = 0.5
+    BASE_LEARNING_RATE = 0.001
+    BATCH_SIZE = 32
+    N_WORKERS = 1 if Flags.ENV_WINDOWS else 22
     INCEPTIONV3 = "InceptionV3"
     VGG16 = "VGG16"
     RESNET50 = "Resnet50"
@@ -24,30 +28,34 @@ class Consts:
     FACE_PATCH = "face_patch"
     VERSIONS = [ORIGINAL, TRANSFORM, FACE_PATCH]
 
+    def getImageSize(model):
+        if model not in Consts.MODELS:
+            print("WRONG ARGS: Invalid model.")
+            return
+        
+        if model == Consts.INCEPTIONV3:
+            return (160, 160)
+        else:
+            return (224, 224)
+
 class Dirs:
     ROOT_DIR = "C:/" if Flags.ENV_WINDOWS else "/home/gustavoduartefaria/"
     DATASET_DIR = "{}datasets/CelebA/".format(ROOT_DIR)
     ORIGINAL_DIR = "{}img_celeba/".format(DATASET_DIR)
+    STRUCTURED_DIR = "{}structured_dir/".format(DATASET_DIR)
     DATASET_CACHE_DIR = "{}dataset_cache/CelebA/".format(ROOT_DIR)
+    VECTORS_DIR = "{}vectors/".format(DATASET_CACHE_DIR)
 
     @staticmethod
-    def get_raw_filter_dir(num_classes=Consts.NUM_CLASSES):
-        return "{}filter_{}_classes/".format(Dirs.DATASET_DIR, num_classes)
-
-    @staticmethod
-    def get_vectors_dir(num_classes=Consts.NUM_CLASSES):
-        return "{}vectors_{}/".format(Dirs.DATASET_CACHE_DIR, num_classes)
-
-    @staticmethod
-    def getModelCacheDir(model, num_classes=Consts.NUM_CLASSES):
+    def getModelCacheDir(model):
         if model not in Consts.MODELS:
             print("WRONG ARGS: Invalid model.")
             return
 
-        return "{}{}/".format(Dirs.get_vectors_dir(num_classes), model)
+        return "{}{}/".format(Dirs.VECTORS_DIR, model)
 
     @staticmethod
-    def getCropDir(crop_pctg, cache=True, model=None, num_classes=Consts.NUM_CLASSES):
+    def getCropDir(crop_pctg, cache=True, model=None):
         if cache and model == None:
             print("WRONG ARGS: For cache to be True a model must be specified.")
             return
@@ -56,28 +64,22 @@ class Dirs:
             print("WRONG ARGS: Invalid crop_pctg.")
             return
 
-        base_dir = Dirs.getModelCacheDir(model=model, num_classes=num_classes) if model != None else Dirs.get_raw_filter_dir(num_classes)
+        base_dir = Dirs.getModelCacheDir(model=model) if model != None else Dirs.STRUCTURED_DIR
 
         crop_str = "crop_{pctg:02d}".format(pctg=crop_pctg) if crop_pctg >= 0 else "no_crop"
 
         return "{}{}/".format(base_dir, crop_str)
     
     @staticmethod
-    def getCropDirs(cache=True, model=None, num_classes=Consts.NUM_CLASSES):
+    def getCropDirs(cache=True, model=None):
         crop_dirs = []
         for pctg in Consts.CROP_PCTGS:
-            crop_dirs.append(Dirs.getCropDir(pctg, cache, model, num_classes))
+            crop_dirs.append(Dirs.getCropDir(pctg, cache, model))
         
         return crop_dirs
     
     @staticmethod
-    def getVectorModelCropSplitVersionDir(model, crop_pctg, split, version, num_classes=Consts.NUM_CLASSES):
-        vectors_dir = Dirs.get_vectors_dir(num_classes)
-
-        if not os.path.exists(vectors_dir):
-            print("WRONG ARGS: invalid num_classes")
-            return
-        
+    def getVectorModelCropSplitVersionDir(model, crop_pctg, split, version):
         if model not in Consts.MODELS:
             print("WRONG ARGS: Invalid model")
             return
@@ -94,12 +96,12 @@ class Dirs:
             print("WRONG ARGS: invalid version")
             return
         
-        crop_dir = Dirs.getCropDir(crop_pctg=crop_pctg, model=model, num_classes=num_classes)
+        crop_dir = Dirs.getCropDir(crop_pctg=crop_pctg, model=model)
         
         return "{}{}/{}/".format(crop_dir, split, version)
     
     @staticmethod
-    def getImageCropSplitVersionDir(crop_pctg, split, version, num_classes=Consts.NUM_CLASSES):
+    def getImageCropSplitVersionDir(crop_pctg, split, version):
 
         if crop_pctg not in Consts.CROP_PCTGS:
             print("WRONG ARGS: invalid crop_pctg")
@@ -113,7 +115,7 @@ class Dirs:
             print("WRONG ARGS: invalid version")
             return
         
-        crop_dir = Dirs.getCropDir(crop_pctg=crop_pctg, cache=False, num_classes=num_classes)
+        crop_dir = Dirs.getCropDir(crop_pctg=crop_pctg, cache=False)
         
         return "{}{}/{}/".format(crop_dir, split, version)
 

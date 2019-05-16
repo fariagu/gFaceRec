@@ -337,10 +337,8 @@ def generate_augmentation(filtered_dir, aug_mult):
 ##############################################################
 
 def main():
-    filtered_dir = Dirs.get_raw_filter_dir()
-
-    if not os.path.exists(filtered_dir):
-        os.mkdir(filtered_dir)
+    if not os.path.exists(Dirs.STRUCTURED_DIR):
+        os.mkdir(Dirs.STRUCTURED_DIR)
     
     cropped_dirs = []
     for pctg in Consts.CROP_PCTGS:
@@ -369,7 +367,7 @@ def main():
         for sub_dir in sub_dirs:
             organize_folder(sub_dir, labels_dict)
     
-    generate_augmentation(filtered_dir, Consts.AUG_MULT)
+    generate_augmentation(Dirs.STRUCTURED_DIR, Consts.AUG_MULT)
 
 if __name__ == "__main__":
     # load_image_filenames_and_labels(

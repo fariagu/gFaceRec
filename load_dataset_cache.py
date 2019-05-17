@@ -4,18 +4,15 @@ import os
 from random import shuffle
 import pickle
 
-
 from load_local_model import load_local_fv
 from generator import Generator
 from new_utils import Dirs, Consts, Flags
 
 def generate_cache_tree(root_dir):
-    
-    
     if not os.path.exists(root_dir):
         print("USER ERROR: invalid root_dir value.")
         return
-    
+
     if not os.path.exists(Dirs.VECTORS_DIR):
         os.mkdir(Dirs.VECTORS_DIR)
 
@@ -33,13 +30,13 @@ def generate_cache_tree(root_dir):
                 split_dir = "{}{}/".format(crop_dir, split)
                 if not os.path.exists(split_dir):
                     os.mkdir(split_dir)
-                
+
                 for version in Consts.VERSIONS:
                     version_dir = "{}{}/".format(split_dir, version)
                     if not os.path.exists(version_dir):
                         os.mkdir(version_dir)
 
-def filenames_and_labels(model, crop_pctg, split, version):
+def filenames_and_labels(crop_pctg, split, version):
     input_dir = Dirs.get_image_crop_split_version_dir(
         crop_pctg=crop_pctg,
         split=split,
@@ -53,9 +50,6 @@ def filenames_and_labels(model, crop_pctg, split, version):
         for file in os.listdir(iden_dir):
             file_path = "{}{}".format(iden_dir, file)
             filepaths_and_labels.append((file_path, identity))
-        
-    # shuffle not necessary, this is only fed into a model for prediction, not training
-    # shuffle(filepaths_and_labels)
 
     return zip(*filepaths_and_labels)
 
@@ -82,7 +76,6 @@ def vectors_and_labels(model, crop_pctg, split, version):
 
 def generateVectors(model, crop_pctg, split, version):
     filenames, labels = filenames_and_labels(
-        model=model,
         crop_pctg=crop_pctg,
         split=split,
         version=version
@@ -119,11 +112,13 @@ def generateVectors(model, crop_pctg, split, version):
             pickle.dump(fv, v)
 
 def main():
+    generate_cache_tree(Dirs.ROOT_DIR)
+
     for model in Consts.MODELS[:2]: # porque ainda só tenho dois modelos
         for crop_pctg in Consts.CROP_PCTGS[1:]: #[1:] porque o no_crop merdou
             for split in Consts.SPLITS:
                 for version in Consts.VERSIONS:
-                    print("GENERATING VECTORS FOR {} crop_{02d} {} {}".format(model, crop_pctg, split, version))
+                    print("GENERATING VECTORS FOR {} crop_{pctg:02d} {} {}".format(model, split, version, pctg=crop_pctg))
                     generateVectors(model, crop_pctg, split, version)
                 # version = Consts.VERSIONS[0] # enquanto so estou no windows
                 # print("GENERATING VECTORS FOR {} crop_{02d} {} {}".format(model, crop_pctg, split, version))

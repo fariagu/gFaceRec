@@ -1,13 +1,8 @@
 from __future__ import absolute_import, division, print_function
 
-import numpy as np
-import keras
-from keras import layers
-from keras.models import load_model
-
-from keras.engine import  Model
-from keras.layers import Flatten, Dense, Input
 from keras_vggface.vggface import VGGFace
+import keras
+from keras.models import load_model
 
 # import tensorflow_hub as hub
 from new_utils import Consts
@@ -41,67 +36,41 @@ def load_local_fv(model):
         return None
         # TODO: resnet e senet
 
-# def load_facenet_model():
-#     base_model = load_model("facenet/model.h5")
-#     base_model.load_weights("facenet/weights.h5")
-#     base_model.trainable = False
+def classifier(fv_len, num_classes, dropout_rate, final_layer_activation, optimizer):
+    """Small classifier with a feature vector as input and class scores as output
+    
+    Arguments:
+        fv_len {integer} -- 128 if InceptionV3, 512 otherwise
+        num_classes {integer} -- amount of discrete classes
+        final_layer_activation {keras.activations.*}
+    
+    Keyword Arguments:
+        dropout_rate {float} -- float value between 0 and 1 (default: {Consts.DROPOUT_RATE})
+    
+    Returns:
+        keras model
+    """
+    
+    model = keras.models.Sequential([
+        keras.layers.Dense(
+            units=fv_len,
+            activation=keras.activations.relu,
+            input_shape=(fv_len,),
+        ),
+        keras.layers.Dropout(
+            rate=dropout_rate,
+        ),
+        keras.layers.Dense(
+            units=num_classes,
+            activation=final_layer_activation, # keras.activations.softmax,
+            kernel_initializer=keras.initializers.he_uniform(seed=None),
+        )
+    ])
 
-#     dropout_layer = keras.layers.Dropout(utils.dropout_rate)
+    model.compile(
+        optimizer=optimizer, # keras.optimizers.rmsprop,
+        loss=keras.losses.sparse_categorical_crossentropy,
+        metrics=['accuracy'],
+    )
 
-#     prediction_layer = keras.layers.Dense(
-#         units=utils.num_classes,
-#         activation=keras.activations.softmax
-#     )
-
-#     model = keras.Sequential([
-#         base_model,
-#         dropout_layer,
-#         prediction_layer,
-#     ])
-
-#     model.compile(
-#         optimizer=keras.optimizers.Adam(
-#             lr=utils.base_learning_rate
-#         ),
-#         loss=keras.losses.sparse_categorical_crossentropy,
-#         metrics=['accuracy']
-#     )
-
-#     return model
-
-# def load_vgg16(num_classes=Consts.NUM_CLASSES, dropout_rate=Consts.DROPOUT_RATE, base_learning_rate=Consts.BASE_LEARNING_RATE):
-#     vgg_model = VGGFace(model="vgg16", include_top=False, input_shape=(224, 224, 3), pooling='avg')
-#     vgg_model.trainable = False
-
-#     dropout_layer = keras.layers.Dropout(dropout_rate)
-
-#     prediction_layer = keras.layers.Dense(
-#         units=num_classes,
-#         activation=keras.activations.softmax
-#     )
-
-#     model = keras.Sequential([
-#         vgg_model,
-#         dropout_layer,
-#         prediction_layer,
-#     ])
-
-#     model.compile(
-#         optimizer=keras.optimizers.Adam(
-#             lr=base_learning_rate
-#         ),
-#         loss=keras.losses.sparse_categorical_crossentropy,
-#         metrics=['accuracy']
-#     )
-
-#     return model
-
-# def load_local_model(model):
-#     if model == utils.FACENET:
-#         return load_facenet_model()
-#     elif model == utils.VGGFACE:
-#         return load_vgg_face()
-#     else:
-#         return load_mobilenet_model()
-#         # se quiser retomar checkpoint:
-#         # model.load_weights("./mobilenet/model.hdf5")
+    return model

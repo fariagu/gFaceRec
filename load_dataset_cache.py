@@ -20,11 +20,11 @@ def generate_cache_tree(root_dir):
         os.mkdir(Dirs.VECTORS_DIR)
 
     for model in Consts.MODELS:
-        model_path = Dirs.getModelCacheDir(model)
+        model_path = Dirs.get_model_cache_dir(model)
         if not os.path.exists(model_path):
             os.mkdir(model_path)
 
-        crop_dirs = Dirs.getCropDirs(model=model)
+        crop_dirs = Dirs.get_crop_dirs(model=model)
         for crop_dir in crop_dirs:
             if not os.path.exists(crop_dir):
                 os.mkdir(crop_dir)
@@ -40,7 +40,7 @@ def generate_cache_tree(root_dir):
                         os.mkdir(version_dir)
 
 def filenames_and_labels(model, crop_pctg, split, version):
-    input_dir = Dirs.getImageCropSplitVersionDir(
+    input_dir = Dirs.get_image_crop_split_version_dir(
         crop_pctg=crop_pctg,
         split=split,
         version=version
@@ -59,6 +59,27 @@ def filenames_and_labels(model, crop_pctg, split, version):
 
     return zip(*filepaths_and_labels)
 
+def vectors_and_labels(model, crop_pctg, split, version):
+    base_dir = Dirs.get_vector_model_crop_split_version_dir(
+        model=model,
+        crop_pctg=crop_pctg,
+        split=split,
+        version=version
+    )
+
+    vecs_and_labels = []
+
+    for label in os.listdir(base_dir):
+        label_dir = "{}{}/".format(base_dir, label)
+
+        for file_name in os.listdir(label_dir):
+            vector_path = "{}{}".format(label_dir, file_name)
+            vecs_and_labels.append((vector_path, label))
+
+    shuffle(vecs_and_labels)
+
+    return zip(*vecs_and_labels)
+
 def generateVectors(model, crop_pctg, split, version):
     filenames, labels = filenames_and_labels(
         model=model,
@@ -67,7 +88,7 @@ def generateVectors(model, crop_pctg, split, version):
         version=version
     )
 
-    output_dir = Dirs.getVectorModelCropSplitVersionDir(
+    output_dir = Dirs.get_vector_model_crop_split_version_dir(
         model=model,
         crop_pctg=crop_pctg,
         split=split,
@@ -93,45 +114,22 @@ def generateVectors(model, crop_pctg, split, version):
 
         file_name = file_path.split("/")[-1].split(".")[0]
         save_path = "{}{}.pkl".format(iden_dir, file_name)
-        
+
         with open(save_path, "wb") as v:
             pickle.dump(fv, v)
 
-
 def main():
-    # generate_cache_tree(Dirs.DATASET_CACHE_DIR)
-    
-    # final_dir = Dirs.getVectorModelCropSplitVersionDir(
-    #     model=Consts.VGG16,
-    #     crop_pctg=0,
-    #     split=Consts.TRAIN,
-    #     version=Consts.ORIGINAL
-    # )
-    
-    # final_dir = Dirs.getImageCropSplitVersionDir(
-    #     crop_pctg=0,
-    #     split=Consts.TRAIN,
-    #     version=Consts.ORIGINAL
-    # )
-
-    # print(final_dir)
-
     for model in Consts.MODELS[:2]: # porque ainda só tenho dois modelos
-        for crop_pctg in Consts.CROP_PCTGS: #[1:] porque o no_crop merdou
+        for crop_pctg in Consts.CROP_PCTGS[1:]: #[1:] porque o no_crop merdou
             for split in Consts.SPLITS:
-                # for version in Consts.VERSIONS:
-                    # generateVectors(model, crop_pctg, split, version)
-                version = Consts.VERSIONS[0] # enquanto so estou no windows
-                print("GENERATING VECTORS FOR {} crop_{p:02d} {} {}".format(model, p=crop_pctg, split, version))
-                generateVectors(model, crop_pctg, split, version)
-                    
-
-    # generateVectors(
-    #     model=Consts.VGG16,
-    #     crop_pctg=0,
-    #     split=Consts.VAL,
-    #     version=Consts.ORIGINAL
-    # )
+                for version in Consts.VERSIONS:
+                    print("GENERATING VECTORS FOR {} crop_{02d} {} {}".format(model, crop_pctg, split, version))
+                    generateVectors(model, crop_pctg, split, version)
+                # version = Consts.VERSIONS[0] # enquanto so estou no windows
+                # print("GENERATING VECTORS FOR {} crop_{02d} {} {}".format(model, crop_pctg, split, version))
+                # generateVectors(model, crop_pctg, split, version)
 
 if __name__ == "__main__":
     main()
+
+    # vectors_and_labels(Consts.VGG16, Consts.CROP_PCTGS[1], Consts.VAL, Consts.ORIGINAL)

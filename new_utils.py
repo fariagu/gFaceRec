@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
 import platform
-import os
 
 class Flags:
     ENV_WINDOWS = platform.system() == "Windows"
@@ -28,11 +27,12 @@ class Consts:
     FACE_PATCH = "face_patch"
     VERSIONS = [ORIGINAL, TRANSFORM, FACE_PATCH]
 
-    def getImageSize(model):
+    @staticmethod
+    def get_image_size(model):
         if model not in Consts.MODELS:
             print("WRONG ARGS: Invalid model.")
-            return
-        
+            return -1
+
         if model == Consts.INCEPTIONV3:
             return (160, 160)
         else:
@@ -46,92 +46,100 @@ class Dirs:
     DATASET_CACHE_DIR = "{}dataset_cache/CelebA/".format(ROOT_DIR)
     VECTORS_DIR = "{}vectors/".format(DATASET_CACHE_DIR)
 
+    LOG_DIR = ROOT_DIR + "logs/training_{sess:04d}/"
+    CHECKPOINT_PATH = ROOT_DIR + "training/training_{sess:04d}/cp-{epoch:04d}.hdf5"
+
     @staticmethod
-    def getModelCacheDir(model):
+    def get_model_cache_dir(model):
         if model not in Consts.MODELS:
             print("WRONG ARGS: Invalid model.")
-            return
+            return -1
 
         return "{}{}/".format(Dirs.VECTORS_DIR, model)
 
     @staticmethod
-    def getCropDir(crop_pctg, cache=True, model=None):
-        if cache and model == None:
+    def get_crop_dir(crop_pctg, cache=True, model=None):
+        if cache and model is None:
             print("WRONG ARGS: For cache to be True a model must be specified.")
-            return
-        
+            return -1
+
         if crop_pctg not in Consts.CROP_PCTGS:
             print("WRONG ARGS: Invalid crop_pctg.")
-            return
+            return -1
 
-        base_dir = Dirs.getModelCacheDir(model=model) if model != None else Dirs.STRUCTURED_DIR
+        if model is None:
+            base_dir = Dirs.STRUCTURED_DIR
+        else:
+            base_dir = Dirs.get_model_cache_dir(model=model)
 
         crop_str = "crop_{pctg:02d}".format(pctg=crop_pctg) if crop_pctg >= 0 else "no_crop"
 
         return "{}{}/".format(base_dir, crop_str)
-    
+
     @staticmethod
-    def getCropDirs(cache=True, model=None):
+    def get_crop_dirs(cache=True, model=None):
         crop_dirs = []
         for pctg in Consts.CROP_PCTGS:
-            crop_dirs.append(Dirs.getCropDir(pctg, cache, model))
-        
+            crop_dirs.append(Dirs.get_crop_dir(pctg, cache, model))
+
         return crop_dirs
-    
+
     @staticmethod
-    def getVectorModelCropSplitVersionDir(model, crop_pctg, split, version):
+    def get_vector_model_crop_split_version_dir(model, crop_pctg, split, version):
         if model not in Consts.MODELS:
             print("WRONG ARGS: Invalid model")
-            return
-        
+            return -1
+
         if crop_pctg not in Consts.CROP_PCTGS:
             print("WRONG ARGS: invalid crop_pctg")
-            return
-        
+            return -1
+
         if split not in Consts.SPLITS:
             print("WRONG ARGS: invalid split")
-            return
-        
+            return -1
+
         if version not in Consts.VERSIONS:
             print("WRONG ARGS: invalid version")
-            return
-        
-        crop_dir = Dirs.getCropDir(crop_pctg=crop_pctg, model=model)
-        
+            return -1
+
+        crop_dir = Dirs.get_crop_dir(crop_pctg=crop_pctg, model=model)
+
         return "{}{}/{}/".format(crop_dir, split, version)
-    
+
     @staticmethod
-    def getImageCropSplitVersionDir(crop_pctg, split, version):
+    def get_image_crop_split_version_dir(crop_pctg, split, version):
 
         if crop_pctg not in Consts.CROP_PCTGS:
             print("WRONG ARGS: invalid crop_pctg")
-            return
-        
+            return -1
+
         if split not in Consts.SPLITS:
             print("WRONG ARGS: invalid split")
-            return
-        
+            return -1
+
         if version not in Consts.VERSIONS:
             print("WRONG ARGS: invalid version")
-            return
-        
-        crop_dir = Dirs.getCropDir(crop_pctg=crop_pctg, cache=False)
-        
+            return -1
+
+        crop_dir = Dirs.get_crop_dir(crop_pctg=crop_pctg, cache=False)
+
         return "{}{}/{}/".format(crop_dir, split, version)
 
+    @staticmethod
+    def get_log_dir(training_session):
+        return "{}logs/training_{sess:04d}/".format(Dirs.ROOT_DIR, sess=training_session)
 
-# for testing
 def main():
     print("##################################################")
-    # print(Dirs.getCropDir(crop_pctg=0, model=Consts.VGG16))
-    # print(dirs.getCropDir(crop_pctg=0, cache=False))
-    # crop_dirs = Dirs.getCropDirs(cache=False)
-    crop_dirs = Dirs.getCropDirs(model=Consts.VGG16)
+    crop_dirs = Dirs.get_crop_dirs(model=Consts.VGG16)
 
     for crop_dir in crop_dirs:
         print(crop_dir)
-    
+
     print("##################################################")
 
 if __name__ == "__main__":
-    main()
+    # main()
+
+    x = Dirs.CHECKPOINT_PATH.format(sess=10, epoch=20)
+    z = 0

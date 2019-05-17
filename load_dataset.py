@@ -210,96 +210,10 @@ def train_val_split(base_dir, val_percentage, labels_dict):
             else:
                 os.rename(base_dir + file, train_dir + "original/" + file)
 
-def load_image_filenames_and_labels(filtered_dir, crop_percentage, original_train=False, original_val=False, transform_train=False, transform_val=False, face_patch_train=False, face_patch_val=False):
-    """For the given crop_percentage, generates lists of filenames and labels of images
-    to be posteriorly fed into a generator
-
-    NOTE: all keyword arguments default to False so only explicitly True arguments show up on function call
-        ex.: load_image_filenames_and_labels(_, _, original_train=True, original_val=True)
-    
-    Arguments:
-        filtered_dir {string} -- path to the directory where the several cropped copies reside
-        crop_percentage {integer} -- must be one of the preexisting cropped percentages or negative for "no_crop"
-    
-    Keyword Arguments:
-        original_train {bool} -- whether to include original examples in training split (default: {False})
-        original_val {bool} -- whether to include original examples in validation split (default: {False})
-        transform_train {bool} -- whether to include transformed examples in training split (default: {False})
-        transform_val {bool} -- whether to include transformed examples in validation split (default: {False})
-        face_patch_train {bool} -- whether to include occluded examples in training split (default: {False})
-        face_patch_val {bool} -- whether to include occluded examples in validation split (default: {False})
-    
-    Returns:
-        list(string), list(string), list(string), list(string) -- 
-    """
-    
-    train_tuples = []
-    val_tuples = []
-    tuples = [train_tuples, val_tuples]
-
-    base_dir = filtered_dir
-
-    if crop_percentage < 0:
-        base_dir += "no_crop/"
-    else:
-        base_dir += "crop_{pctg:02d}/".format(pctg=crop_percentage)
-        
-        if not os.path.exists(base_dir):
-            print("USER ERROR: crop_percentage value is not valid.")
-    
-    if original_train == False and transform_train == False and face_patch_train == False:
-        print("USER ERROR: must have at least one option for training.")
-        return
-    
-    if original_val == False and transform_val == False and face_patch_val == False:
-        print("USER ERROR: must have at least one option for validation.")
-        return
-    
-    train_og = "{}train/original/".format(base_dir)
-    train_transform = "{}train/transform/".format(base_dir)
-    train_face_patch = "{}train/face_patch/".format(base_dir)
-    val_og = "{}val/original/".format(base_dir)
-    val_transform = "{}val/transform/".format(base_dir)
-    val_face_patch = "{}val/face_patch/".format(base_dir)
-
-    train_dirs = []
-    val_dirs = []
-
-    if original_train:
-        train_dirs.append(train_og)
-    if transform_train:
-        train_dirs.append(train_transform)
-    if face_patch_train:
-        train_dirs.append(train_face_patch)
-    
-    if original_val:
-        val_dirs.append(val_og)
-    if transform_val:
-        val_dirs.append(val_transform)
-    if face_patch_val:
-        val_dirs.append(val_face_patch)
-
-    dirs = [train_dirs, val_dirs]
-
-    for i in range(len(tuples)):
-        x = dirs[i]
-        for dir in dirs[i]:
-            for identity in os.listdir(dir):
-                iden_dir = "{}{}/".format(dir, identity)
-                for file in os.listdir(iden_dir):
-                    tuples[i].append(("{}{}".format(iden_dir, file), identity))
-
-    shuffle(train_tuples)
-    shuffle(val_tuples)
-
-    train_filenames, train_labels = zip(*train_tuples)
-    val_filenames, val_labels = zip(*val_tuples)
-
-    return train_filenames, train_labels, val_filenames, val_labels
-
 def generate_augmentation(filtered_dir, aug_mult):
-    """ Traverses through the now structured directory of face pictures and generates augmented copies of every one
-    
+    """ Traverses through the now structured directory of face pictures and generates augmented
+    copies of every one
+
     Arguments:
         filtered_dir {string} -- base directory of organized face pictures
         aug_mult {integer} -- number of times each face pic will be augmented
@@ -307,31 +221,28 @@ def generate_augmentation(filtered_dir, aug_mult):
 
     print("NOW GENERATING AUGMENTED EXAMPLES...")
 
-    TRANSFORM   = 0
-    FACE_PATCH  = 1
-    
-    for dir in os.listdir(filtered_dir):
-        print("AUGMENTING {}".format(dir))
+    transform = 0
+    face_patch = 1
+
+    for directory in os.listdir(filtered_dir):
+        print("AUGMENTING {}".format(directory))
 
         source_dirs = [
-            "{}{}/train/original/".format(filtered_dir, dir),
-            "{}{}/val/original/".format(filtered_dir, dir)
+            "{}{}/train/original/".format(filtered_dir, directory),
+            "{}{}/val/original/".format(filtered_dir, directory)
         ]
 
         for sub_dir in source_dirs:
 
             for iden_dir in os.listdir(sub_dir):
                 iden_dir_path = "{}{}/".format(sub_dir, iden_dir)
-                
+
                 for file_name in os.listdir(iden_dir_path):
                     file_name = "{}{}".format(iden_dir_path, file_name)
 
                     for i in range(aug_mult):
-                        augment_image(file_name, TRANSFORM, version=i)
-                        augment_image(file_name, FACE_PATCH, version=i)
-            
-            pass
-
+                        augment_image(file_name, transform, version=i)
+                        augment_image(file_name, face_patch, version=i)
 
 ##############################################################
 ##############################################################
@@ -339,10 +250,8 @@ def generate_augmentation(filtered_dir, aug_mult):
 def main():
     if not os.path.exists(Dirs.STRUCTURED_DIR):
         os.mkdir(Dirs.STRUCTURED_DIR)
-    
-    cropped_dirs = []
-    for pctg in Consts.CROP_PCTGS:
-        cropped_dirs.append(getCrop)
+
+    cropped_dirs = Dirs.get_crop_dirs(cache=False)
 
     labels_dict = identity_dict("{}identity_CelebA.txt".format(Dirs.DATASET_DIR))
 
@@ -370,13 +279,4 @@ def main():
     generate_augmentation(Dirs.STRUCTURED_DIR, Consts.AUG_MULT)
 
 if __name__ == "__main__":
-    # load_image_filenames_and_labels(
-    #     "C:/datasets/CelebA/filter_10_classes/",
-    #     0,
-    #     original_train=True,
-    #     original_val=True,
-    # )
-
-    # generate_augmentation("C:/datasets/CelebA/filter_10_classes/", 10)
-
     main()

@@ -1,11 +1,8 @@
 from __future__ import absolute_import, division, print_function
 
-import os
-
 import keras
-from keras import layers
 
-import numpy as np
+# import numpy as np
 
 from load_celeba import load_vectors
 from model import vgg_svm, facenet_svm
@@ -20,7 +17,7 @@ def svm():
 
     vector_paths, labels = load_vectors()
     train_split_index = int(len(labels)*0.8)
-    
+
     train_generator = VectorGenerator(
         vector_paths[:train_split_index],
         labels[:train_split_index],

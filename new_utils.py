@@ -139,7 +139,7 @@ def main():
     print("##################################################")
 
 if __name__ == "__main__":
-    # main()
+    main()
 
-    x = Dirs.CHECKPOINT_PATH.format(sess=10, epoch=20)
-    z = 0
+    # x = Dirs.CHECKPOINT_PATH.format(sess=10, epoch=20)
+    # z = 0

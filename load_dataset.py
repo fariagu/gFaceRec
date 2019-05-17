@@ -5,10 +5,6 @@ import os
 from shutil import copyfile
 from multiprocessing import Pool
 from functools import partial
-from random import shuffle
-
-import numpy as np
-import pickle
 
 from new_utils import Consts, Dirs
 from generate_augmented_data import augment_image
@@ -18,74 +14,74 @@ CELEBA_NUM_IDENTITIES = 10177
 
 def identity_dict(filepath):
     """ Parses identity text file into dictionary
-    
+
     Arguments:
         filepath {string} -- identity_CelebA.txt path (ex.: "/home/user/identity_CelebA.txt")
-    
+
     Returns:
         dictionary -- keys are the pictures' filenames and values are their respective identity (starting at 0)
     """
 
-    """ INDEXES """
-    FILENAME    = 0
-    LABEL       = 1
+    # INDEXES
+    FILENAME = 0
+    LABEL = 1
 
     if not os.path.exists(filepath):
         print("USER ERROR: invalid filepath value.")
         return
 
-    identity_dict = {}
+    identities = {}
 
     with open(filepath, 'r') as labels:
         for line in labels:
             line_split = line.split()
 
-            identity_dict[line_split[FILENAME]] = int(line_split[LABEL])-1
+            identities[line_split[FILENAME]] = int(line_split[LABEL])-1
 
-    return identity_dict
+    return identities
 
-def filter_identity_dict(identity_dict, num_classes):
+def filter_identity_dict(identities, num_classes):
     """ Removes unnecessary keys from dictionary
-    
+
     Arguments:
-        identity_dict {dictionary} -- {"filename": int(label)}
+        identities {dictionary} -- {"filename": int(label)}
         num_classes {integer} -- number of classes allowed to remain in the dictionary
-    
+
     Returns:
         dictionary -- version of identity_dict after removing unwanted entries
     """
 
     filtered_identity_dict = {}
-    for key in identity_dict.keys():
-        if identity_dict[key] < num_classes:
-            filtered_identity_dict[key] = identity_dict[key]
-    
+    for key in identities.keys():
+        if identities[key] < num_classes:
+            filtered_identity_dict[key] = identities[key]
+
     return filtered_identity_dict
 
 def labels_by_class_dict(labels_dict):
     """ In a sense, switches keys and values from labels_dict dictionary but since
     that way the new keys wouldn't be unique, values from repeated keys are appended to a list
-    
+
     Arguments:
         label_dict {dictionary} -- {"filename": int(label)}
-    
+
     Returns:
         dictionary -- {str(int(label)): [image_0, ..., image_n]}
     """
 
-    labels_by_class_dict = {}
+    labels_by_class = {}
     for key in labels_dict.keys():
-        if labels_dict[key] not in labels_by_class_dict.keys():
-            labels_by_class_dict[labels_dict[key]] = []
-        
-        labels_by_class_dict[labels_dict[key]].append(key)
+        if labels_dict[key] not in labels_by_class.keys():
+            labels_by_class[labels_dict[key]] = []
 
-    return labels_by_class_dict
+        labels_by_class[labels_dict[key]].append(key)
+
+    return labels_by_class
 
 def filter_celeba_identities(images_path, labels_dict, output_dir, num_identities):
     """ CelebA has 200k images os +10k identities, not all are necessary and require a lot of resources,
     so this function serves as a way of cutting out the fat
-    
+
     Arguments:
         images_path {string} -- extracted CelebA dataset images location (slash terminated)
         labels_dict {dictionary} -- {"filename": int(value)} (NOT FILTERED)
@@ -98,7 +94,7 @@ def filter_celeba_identities(images_path, labels_dict, output_dir, num_identitie
         return
 
     if os.path.exists(output_dir):
-        if len(os.listdir(output_dir)) > 0:
+        if os.listdir(output_dir):
             print("USER ERROR: output_dir already exists and is not empty.")
             return
     else:
@@ -115,33 +111,33 @@ def filter_celeba_identities(images_path, labels_dict, output_dir, num_identitie
 def organize_folder(images_path, labels_dict):
     """ Reorganize pictures into subdirectories where each subdirectory corresponds to a class label
     (https://drive.google.com/drive/folders/0B7EVK8r0v71pWEZsZE9oNnFzTm8)
-    
+
     Arguments:
         images_path {string} -- extracted CelebA dataset images location (full or only N identities) (slash terminated)
         labels_dict {dictionary} -- {"filename": int(value)} (CAN BE PRE FILTERED)
     """
-    
+
     if not os.path.exists(images_path):
         print("USER ERROR: invalid images_path value.")
         return
-    
+
     for file in os.listdir(images_path):
-        sub_dir =  "{}{}/".format(images_path, str(labels_dict[file]))
+        sub_dir = "{}{}/".format(images_path, str(labels_dict[file]))
         if not os.path.exists(sub_dir):
             os.mkdir(sub_dir)
-        
+
         os.rename(images_path + file, sub_dir + file)
 
 def batch_detect_and_crop(crop_dirs):
     """ Crops pictures into different margins around the detected face (yes, also detects faces)
-    
+
     Arguments:
         crop_dirs {list} -- location for the no_crop folder (slash terminated), and all the different crop percentages (NO_CROP must be index 0)
     """
 
-    """ INDEXES """
-    NO_CROP     = 0
-    WITH_CROP   = 1
+    # INDEXES
+    NO_CROP = 0
+    WITH_CROP = 1
 
     src_dir = crop_dirs[NO_CROP]
     images = os.listdir(src_dir)
@@ -153,11 +149,11 @@ def batch_detect_and_crop(crop_dirs):
             if not os.path.exists(crop_dir):
                 os.mkdir(crop_dir)
 
-            p = Pool(8)
+            pool = Pool(8)
             func = partial(detect_and_crop, src_dir=src_dir, dst_dir=crop_dir, percentage=percentage)
-            p.map(func, images)
-            p.close()
-            p.join()
+            pool.map(func, images)
+            pool.close()
+            pool.join()
 
 def train_val_split(base_dir, val_percentage, labels_dict):
     """ Splits files in directory into their respective sub folder (train/ or val/)
@@ -178,8 +174,9 @@ def train_val_split(base_dir, val_percentage, labels_dict):
 
     train_split = []
     val_split = []
+    # TODO: fazer o que o pylint manda na linha a seguir a esta
     for key in labels_dict_by_class.keys():
-        if len(labels_dict_by_class[key]) == 0:
+        if labels_dict_by_class[key]:
             pass
         elif len(labels_dict_by_class[key]) <= 10:
             val_split.append(labels_dict_by_class[key][0])
@@ -189,7 +186,7 @@ def train_val_split(base_dir, val_percentage, labels_dict):
 
             val_split.extend(labels_dict_by_class[key][:limit])
             train_split.extend(labels_dict_by_class[key][limit:])
-    
+
 
     train_dir = base_dir + "train/"
     val_dir = base_dir + "val/"
@@ -262,20 +259,20 @@ def main():
 
     # depois falta fazer crops as fotos (margin: 0, 5, 10, 15, 20, 25, 30)
     batch_detect_and_crop(cropped_dirs)
-    
-    for dir in cropped_dirs:
+
+    for directory in cropped_dirs:
         # e depois falta dividir em train/val (90/10)
-        train_val_split(dir, Consts.VAL_PERCENTAGE, labels_dict)
+        train_val_split(directory, Consts.VAL_PERCENTAGE, labels_dict)
 
         # e so depois dividir em subpastas (uma pasta por iden)
         sub_dirs = [
-            "{}train/original/".format(dir),
-            "{}val/original/".format(dir)
+            "{}train/original/".format(directory),
+            "{}val/original/".format(directory)
         ]
 
         for sub_dir in sub_dirs:
             organize_folder(sub_dir, labels_dict)
-    
+
     generate_augmentation(Dirs.STRUCTURED_DIR, Consts.AUG_MULT)
 
 if __name__ == "__main__":

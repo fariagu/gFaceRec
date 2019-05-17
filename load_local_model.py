@@ -38,19 +38,19 @@ def load_local_fv(model):
 
 def classifier(fv_len, num_classes, dropout_rate, final_layer_activation, optimizer):
     """Small classifier with a feature vector as input and class scores as output
-    
+
     Arguments:
         fv_len {integer} -- 128 if InceptionV3, 512 otherwise
         num_classes {integer} -- amount of discrete classes
         final_layer_activation {keras.activations.*}
-    
+
     Keyword Arguments:
         dropout_rate {float} -- float value between 0 and 1 (default: {Consts.DROPOUT_RATE})
-    
+
     Returns:
         keras model
     """
-    
+
     model = keras.models.Sequential([
         keras.layers.Dense(
             units=fv_len,

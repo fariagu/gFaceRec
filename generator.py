@@ -1,11 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
-import os
-
-from skimage.io import imread, imsave
 from skimage.transform import resize
 import numpy as np
-import cv2
 
 from new_utils import Consts
 

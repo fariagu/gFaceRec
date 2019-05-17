@@ -74,15 +74,19 @@ def vectors_and_labels(model, crop_pctg, split, version):
 
     return zip(*vecs_and_labels)
 
-def generateVectors(model, crop_pctg, split, version):
-    filenames, labels = filenames_and_labels(
-        crop_pctg=crop_pctg,
-        split=split,
-        version=version
-    )
+def save_vectors_parallel(iterable):
+    iden_dir = "{}{}/".format(output_dir, label)
+    if not os.path.exists(iden_dir):
+        os.mkdir(iden_dir)
 
-    output_dir = Dirs.get_vector_model_crop_split_version_dir(
-        model=model,
+    file_name = file_path.split("/")[-1].split(".")[0]
+    save_path = "{}{}.pkl".format(iden_dir, file_name)
+
+    with open(save_path, "wb") as vector:
+        pickle.dump(f_v, vector)
+
+def generate_vectors(model, crop_pctg, split, version):
+    filenames, labels = filenames_and_labels(
         crop_pctg=crop_pctg,
         split=split,
         version=version
@@ -100,16 +104,20 @@ def generateVectors(model, crop_pctg, split, version):
         workers=Consts.N_WORKERS,
     )
 
-    for fv, file_path, label in zip(predictions, filenames, labels):
-        iden_dir = "{}{}/".format(output_dir, label)
-        if not os.path.exists(iden_dir):
-            os.mkdir(iden_dir)
+    # sequential (shitty af)
+    # for f_v, file_path, label in zip(predictions, filenames, labels):
+    #     iden_dir = "{}{}/".format(output_dir, label)
+    #     if not os.path.exists(iden_dir):
+    #         os.mkdir(iden_dir)
 
-        file_name = file_path.split("/")[-1].split(".")[0]
-        save_path = "{}{}.pkl".format(iden_dir, file_name)
+    #     file_name = file_path.split("/")[-1].split(".")[0]
+    #     save_path = "{}{}.pkl".format(iden_dir, file_name)
 
-        with open(save_path, "wb") as v:
-            pickle.dump(fv, v)
+    #     with open(save_path, "wb") as vector:
+    #         pickle.dump(f_v, vector)
+
+    # parallel
+    iterable = zip(predictions, filenames, labels)
 
 def main():
     generate_cache_tree(Dirs.ROOT_DIR)
@@ -118,11 +126,14 @@ def main():
         for crop_pctg in Consts.CROP_PCTGS[1:]: #[1:] porque o no_crop merdou
             for split in Consts.SPLITS:
                 for version in Consts.VERSIONS:
-                    print("GENERATING VECTORS FOR {} crop_{pctg:02d} {} {}".format(model, split, version, pctg=crop_pctg))
-                    generateVectors(model, crop_pctg, split, version)
-                # version = Consts.VERSIONS[0] # enquanto so estou no windows
-                # print("GENERATING VECTORS FOR {} crop_{02d} {} {}".format(model, crop_pctg, split, version))
-                # generateVectors(model, crop_pctg, split, version)
+                    print("GENERATING VECTORS FOR {} crop_{pctg:02d} {} {}"
+                          .format(
+                              model,
+                              split,
+                              version,
+                              pctg=crop_pctg
+                          ))
+                    generate_vectors(model, crop_pctg, split, version)
 
 if __name__ == "__main__":
     main()

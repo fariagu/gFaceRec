@@ -88,6 +88,9 @@ def save_vectors_parallel(element, output_dir):
 
     with open(save_path, "wb") as vector:
         pickle.dump(element.prediction, vector)
+        vector.close()
+
+    return
 
 def generate_vectors(model, crop_pctg, split, version):
     filenames, labels = filenames_and_labels(

@@ -137,7 +137,7 @@ def batch_detect_and_crop(crop_dirs):
 
     # INDEXES
     NO_CROP = 0
-    WITH_CROP = 1
+    # WITH_CROP = 1
 
     src_dir = crop_dirs[NO_CROP]
     images = os.listdir(src_dir)

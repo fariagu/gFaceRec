@@ -4,9 +4,13 @@ import os
 from random import shuffle
 import pickle
 
+from multiprocessing import Pool
+from functools import partial
+
 from load_local_model import load_local_fv
 from generator import Generator
 from new_utils import Dirs, Consts, Flags
+from iterable import Iterable
 
 def generate_cache_tree(root_dir):
     if not os.path.exists(root_dir):
@@ -43,6 +47,9 @@ def filenames_and_labels(crop_pctg, split, version):
         version=version
     )
 
+    # TODO: tirar esta merda
+    input_dir = "C:/Users/gustavo.faria/Desktop/input_test/"
+
     filepaths_and_labels = []
     for identity in os.listdir(input_dir):
         iden_dir = "{}{}/".format(input_dir, identity)
@@ -74,19 +81,26 @@ def vectors_and_labels(model, crop_pctg, split, version):
 
     return zip(*vecs_and_labels)
 
-def save_vectors_parallel(iterable):
-    iden_dir = "{}{}/".format(output_dir, label)
+def save_vectors_parallel(element, output_dir):
+    iden_dir = "{}{}/".format(output_dir, element.label)
     if not os.path.exists(iden_dir):
         os.mkdir(iden_dir)
 
-    file_name = file_path.split("/")[-1].split(".")[0]
+    file_name = element.filename.split("/")[-1].split(".")[0]
     save_path = "{}{}.pkl".format(iden_dir, file_name)
 
     with open(save_path, "wb") as vector:
-        pickle.dump(f_v, vector)
+        pickle.dump(element.prediction, vector)
 
 def generate_vectors(model, crop_pctg, split, version):
     filenames, labels = filenames_and_labels(
+        crop_pctg=crop_pctg,
+        split=split,
+        version=version
+    )
+
+    output_dir = Dirs.get_vector_model_crop_split_version_dir(
+        model=model,
         crop_pctg=crop_pctg,
         split=split,
         version=version
@@ -104,20 +118,17 @@ def generate_vectors(model, crop_pctg, split, version):
         workers=Consts.N_WORKERS,
     )
 
-    # sequential (shitty af)
-    # for f_v, file_path, label in zip(predictions, filenames, labels):
-    #     iden_dir = "{}{}/".format(output_dir, label)
-    #     if not os.path.exists(iden_dir):
-    #         os.mkdir(iden_dir)
-
-    #     file_name = file_path.split("/")[-1].split(".")[0]
-    #     save_path = "{}{}.pkl".format(iden_dir, file_name)
-
-    #     with open(save_path, "wb") as vector:
-    #         pickle.dump(f_v, vector)
-
     # parallel
-    iterable = zip(predictions, filenames, labels)
+    iterable = []
+    for prediction, filename, label in zip(predictions, filenames, labels):
+        iterable.append(Iterable(prediction, filename, label))
+   
+    pool = Pool(Consts.N_WORKERS)
+    pool = Pool(1)
+    func = partial(save_vectors_parallel, output_dir=output_dir)
+    pool.map(func, list(iterable))
+    pool.close()
+    pool.join()
 
 def main():
     generate_cache_tree(Dirs.ROOT_DIR)
@@ -137,5 +148,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    # vectors_and_labels(Consts.VGG16, Consts.CROP_PCTGS[1], Consts.VAL, Consts.ORIGINAL)

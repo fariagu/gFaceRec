@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 from skimage.transform import resize
+from skimage.io import imread
 import numpy as np
 
 from new_utils import Consts

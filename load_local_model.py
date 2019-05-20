@@ -27,6 +27,14 @@ def load_facenet_fv():
     return model
 
 def load_local_fv(model):
+    """Chooses which of the pretrained models to return
+    
+    Arguments:
+        model {string} -- Chosen model
+    
+    Returns:
+        keras model -- CNN
+    """
     if model == Consts.INCEPTIONV3:
         return load_facenet_fv()
     elif model == Consts.VGG16:

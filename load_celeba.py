@@ -117,16 +117,12 @@ def load_image_filenames_and_labels_from_txt():
 def filenames_and_labels_from_disk():
     identity_dict = {}
 
-    with open(utils.labels_path, 'r') as f:
+    with open("C:/glinttfaces/dataset/identities.txt", 'r') as f:
         for line in f:
             line_split = line.split()
 
-            # temporary (while testing)
-            if int(line_split[LABEL]) < utils.num_classes:
-                identity_dict[line_split[FILENAME]] = int(line_split[LABEL])-1
+            identity_dict[line_split[FILENAME]] = int(line_split[LABEL])-1
     
-    pickle.dump(identity_dict, open(utils.identity_cache_dir, "wb"))
-
     return identity_dict
 
 # every image (no splits)
@@ -144,25 +140,21 @@ def prepend_string_to_array(string, array):
     
     return res
 
-def load_vectors_into_disk(from_dir=utils.raw_dir + "placeholder_dir"):
-    identity_dict = filenames_and_labels()
+def load_vectors_into_disk():
+    """vou fazer as labels à mão, que safoda (i.e. caga para o formato do nome do ficheiro
+    (com ou sem underscore))
+    """
+    identity_dict = filenames_and_labels_from_disk()
+
+    images_dir = "C:/glinttfaces/dataset/images/"
 
     print("####################")
-    print(utils.images_dir)
-
-    # trim_iden_dict = {}
-    # for key, label in identity_dict.items():
-    #     if label < utils.num_classes:
-    #         trim_iden_dict[key] = label
-    #
-    # file_names = list(trim_iden_dict.keys())
-    # labels = list(trim_iden_dict.values())
-
+    print(images_dir)
+    
     files_that_exist = []
     final_dict = {}
-    for file in os.listdir(from_dir):
-    # for file in os.listdir(utils.images_dir):
-        files_that_exist.append(file.split("_")[-1])
+    for file in os.listdir(images_dir):
+        files_that_exist.append(file)
         final_dict[file] = -1
 
     for file in list(identity_dict.keys()):
@@ -171,20 +163,17 @@ def load_vectors_into_disk(from_dir=utils.raw_dir + "placeholder_dir"):
 
     print(len(identity_dict))
 
-    
-    for file in list(final_dict.keys()):
-        if file.split("_")[-1] in identity_dict.keys():
-            final_dict[file] = identity_dict[file.split("_")[-1]]
-            pass
+    tuple_for_shuffle = []
+    for file in list(identity_dict.keys()):
+        tuple_for_shuffle.append((images_dir + file, identity_dict[file]))
 
-    file_names = list(final_dict.keys())
-    labels = list(final_dict.values())
+    rand.shuffle(tuple_for_shuffle)
 
-    # paths = prepend_string_to_array(utils.images_dir, file_names)
-    paths = prepend_string_to_array(from_dir, file_names)
-    full_generator = Generator(paths, labels, utils.batch_size, save_to_dir=False)
+    file_names, labels = zip(*tuple_for_shuffle)
 
-    model = load_facenet_fv() if utils.model_in_use == utils.FACENET else load_vgg_face_fv()
+    full_generator = Generator(file_names, labels, utils.batch_size, save_to_dir=False)
+
+    model = load_vgg_face_fv()
 
     model.summary()
 
@@ -195,12 +184,14 @@ def load_vectors_into_disk(from_dir=utils.raw_dir + "placeholder_dir"):
         workers=utils.n_workers,
     )
 
-    if not os.path.exists(utils.vector_dir):
-        os.mkdir(utils.vector_dir)
+    vector_dir = "C:/glinttfaces/vectors/"
 
-    for fv, path in zip(predictions, paths):
+    if not os.path.exists(vector_dir):
+        os.mkdir(vector_dir)
+
+    for fv, path in zip(predictions, file_names):
         file_name = path.split("/")[-1].split(".")[0]
-        pickle.dump(fv, open(utils.vector_dir + file_name + ".pkl", "wb"))
+        pickle.dump(fv, open("C:/glinttfaces/vectors/" + file_name + ".pkl", "wb"))
 
 # chamar isto para carregar os vectores em memória (num dict)
 def load_vec_dict():
@@ -243,16 +234,16 @@ def load_vec_dict():
 
 # chamar isto para ter a info a passar ao vector_generator
 def load_vectors():
-    identity_dict = filenames_and_labels()
+    identity_dict = filenames_and_labels_from_disk()
     vector_paths = []
     labels = []
+    vector_dir = "C:/glinttfaces/vectors/"
 
-    if os.path.exists(utils.vector_dir):
-        for vector in os.listdir(utils.vector_dir):
-            index = vector.split("_")[-1].split(".")[0] + ".jpg" if utils.AUGMENTATION else vector.split(".")[0]
-            if identity_dict[index] < utils.num_classes:
-                vector_paths.append(utils.vector_dir + vector)
-                labels.append(identity_dict[index])
+    if os.path.exists(vector_dir):
+        for vector in os.listdir(vector_dir):
+            key = vector.split(".")[0] + ".jpg"
+            vector_paths.append(vector_dir + key)
+            labels.append(identity_dict[key])
         
     aggregated_vl = list(zip(vector_paths, labels))
     rand.shuffle(aggregated_vl)

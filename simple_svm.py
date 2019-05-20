@@ -16,47 +16,52 @@ import utils
 def svm():
     print("#############################")
     print("#############################")
-    print(utils.vector_dir)
+    vector_dir = "C:/glinttfaces/vectors/"
+    checkpoint_path = "C:/glinttfaces/checkpoints/cp-{epoch:04d}.hdf5"
+    print(vector_dir)
 
     vector_paths, labels = load_vectors()
     train_split_index = int(len(labels)*0.8)
-    
+
     train_generator = VectorGenerator(
-        vector_paths[:train_split_index],
-        labels[:train_split_index],
+        vector_paths,
+        labels,
         utils.batch_size
     )
+    
+    # train_generator = VectorGenerator(
+    #     vector_paths[:train_split_index],
+    #     labels[:train_split_index],
+    #     utils.batch_size
+    # )
 
-    val_generator = VectorGenerator(
-        vector_paths[train_split_index:],
-        labels[train_split_index:],
-        utils.batch_size
-    )
+    # val_generator = VectorGenerator(
+    #     vector_paths[train_split_index:],
+    #     labels[train_split_index:],
+    #     utils.batch_size
+    # )
 
-    if utils.model_in_use == utils.FACENET:
-        model = facenet_svm()
-    else:
-        model = vgg_svm()
+    model = vgg_svm()
 
     model.summary()
     tensorboard = keras.callbacks.TensorBoard(log_dir=utils.log_dir)
 
     # Load Checkpoints
     cp_callback = keras.callbacks.ModelCheckpoint(
-        utils.checkpoint_path,
+        checkpoint_path,
         verbose=1,
         save_weights_only=False,
         period=utils.cp_period
     )
 
-    model.save_weights(utils.checkpoint_path.format(epoch=0))
+    model.save_weights(checkpoint_path.format(epoch=0))
 
     model.fit_generator(
         generator=train_generator,
         epochs=utils.num_epochs,
         callbacks=[cp_callback, tensorboard],
         verbose=1,
-        validation_data=val_generator,
+        # validation_data=val_generator,
         use_multiprocessing=utils.multiprocessing,
         workers=utils.n_workers,
         shuffle=False, # I do that already
@@ -64,4 +69,4 @@ def svm():
 
     # predictions = model.predict(np.array(val_vectors))
 
-svm()
+# svm()

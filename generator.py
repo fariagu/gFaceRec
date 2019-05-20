@@ -98,7 +98,7 @@ class Generator(keras.utils.Sequence):
             image_array.append(img)
             
             if self.save_to_dir:
-                path = utils.created_aug_imgs
+                path = "C:/glinttfaces/dataset/images/"
                 if not os.path.exists(path):
                     os.mkdir(path)
                 

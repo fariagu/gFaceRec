@@ -47,9 +47,6 @@ def filenames_and_labels(crop_pctg, split, version):
         version=version
     )
 
-    # TODO: tirar esta merda
-    input_dir = "C:/Users/gustavo.faria/Desktop/input_test/"
-
     filepaths_and_labels = []
     for identity in os.listdir(input_dir):
         iden_dir = "{}{}/".format(input_dir, identity)

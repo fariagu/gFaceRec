@@ -133,7 +133,7 @@ def generate_vectors(model, crop_pctg, split, version):
 def main():
     generate_cache_tree(Dirs.ROOT_DIR)
 
-    for model in Consts.MODELS[:2]: # porque ainda só tenho dois modelos
+    for model in Consts.MODELS[1:2]: # porque ainda só tenho dois modelos
         for crop_pctg in Consts.CROP_PCTGS[1:]: #[1:] porque o no_crop merdou
             for split in Consts.SPLITS:
                 for version in Consts.VERSIONS:

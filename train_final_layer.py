@@ -7,6 +7,7 @@ from vector_generator import VectorGenerator
 from load_local_model import classifier
 
 from new_utils import Consts, Dirs, Flags
+from params import Params, HyperParams, Config
 
 def read_training_session():
     read_file = open("training_session.txt", "r")
@@ -23,35 +24,35 @@ def get_fv_len(model):
     if model not in Consts.MODELS:
         print("USER ERROR: invalid model value.")
         return -1
-    
+
     if model == Consts.INCEPTIONV3:
         return 128
-    else:
-        return 512
 
-def train_classifier(model, crop_pctg, train_split, val_split, version, num_classes, num_epochs, dropout_rate):
-    train_paths, train_labels = vectors_and_labels(model, crop_pctg, train_split, version)
-    val_paths, val_labels = vectors_and_labels(model, crop_pctg, val_split, version)
-    cp_period = num_epochs / 10
+    return 512
+
+def train_classifier(params, hyper_params, train_config, val_config):
+    train_paths, train_labels = vectors_and_labels(params, train_config)
+    val_paths, val_labels = vectors_and_labels(params, val_config)
+    cp_period = hyper_params.num_epochs / 10
 
     training_session = read_training_session()
 
     train_generator = VectorGenerator(
         train_paths,
         train_labels,
-        Consts.BATCH_SIZE
+        hyper_params.batch_size # Consts.BATCH_SIZE
     )
 
     val_generator = VectorGenerator(
         val_paths,
         val_labels,
-        Consts.BATCH_SIZE
+        hyper_params.batch_size # Consts.BATCH_SIZE
     )
 
     model = classifier(
-        fv_len=get_fv_len(model),
-        num_classes=num_classes,
-        dropout_rate=dropout_rate,
+        fv_len=get_fv_len(params.model),
+        num_classes=params.num_classes,
+        dropout_rate=hyper_params.dropout_rate,
         final_layer_activation=keras.activations.softmax,
         optimizer=keras.optimizers.rmsprop
     )
@@ -73,7 +74,7 @@ def train_classifier(model, crop_pctg, train_split, val_split, version, num_clas
 
     model.fit_generator(
         generator=train_generator,
-        epochs=num_epochs,
+        epochs=hyper_params.num_epochs,
         callbacks=[cp_callback, tensorboard],
         verbose=1,
         validation_data=val_generator,

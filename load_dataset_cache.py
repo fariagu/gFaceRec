@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import os
-from random import shuffle
+import random
 import pickle
 
 from multiprocessing import Pool
@@ -11,6 +11,7 @@ from load_local_model import load_local_fv
 from generator import Generator
 from new_utils import Dirs, Consts, Flags
 from iterable import Iterable
+from params import Params, Config
 
 def generate_cache_tree(root_dir):
     if not os.path.exists(root_dir):
@@ -57,24 +58,68 @@ def filenames_and_labels(crop_pctg, split, version):
 
     return zip(*filepaths_and_labels)
 
-def vectors_and_labels(model, crop_pctg, split, version):
-    base_dir = Dirs.get_vector_model_crop_split_version_dir(
-        model=model,
-        crop_pctg=crop_pctg,
-        split=split,
-        version=version
-    )
-
+def vectors_and_labels(params, config):
     vecs_and_labels = []
+    unknowns = []
+    dict_by_iden = {}
 
-    for label in os.listdir(base_dir):
-        label_dir = "{}{}/".format(base_dir, label)
+    if config.split == Consts.TRAIN:
 
-        for file_name in os.listdir(label_dir):
-            vector_path = "{}{}".format(label_dir, file_name)
-            vecs_and_labels.append((vector_path, label))
+        og_dir = Dirs.get_vector_model_crop_split_version_dir(
+            model=params.model,
+            crop_pctg=params.crop_pctg,
+            split=config.split,
+            version=Consts.ORIGINAL
+        )
 
-    shuffle(vecs_and_labels)
+        for label in os.listdir(og_dir):
+            if int(label) < params.num_classes:
+                if label not in dict_by_iden.keys():
+                    dict_by_iden[label] = []
+
+                label_dir = "{}{}/".format(og_dir, label)
+                for i, vector in enumerate(os.listdir(label_dir)):
+                    if i >= params.examples_per_class:
+                        break
+
+                    vector_id = vector.split(".")[0]
+                    dict_by_iden[label].append(vector_id)
+
+    for version in config.list_versions:
+        if version[0]:
+            base_dir = Dirs.get_vector_model_crop_split_version_dir(
+                model=params.model,
+                crop_pctg=params.crop_pctg,
+                split=config.split,
+                version=version[1]
+            )
+
+            for label in os.listdir(base_dir):
+                label_dir = "{}{}/".format(base_dir, label)
+                if int(label) < params.num_classes:
+
+                    for i, file_name in enumerate(os.listdir(label_dir)):
+
+                        if dict_by_iden:
+                            vector_id = file_name.split(".")[0]
+
+                            if vector_id in dict_by_iden[label]:
+                                vector_path = "{}{}".format(label_dir, file_name)
+                                vecs_and_labels.append((vector_path, label))
+
+                        elif i < params.examples_per_class:
+                            vector_path = "{}{}".format(label_dir, file_name)
+                            vecs_and_labels.append((vector_path, label))
+
+                # this condition add files that belong to the "unknown" class
+                elif len(unknowns) * 10 < len(vecs_and_labels):
+                    random_file = random.choice(os.listdir(label_dir))
+                    vector_path = "{}{}".format(label_dir, random_file)
+                    unknowns.append((vector_path, params.num_classes))
+
+    vecs_and_labels += unknowns
+
+    random.shuffle(vecs_and_labels)
 
     return zip(*vecs_and_labels)
 
@@ -89,8 +134,6 @@ def save_vectors_parallel(element, output_dir):
     with open(save_path, "wb") as vector:
         pickle.dump(element.prediction, vector)
         vector.close()
-
-    return
 
 def generate_vectors(model, crop_pctg, split, version):
     filenames, labels = filenames_and_labels(
@@ -133,8 +176,8 @@ def generate_vectors(model, crop_pctg, split, version):
 def main():
     generate_cache_tree(Dirs.ROOT_DIR)
 
-    for model in Consts.MODELS[1:2]: # porque ainda só tenho dois modelos
-        for crop_pctg in Consts.CROP_PCTGS[1:]: #[1:] porque o no_crop merdou
+    for model in Consts.MODELS[1:2]: # [:2] porque ainda só tenho dois modelos
+        for crop_pctg in Consts.CROP_PCTGS[1:]: # [1:] porque o no_crop merdou
             for split in Consts.SPLITS:
                 for version in Consts.VERSIONS:
                     print("GENERATING VECTORS FOR {} crop_{pctg:02d} {} {}"
@@ -147,4 +190,7 @@ def main():
                     generate_vectors(model, crop_pctg, split, version)
 
 if __name__ == "__main__":
-    main()
+    # main()
+    c = Config(Consts.TRAIN, True, True, True)
+    p = Params(Consts.INCEPTIONV3, 10, 5, 20)
+    vectors_and_labels(p, c)

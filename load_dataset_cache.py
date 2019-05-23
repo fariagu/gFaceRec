@@ -112,7 +112,7 @@ def vectors_and_labels(params, config):
                             vecs_and_labels.append((vector_path, label))
 
                 # this condition add files that belong to the "unknown" class
-                elif len(unknowns) * 10 < len(vecs_and_labels):
+                elif params.include_unknown and len(unknowns) * 10 < len(vecs_and_labels):
                     random_file = random.choice(os.listdir(label_dir))
                     vector_path = "{}{}".format(label_dir, random_file)
                     unknowns.append((vector_path, params.num_classes))
@@ -192,5 +192,5 @@ def main():
 if __name__ == "__main__":
     # main()
     c = Config(Consts.TRAIN, True, True, True)
-    p = Params(Consts.INCEPTIONV3, 10, 5, 20)
+    p = Params(Consts.INCEPTIONV3, 10, 5, 20, True)
     vectors_and_labels(p, c)

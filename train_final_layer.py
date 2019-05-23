@@ -51,7 +51,7 @@ def train_classifier(params, hyper_params, train_config, val_config):
 
     model = classifier(
         fv_len=get_fv_len(params.model),
-        num_classes=params.num_classes,
+        num_classes=params.num_classes+1,
         dropout_rate=hyper_params.dropout_rate,
         final_layer_activation=keras.activations.softmax,
         optimizer=keras.optimizers.rmsprop
@@ -82,3 +82,20 @@ def train_classifier(params, hyper_params, train_config, val_config):
         workers=Consts.N_WORKERS,
         shuffle=False, # I do that already
     )
+
+def main():
+    params = Params(Consts.INCEPTIONV3, 10, 5, 20, True)
+    hyper_params = HyperParams(
+        100,
+        0.001,
+        32,
+        keras.activations.softmax,
+        keras.optimizers.rmsprop
+    )
+    train_config = Config(Consts.TRAIN, True, True, True)
+    val_config = Config(Consts.VAL, True, True, True)
+
+    train_classifier(params, hyper_params, train_config, val_config)
+
+if __name__ == "__main__":
+    main()

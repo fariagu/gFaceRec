@@ -16,7 +16,7 @@ class Config:
         ]
 
 class Params:
-    def __init__(self, model, num_classes, examples_per_class, crop_pctg):
+    def __init__(self, model, num_classes, examples_per_class, crop_pctg, include_unknown=True):
         """examples_per_class represents maximum number of examples per class.
         If fewer are available, all examples are added.
         """
@@ -24,6 +24,7 @@ class Params:
         self.num_classes = num_classes
         self.examples_per_class = examples_per_class
         self.crop_pctg = crop_pctg
+        self.include_unknown = include_unknown
 
 class HyperParams:
     def __init__(self, num_epochs, dropout_rate, batch_size, final_layer_activation, optimizer):

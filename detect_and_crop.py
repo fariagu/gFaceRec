@@ -1,9 +1,8 @@
 # CREDIT: https://github.com/ageitgey/
 
-import sys
-import dlib
-import openface
 import cv2
+import dlib
+# import openface
 
 def detect_and_crop(file_name, src_dir, dst_dir, percentage):
     # # testing on windows
@@ -14,7 +13,7 @@ def detect_and_crop(file_name, src_dir, dst_dir, percentage):
 
     # You can download the required pre-trained face detection model here:
     # http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
-    predictor_model = "./shape_predictor_68_face_landmarks.dat"
+    # predictor_model = "./shape_predictor_68_face_landmarks.dat"
 
     # print("Cropping image " + file_name)
 

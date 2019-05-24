@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import numpy as np
+from scipy import spatial
 import pickle
 
 from load_dataset_cache import vectors_and_labels
@@ -22,13 +23,36 @@ def calc_means(paths, labels):
 
     return means
 
-def vector_distance(params, train_config, val_config):
+def vector_distance(params, train_config, val_config, euclidean=True):
     train_paths, train_labels = vectors_and_labels(params, train_config)
     val_paths, val_labels = vectors_and_labels(params, val_config)
 
     means = calc_means(train_paths, train_labels)
+    results = []
 
-    
+    for path, label in zip(val_paths, val_labels):
+        with open(path, "rb") as vector_fd:
+            vector = pickle.load(vector_fd)
+
+            distances = []
+            for key in means:
+                if euclidean:
+                    distances.append((key, np.linalg.norm(means[key] - vector)))
+                else:
+                    spatial.distance.cosine(means[key], vector)
+
+            distances.sort(key=lambda tup: tup[1])
+            results.append((label, distances))
+
+    correct_guesses = 0
+    for result in results:
+        if result[0] == result[1][0][0]:
+            correct_guesses += 1
+
+    accuracy = (correct_guesses * 100) / len(results)
+
+    print("Accuracy: {}".format(accuracy))
+
 
 def main():
     params = Params(

@@ -5,13 +5,17 @@ import os
 import keras
 from keras import layers
 
-from load_celeba import load_image_filenames_and_labels
+# from load_celeba import load_image_filenames_and_labels
+from load_dataset import load_image_filenames_and_labels
 from generator import Generator
 from load_local_model import load_local_model
 import utils
 
 def finetune(epochs):
-    train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
+    # train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels()
+    train_images, train_labels, val_images, val_labels = load_image_filenames_and_labels(
+        
+    )
     train_batch_generator = Generator(
         train_images,
         train_labels,

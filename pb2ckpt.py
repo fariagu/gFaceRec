@@ -60,34 +60,5 @@ def protobuf_to_checkpoint_conversion(pb_model, ckpt_dir):
             saver.save(sess, ckpt_path)
     return graph, vars_dict
 
-# def protobuf_to_checkpoint_conversion(pb_model, ckpt_dir):
-
-#     graph = tf.Graph()
-#     with graph.as_default():
-#         od_graph_def = tf.GraphDef()
-#         with tf.gfile.GFile(pb_model, 'rb') as fid:
-#             serialized_graph = fid.read()
-#             od_graph_def.ParseFromString(serialized_graph)
-#             tf.import_graph_def(od_graph_def, name='')
-
-#     with graph.as_default():
-#         config = tf.ConfigProto()
-
-#         with tf.Session(graph=graph, config=config) as sess:
-
-#             constant_ops = [op for op in sess.graph.get_operations() if op.type == "Const"]
-#             params = []
-#             for constant_op in constant_ops:
-#                 shape = constant_op.outputs[0].get_shape()
-#                 var = tf.get_variable(constant_op.name, shape=shape)
-#                 params.append(var)
-
-#             init = tf.global_variables_initializer()
-#             sess.run(init)
-
-#             saver = tf.train.Saver(var_list=params)
-#             ckpt_path = os.path.join(ckpt_dir, 'model.ckpt')
-#             saver.save(sess, ckpt_path)
-
 # protobuf_to_checkpoint_conversion("C:/code/tensorflow-face-detection/model/frozen_inference_graph_face.pb", "C:/tflite/")
 protobuf_to_checkpoint_conversion("/home/gustavoduartefaria/frozen_inference_graph_face.pb", "/home/gustavoduartefaria/")

@@ -8,7 +8,6 @@ from skimage.io import imread
 from skimage.transform import resize
 from skimage import data
 from skimage.viewer import ImageViewer
-import yolo_v3_interpreter as yolo
 
 import cv2
 

@@ -39,7 +39,7 @@ def load_split_raw(split_str):
         for file in os.listdir(utils.split_dir + split_str + "/" + folder):
             file_name = utils.split_dir + split_str + "/" + folder + "/" + file
             split_dict[folder].append(
-                resize(imread(file_name),(utils.image_width, utils.image_width))
+                resize(imread(file_name), (utils.image_width, utils.image_width))
             )
 
     if not os.path.exists(cache_split):
@@ -171,7 +171,7 @@ def validate():
     accuracy = accurate * 100 / total_samples
     false_positive_rate = inacurate * 100 / total_samples
     unsure_rate = unsure * 100 / total_samples
-    
+
     print("#############################")
     print("Accuracy: " + str(accuracy))
     print("False positive rate: " + str(false_positive_rate))

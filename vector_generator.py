@@ -5,8 +5,6 @@ import pickle
 
 import keras
 
-import utils
-
 class VectorGenerator(keras.utils.Sequence):
 
     def __init__(self, vector_filenames, labels, batch_size):
@@ -24,5 +22,5 @@ class VectorGenerator(keras.utils.Sequence):
         for vector in vector_batch:
             with open(vector, "rb") as v:
                 vector_array.append(pickle.load(v))
-        
+
         return np.array(vector_array), np.array(label_batch)

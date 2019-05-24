@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+import os
+
 import keras
 
 from load_dataset_cache import vectors_and_labels
@@ -9,14 +11,66 @@ from load_local_model import classifier
 from new_utils import Consts, Dirs, Flags
 from params import Params, HyperParams, Config
 
+def init_log_dir():
+    with open(Dirs.TRAINING_SESSION_PATH, "w") as write_file:
+        write_file.write("1")
+        write_file.close()
+
 def read_training_session():
-    read_file = open("training_session.txt", "r")
-    training_session = int(read_file.read())
-    print("Training Session {}".format(training_session))
-    read_file.close()
-    write_file = open("training_session.txt", "w")
-    write_file.write(str(training_session+1))
-    write_file.close()
+    if not os.path.exists(Dirs.LOG_BASE_DIR):
+        os.mkdir(Dirs.LOG_BASE_DIR)
+        init_log_dir()
+
+    if not os.path.exists(Dirs.TRAINING_BASE_DIR):
+        os.mkdir(Dirs.TRAINING_BASE_DIR)
+
+    training_session = -1
+
+    with open(Dirs.TRAINING_SESSION_PATH, "r") as read_file:
+        training_session = int(read_file.read())
+        print("Training Session {}".format(training_session))
+        read_file.close()
+
+    with open(Dirs.TRAINING_SESSION_PATH, "w") as write_file:
+        write_file.write(str(training_session+1))
+        write_file.close()
+
+    checkpoint_dir = Dirs.CHECKPOINT_BASE_DIR.format(sess=training_session)
+    if not os.path.exists(checkpoint_dir):
+        os.mkdir(checkpoint_dir)
+
+    return training_session
+
+def save_session_params(params, hyper_params, train_config, val_config):
+    training_session = read_training_session()
+
+    if not os.path.exists(Dirs.LOG_DIR.format(sess=training_session)):
+        os.mkdir(Dirs.LOG_DIR.format(sess=training_session))
+
+    configs = [train_config, val_config]
+    with open(Dirs.PARAMS_PATH.format(sess=training_session), "w") as file:
+        file.write("Session: " + str(training_session) + "\n\n")
+        file.write("Params:\n")
+        file.write("\tModel: " + params.model + "\n")
+        file.write("\tNumber of classes: " + str(params.num_classes) + "\n")
+        file.write("\tExamples per class: " + str(params.examples_per_class) + "\n")
+        file.write("\tExamples per class: " + str(params.examples_per_class) + "\n")
+        file.write("\tCrop percentage: " + str(params.crop_pctg) + "\n")
+        file.write("\tInclude unknown:" + str(params.crop_pctg) + "\n")
+
+        for config in configs:
+            file.write("\n" + config.split.capitalize() + " Config:\n")
+            for version in config.list_versions:
+                file.write("\tInclude" + version[1] + ": " + str(version[0]) + "\n")
+
+        file.write("\nHyperparams:\n")
+        file.write("\tNumber of epochs: " + str(hyper_params.num_epochs) + "\n")
+        file.write("\tDropout rate: " + str(hyper_params.dropout_rate) + "\n")
+        file.write("\tBatch size: " + str(hyper_params.batch_size) + "\n")
+        file.write("\tFinal layer activation: " + str(hyper_params.final_layer_activation) + "\n")
+        file.write("\tOptimizer: " + str(hyper_params.optimizer) + "\n")
+
+        file.close()
 
     return training_session
 
@@ -35,7 +89,8 @@ def train_classifier(params, hyper_params, train_config, val_config):
     val_paths, val_labels = vectors_and_labels(params, val_config)
     cp_period = hyper_params.num_epochs / 10
 
-    training_session = read_training_session()
+    training_session = save_session_params(params, hyper_params, train_config, val_config)
+    checkpoint_path = Dirs.CHECKPOINT_BASE_DIR.format(sess=training_session) + "cp-{epoch:04d}.hdf5"
 
     train_generator = VectorGenerator(
         train_paths,
@@ -54,17 +109,18 @@ def train_classifier(params, hyper_params, train_config, val_config):
         num_classes=params.num_classes+1,
         dropout_rate=hyper_params.dropout_rate,
         final_layer_activation=keras.activations.softmax,
-        optimizer=keras.optimizers.rmsprop
+        optimizer=hyper_params.optimizer
     )
 
     model.summary()
+
     tensorboard = keras.callbacks.TensorBoard(
-        log_dir=Dirs.LOG_DIR(sess=training_session)
+        log_dir=Dirs.LOG_DIR.format(sess=training_session)
     )
 
     # Load Checkpoints
     cp_callback = keras.callbacks.ModelCheckpoint(
-        Dirs.CHECKPOINT_PATH,
+        checkpoint_path,
         verbose=1,
         save_weights_only=False,
         period=cp_period
@@ -84,16 +140,32 @@ def train_classifier(params, hyper_params, train_config, val_config):
     )
 
 def main():
-    params = Params(Consts.INCEPTIONV3, 10, 5, 20, True)
-    hyper_params = HyperParams(
-        100,
-        0.001,
-        32,
-        keras.activations.softmax,
-        keras.optimizers.rmsprop
+    params = Params(
+        model=Consts.INCEPTIONV3,
+        num_classes=10,
+        examples_per_class=5,
+        crop_pctg=20,
+        include_unknown=True
     )
-    train_config = Config(Consts.TRAIN, True, True, True)
-    val_config = Config(Consts.VAL, True, True, True)
+    hyper_params = HyperParams(
+        num_epochs=200,
+        dropout_rate=0.00001,
+        batch_size=32,
+        final_layer_activation=keras.activations.softmax,
+        optimizer=keras.optimizers.RMSprop()
+    )
+    train_config = Config(
+        split=Consts.TRAIN,
+        include_original=True,
+        include_transform=True,
+        include_face_patch=True
+    )
+    val_config = Config(
+        split=Consts.VAL,
+        include_original=True,
+        include_transform=True,
+        include_face_patch=True
+    )
 
     train_classifier(params, hyper_params, train_config, val_config)
 

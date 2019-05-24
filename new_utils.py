@@ -46,8 +46,13 @@ class Dirs:
     DATASET_CACHE_DIR = "{}dataset_cache/CelebA/".format(ROOT_DIR)
     VECTORS_DIR = "{}vectors/".format(DATASET_CACHE_DIR)
 
-    LOG_DIR = ROOT_DIR + "logs/training_{sess:04d}/"
-    CHECKPOINT_PATH = ROOT_DIR + "training/training_{sess:04d}/cp-{epoch:04d}.hdf5"
+    LOG_BASE_DIR = "{}logs/".format(ROOT_DIR)
+    TRAINING_SESSION_PATH = "{}training_session.txt".format(LOG_BASE_DIR)
+    LOG_DIR = LOG_BASE_DIR + "training_{sess:04d}/"
+    PARAMS_PATH = LOG_BASE_DIR + "training_{sess:04d}/params.txt"
+    TRAINING_BASE_DIR = "{}training/".format(ROOT_DIR)
+    CHECKPOINT_BASE_DIR = TRAINING_BASE_DIR + "training_{sess:04d}/"
+    CHECKPOINT_PATH = CHECKPOINT_BASE_DIR + "cp-{epoch:04d}.hdf5"
 
     @staticmethod
     def get_model_cache_dir(model):

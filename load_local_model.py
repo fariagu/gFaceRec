@@ -4,14 +4,7 @@ from keras_vggface.vggface import VGGFace
 import keras
 from keras.models import load_model
 
-# import tensorflow_hub as hub
 from new_utils import Consts
-
-def load_face_detector():
-    model = load_model("detector/yolov2_tiny-face.h5")
-    model.trainable = False
-
-    return model
 
 def load_vgg_face_fv():
     vgg_model = VGGFace(model='vgg16', include_top=False, input_shape=(224, 224, 3), pooling='avg')
@@ -28,10 +21,10 @@ def load_facenet_fv():
 
 def load_local_fv(model):
     """Chooses which of the pretrained models to return
-    
+
     Arguments:
         model {string} -- Chosen model
-    
+
     Returns:
         keras model -- CNN
     """
@@ -76,7 +69,7 @@ def classifier(fv_len, num_classes, dropout_rate, final_layer_activation, optimi
     ])
 
     model.compile(
-        optimizer=optimizer, # keras.optimizers.rmsprop,
+        optimizer=optimizer, # keras.optimizers.RMSprop,
         loss=keras.losses.sparse_categorical_crossentropy,
         metrics=['accuracy'],
     )

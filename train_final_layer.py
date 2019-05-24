@@ -19,6 +19,8 @@ def init_log_dir():
 def read_training_session():
     if not os.path.exists(Dirs.LOG_BASE_DIR):
         os.mkdir(Dirs.LOG_BASE_DIR)
+
+    if not os.path.exists(Dirs.TRAINING_SESSION_PATH):
         init_log_dir()
 
     if not os.path.exists(Dirs.TRAINING_BASE_DIR):
@@ -143,27 +145,29 @@ def main():
     params = Params(
         model=Consts.INCEPTIONV3,
         num_classes=10,
-        examples_per_class=5,
+        examples_per_class=1,
         crop_pctg=20,
-        include_unknown=True
+        include_unknown=False
     )
     hyper_params = HyperParams(
         num_epochs=200,
-        dropout_rate=0.00001,
+        dropout_rate=0.5,
         batch_size=32,
         final_layer_activation=keras.activations.softmax,
-        optimizer=keras.optimizers.RMSprop()
+        optimizer=keras.optimizers.RMSprop(
+            lr=0.001
+        )
     )
     train_config = Config(
         split=Consts.TRAIN,
         include_original=True,
         include_transform=True,
-        include_face_patch=True
+        include_face_patch=False
     )
     val_config = Config(
         split=Consts.VAL,
-        include_original=True,
-        include_transform=True,
+        include_original=False,
+        include_transform=False,
         include_face_patch=True
     )
 

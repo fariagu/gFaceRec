@@ -159,7 +159,7 @@ def train_val_split(base_dir, val_percentage, labels_dict):
     """ Splits files in directory into their respective sub folder (train/ or val/)
     by taking into account val_percentage and number of photos per identity,
     making sure there is at least one validation example per class.
-    
+
     Arguments:
         base_dir {string} -- folder where pictures reside
         val_percentage {integer} -- value between 0 and 100
@@ -174,8 +174,7 @@ def train_val_split(base_dir, val_percentage, labels_dict):
 
     train_split = []
     val_split = []
-    # TODO: fazer o que o pylint manda na linha a seguir a esta
-    for key in labels_dict_by_class.keys():
+    for key in labels_dict_by_class:
         if labels_dict_by_class[key]:
             pass
         elif len(labels_dict_by_class[key]) <= 10:

@@ -56,9 +56,8 @@ def save_session_params(params, hyper_params, train_config, val_config):
         file.write("\tModel: " + params.model + "\n")
         file.write("\tNumber of classes: " + str(params.num_classes) + "\n")
         file.write("\tExamples per class: " + str(params.examples_per_class) + "\n")
-        file.write("\tExamples per class: " + str(params.examples_per_class) + "\n")
         file.write("\tCrop percentage: " + str(params.crop_pctg) + "\n")
-        file.write("\tInclude unknown:" + str(params.crop_pctg) + "\n")
+        file.write("\tInclude unknown:" + str(params.include_unknown) + "\n")
 
         for config in configs:
             file.write("\n" + config.split.capitalize() + " Config:\n")
@@ -143,16 +142,16 @@ def train_classifier(params, hyper_params, train_config, val_config):
 
 def main():
     params = Params(
-        model=Consts.INCEPTIONV3,
-        num_classes=10,
-        examples_per_class=1,
+        model=Consts.VGG16,
+        num_classes=100,
+        examples_per_class=100,
         crop_pctg=20,
-        include_unknown=False
+        include_unknown=True
     )
     hyper_params = HyperParams(
         num_epochs=200,
-        dropout_rate=0.5,
-        batch_size=32,
+        dropout_rate=0.75,
+        batch_size=64,
         final_layer_activation=keras.activations.softmax,
         optimizer=keras.optimizers.RMSprop(
             lr=0.001
@@ -166,9 +165,9 @@ def main():
     )
     val_config = Config(
         split=Consts.VAL,
-        include_original=False,
-        include_transform=False,
-        include_face_patch=True
+        include_original=True,
+        include_transform=True,
+        include_face_patch=False
     )
 
     train_classifier(params, hyper_params, train_config, val_config)

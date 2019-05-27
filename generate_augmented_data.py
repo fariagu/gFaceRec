@@ -2,20 +2,17 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
-from skimage.io import imread, imsave
-from skimage.transform import resize
-import numpy as np
-import scipy.misc
-import cv2
-
 import random as rand
+
+from skimage.io import imread, imsave
+import cv2
 
 from keras.preprocessing.image import ImageDataGenerator
 
-TRANSFORM   = 0
-FACE_PATCH  = 1
+TRANSFORM = 0
+FACE_PATCH = 1
 
-def get_transform(height, width):
+def get_transform(width):
     range_shift_x = int(15 * width / 100)
     range_shift_y = int(15 * width / 100)
     range_patch = int(width / 2)
@@ -24,16 +21,13 @@ def get_transform(height, width):
     tx = rand.randint(-range_shift_x, range_shift_x)
     ty = rand.randint(-range_shift_y, range_shift_y)
     flip = rand.randint(0, 3)
-    
-    x_patch = rand.randint(0, range_patch)
-    y_patch = rand.randint(0, range_patch)
 
     transform = {
         "theta": theta,
         "tx": tx,
         "ty": ty,
-        "sheer": theta,
-        "flip_horizontal": True if flip == 0 else False
+        # "sheer": theta,
+        "flip_horizontal": bool(flip == 0)
     }
 
     return transform
@@ -62,10 +56,10 @@ def augment_image(file_path, mode, version):
     im_gen = ImageDataGenerator()
 
     if mode == TRANSFORM:
-        img = im_gen.apply_transform(img, get_transform(height, width))
+        img = im_gen.apply_transform(img, get_transform(width))
     elif mode == FACE_PATCH:
         img = get_patched_image(img, height, width)
-    
+
     mode_str = "transform/" if mode == TRANSFORM else "face_patch/"
 
     path_split = file_path.split("/")

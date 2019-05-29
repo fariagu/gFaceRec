@@ -12,10 +12,10 @@ from keras.preprocessing.image import ImageDataGenerator
 TRANSFORM = 0
 FACE_PATCH = 1
 
-def get_transform(width):
+def get_transform(height, width):
     range_shift_x = int(15 * width / 100)
-    range_shift_y = int(15 * width / 100)
-    range_patch = int(width / 2)
+    range_shift_y = int(15 * height / 100)
+    # range_patch = int(width / 2)
 
     theta = rand.randint(-15, 15)
     tx = rand.randint(-range_shift_x, range_shift_x)
@@ -56,7 +56,7 @@ def augment_image(file_path, mode, version):
     im_gen = ImageDataGenerator()
 
     if mode == TRANSFORM:
-        img = im_gen.apply_transform(img, get_transform(width))
+        img = im_gen.apply_transform(img, get_transform(height, width))
     elif mode == FACE_PATCH:
         img = get_patched_image(img, height, width)
 

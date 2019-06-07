@@ -76,13 +76,13 @@ def augment_image(file_path, mode, version):
     dest_path = "{}{}_{v:02d}.jpg".format(dest_dir, file_name, v=version)
     imsave(dest_path, img)
 
-im = imread("C:/datasets/CelebA/structured_dir/crop_30/train/original/499/151213.jpg")
+# im = imread("C:/datasets/CelebA/structured_dir/crop_30/train/original/499/151213.jpg")
 
-h = im.shape[0]
-w = im.shape[1]
+# h = im.shape[0]
+# w = im.shape[1]
 
-im_gen = ImageDataGenerator()
+# im_gen = ImageDataGenerator()
 
-im = im_gen.apply_transform(im, get_transform(h, w))
+# im = im_gen.apply_transform(im, get_transform(h, w))
 
-imsave("C:/Users/gustavo.faria/Desktop/test_pics/pic.jpg", im)
+# imsave("C:/Users/gustavo.faria/Desktop/test_pics/pic.jpg", im)

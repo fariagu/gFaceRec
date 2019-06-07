@@ -160,7 +160,7 @@ def main(
         num_classes=num_classes, # 50,
         examples_per_class=examples_per_class, # 1,
         crop_pctg=crop_pctg, # 20,
-        include_unknown=True
+        include_unknown=False
     )
     hyper_params = HyperParams(
         num_epochs=num_epochs, # 200,

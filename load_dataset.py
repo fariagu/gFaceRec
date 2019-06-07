@@ -247,7 +247,7 @@ def main():
     if not os.path.exists(Dirs.STRUCTURED_DIR):
         os.mkdir(Dirs.STRUCTURED_DIR)
 
-    cropped_dirs = Dirs.get_crop_dirs(cache=False)
+    cropped_dirs = Dirs.get_crop_dirs(cache=False)[-1:]
 
     labels_dict = identity_dict("{}identity_CelebA.txt".format(Dirs.DATASET_DIR))
 

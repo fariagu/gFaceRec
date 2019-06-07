@@ -12,7 +12,7 @@ class Consts:
     DROPOUT_RATE = 0.5
     BASE_LEARNING_RATE = 0.001
     BATCH_SIZE = 32
-    N_WORKERS = 1 if Flags.ENV_WINDOWS else 22
+    N_WORKERS = 1 if Flags.ENV_WINDOWS else 4
     INCEPTIONV3 = "InceptionV3"
     VGG16 = "VGG16"
     RESNET50 = "Resnet50"

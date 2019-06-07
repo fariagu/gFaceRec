@@ -111,7 +111,7 @@ def vectors_and_labels(params, config):
                             vector_path = "{}{}".format(label_dir, file_name)
                             vecs_and_labels.append((vector_path, label))
 
-                # this condition add files that belong to the "unknown" class
+                # this condition adds files that belong to the "unknown" class
                 elif params.include_unknown and len(unknowns) * 10 < len(vecs_and_labels):
                     random_file = random.choice(os.listdir(label_dir))
                     vector_path = "{}{}".format(label_dir, random_file)

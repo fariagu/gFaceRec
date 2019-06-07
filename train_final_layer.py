@@ -143,8 +143,8 @@ def train_classifier(params, hyper_params, train_config, val_config):
 def main():
     params = Params(
         model=Consts.VGG16,
-        num_classes=100,
-        examples_per_class=100,
+        num_classes=50,
+        examples_per_class=1,
         crop_pctg=20,
         include_unknown=True
     )
@@ -161,13 +161,13 @@ def main():
         split=Consts.TRAIN,
         include_original=True,
         include_transform=True,
-        include_face_patch=False
+        include_face_patch=True
     )
     val_config = Config(
         split=Consts.VAL,
         include_original=True,
         include_transform=True,
-        include_face_patch=False
+        include_face_patch=True
     )
 
     train_classifier(params, hyper_params, train_config, val_config)

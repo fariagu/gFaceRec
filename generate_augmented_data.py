@@ -13,8 +13,8 @@ TRANSFORM = 0
 FACE_PATCH = 1
 
 def get_transform(height, width):
-    range_shift_x = int(15 * width / 100)
-    range_shift_y = int(15 * height / 100)
+    range_shift_x = int(15 * height / 100)
+    range_shift_y = int(15 * width / 100)
     # range_patch = int(width / 2)
 
     theta = rand.randint(-15, 15)
@@ -23,11 +23,11 @@ def get_transform(height, width):
     flip = rand.randint(0, 3)
 
     transform = {
-        "theta": theta,
-        "tx": tx,
-        "ty": ty,
+        "theta": 15,
+        "tx": range_shift_x,
+        "ty": range_shift_y,
         # "sheer": theta,
-        "flip_horizontal": bool(flip == 0)
+        "flip_horizontal": True
     }
 
     return transform
@@ -75,3 +75,14 @@ def augment_image(file_path, mode, version):
 
     dest_path = "{}{}_{v:02d}.jpg".format(dest_dir, file_name, v=version)
     imsave(dest_path, img)
+
+im = imread("C:/datasets/CelebA/structured_dir/crop_30/train/original/499/151213.jpg")
+
+h = im.shape[0]
+w = im.shape[1]
+
+im_gen = ImageDataGenerator()
+
+im = im_gen.apply_transform(im, get_transform(h, w))
+
+imsave("C:/Users/gustavo.faria/Desktop/test_pics/pic.jpg", im)

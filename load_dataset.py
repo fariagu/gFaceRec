@@ -247,7 +247,7 @@ def main():
     if not os.path.exists(Dirs.STRUCTURED_DIR):
         os.mkdir(Dirs.STRUCTURED_DIR)
 
-    cropped_dirs = Dirs.get_crop_dirs(cache=False)[-1:]
+    cropped_dirs = Dirs.get_crop_dirs(cache=False)
 
     labels_dict = identity_dict("{}identity_CelebA.txt".format(Dirs.DATASET_DIR))
 
@@ -263,12 +263,12 @@ def main():
         # e depois falta dividir em train/val (90/10)
         train_val_split(directory, Consts.VAL_PERCENTAGE, labels_dict)
 
-        # e so depois dividir em subpastas (uma pasta por iden)
         sub_dirs = [
             "{}train/original/".format(directory),
             "{}val/original/".format(directory)
         ]
 
+        # e so depois dividir em subpastas (uma pasta por iden)
         for sub_dir in sub_dirs:
             organize_folder(sub_dir, labels_dict)
 

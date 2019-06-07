@@ -41,7 +41,7 @@ class Consts:
 class Dirs:
     ROOT_DIR = "C:/" if Flags.ENV_WINDOWS else "/home/gustavoduartefaria/"
     DATASET_DIR = "{}datasets/CelebA/".format(ROOT_DIR)
-    ORIGINAL_DIR = "{}img_celeba/".format(DATASET_DIR)
+    ORIGINAL_DIR = "{}img_align_celeba/".format(DATASET_DIR)
     STRUCTURED_DIR = "{}structured_dir/".format(DATASET_DIR)
     DATASET_CACHE_DIR = "{}dataset_cache/CelebA/".format(ROOT_DIR)
     VECTORS_DIR = "{}vectors/".format(DATASET_CACHE_DIR)

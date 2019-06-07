@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+import sys
 
 import keras
 
@@ -140,37 +141,66 @@ def train_classifier(params, hyper_params, train_config, val_config):
         shuffle=False, # I do that already
     )
 
-def main():
+def main(
+        model,
+        num_classes,
+        examples_per_class,
+        crop_pctg,
+        num_epochs,
+        dropout_rate,
+        batch_size,
+        learning_rate,
+        nte,
+        ote,
+        nve,
+        ove
+):
     params = Params(
-        model=Consts.VGG16,
-        num_classes=50,
-        examples_per_class=1,
-        crop_pctg=20,
+        model=model, # Consts.VGG16,
+        num_classes=num_classes, # 50,
+        examples_per_class=examples_per_class, # 1,
+        crop_pctg=crop_pctg, # 20,
         include_unknown=True
     )
     hyper_params = HyperParams(
-        num_epochs=200,
-        dropout_rate=0.75,
-        batch_size=64,
+        num_epochs=num_epochs, # 200,
+        dropout_rate=dropout_rate, # 0.75,
+        batch_size=batch_size, # 64,
         final_layer_activation=keras.activations.softmax,
         optimizer=keras.optimizers.RMSprop(
-            lr=0.001
+            lr=learning_rate, # 0.001
         )
     )
     train_config = Config(
         split=Consts.TRAIN,
-        include_original=True,
-        include_transform=True,
-        include_face_patch=True
+        include_original=nte, # True,
+        include_transform=nte, # True,
+        include_face_patch=ote, # True
     )
     val_config = Config(
         split=Consts.VAL,
-        include_original=True,
-        include_transform=True,
-        include_face_patch=True
+        include_original=nve, # True,
+        include_transform=nve, # True,
+        include_face_patch=ove, # True
     )
 
     train_classifier(params, hyper_params, train_config, val_config)
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) == 13:
+        main(
+            sys.argv[1],
+            int(sys.argv[2]),
+            int(sys.argv[3]),
+            int(sys.argv[4]),
+            int(sys.argv[5]),
+            float(sys.argv[6]),
+            int(sys.argv[7]),
+            float(sys.argv[8]),
+            bool(sys.argv[9]),
+            bool(sys.argv[10]),
+            bool(sys.argv[11]),
+            bool(sys.argv[12])
+        )
+    else:
+        print("Usage: python -W ignore train_final layer.py <model> <num_classes> <examples_per_class> <crop_pctg> <num_epochs> <dropout_rate> <batch_size> <learning_rate> <nte> <ote> <nve> <ove>")

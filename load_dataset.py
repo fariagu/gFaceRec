@@ -221,6 +221,9 @@ def generate_augmentation(filtered_dir, aug_mult):
     face_patch = 1
 
     for directory in os.listdir(filtered_dir):
+        if directory == "no_crop":
+            break
+
         print("AUGMENTING {}".format(directory))
 
         source_dirs = [

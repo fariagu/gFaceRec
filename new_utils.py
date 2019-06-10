@@ -7,7 +7,7 @@ class Flags:
 
 class Consts:
     NUM_CLASSES = 500
-    AUG_MULT = 10
+    AUG_MULT = 20
     VAL_PERCENTAGE = 10
     DROPOUT_RATE = 0.5
     BASE_LEARNING_RATE = 0.001

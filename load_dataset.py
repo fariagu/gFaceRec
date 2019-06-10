@@ -252,11 +252,13 @@ def main():
     labels_dict = identity_dict("{}identity_CelebA.txt".format(Dirs.DATASET_DIR))
 
     # faz isto para ter so 500 classes no maximo
+    print("FILTERING IDENTITIES")
     filter_celeba_identities(Dirs.ORIGINAL_DIR, labels_dict, cropped_dirs[0], Consts.NUM_CLASSES)
 
     labels_dict = filter_identity_dict(labels_dict, Consts.NUM_CLASSES)
 
     # depois falta fazer crops as fotos (margin: 0, 5, 10, 15, 20, 25, 30)
+    print("CROPPING PHOTOS")
     batch_detect_and_crop(cropped_dirs)
 
     for directory in cropped_dirs:

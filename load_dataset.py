@@ -222,7 +222,7 @@ def generate_augmentation(filtered_dir, aug_mult):
 
     for directory in os.listdir(filtered_dir):
         if directory == "no_crop":
-            break
+            continue
 
         print("AUGMENTING {}".format(directory))
 

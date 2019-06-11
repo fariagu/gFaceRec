@@ -175,7 +175,7 @@ def train_val_split(base_dir, val_percentage, labels_dict):
     train_split = []
     val_split = []
     for key in labels_dict_by_class:
-        if labels_dict_by_class[key]:
+        if not labels_dict_by_class[key]:
             pass
         elif len(labels_dict_by_class[key]) <= 10:
             val_split.append(labels_dict_by_class[key][0])

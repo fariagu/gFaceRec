@@ -194,13 +194,14 @@ if __name__ == "__main__":
     # main()
 
     if len(sys.argv) == 5:
+        generate_cache_tree(Dirs.ROOT_DIR)
         print("GENERATING VECTORS FOR {} crop_{pctg:02d} {} {}"
-                          .format(
-                              sys.argv[1],
-                              sys.argv[3],
-                              sys.argv[4],
-                              pctg=int(sys.argv[2])
-                          ))
+              .format(
+                  sys.argv[1],
+                  sys.argv[3],
+                  sys.argv[4],
+                  pctg=int(sys.argv[2])
+              ))
         generate_vectors(sys.argv[1], int(sys.argv[2]), sys.argv[3], sys.argv[4])
     else:
         main()

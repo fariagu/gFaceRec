@@ -199,7 +199,7 @@ if __name__ == "__main__":
                               sys.argv[1],
                               sys.argv[3],
                               sys.argv[4],
-                              crop_pctg=int(sys.argv[2])
+                              pctg=int(sys.argv[2])
                           ))
         generate_vectors(sys.argv[1], int(sys.argv[2]), sys.argv[3], sys.argv[4])
     else:

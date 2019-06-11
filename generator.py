@@ -49,7 +49,7 @@ class Generator(keras.utils.Sequence):
     def get_crop_len(self, length):
         pctg = 30 - self.crop_pctg
 
-        return pctg * length / 100
+        return int(pctg * length / 100)
 
 # def get_crop_len(length, crop_pctg):
 #     pctg = 30 - crop_pctg

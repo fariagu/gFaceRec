@@ -18,8 +18,8 @@ class Consts:
     RESNET50 = "Resnet50"
     SENET50 = "SeNet50"
     MODELS = [INCEPTIONV3, VGG16, RESNET50, SENET50]
-    # CROP_PCTGS = [-1, 0, 5, 10, 15, 20, 25, 30]     # -1 means no_crop
-    CROP_PCTGS = [-1, 30]     # -1 means no_crop
+    CROP_PCTGS = [-1, 0, 5, 10, 15, 20, 25, 30]     # -1 means no_crop
+    # CROP_PCTGS = [-1, 30]     # -1 means no_crop
     TRAIN = "train"
     VAL = "val"
     SPLITS = [TRAIN, VAL]

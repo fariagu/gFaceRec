@@ -46,7 +46,7 @@ detector/
 test/
 training_session.txt
 logs.zip
-*.sh
+#*.sh
 
 # venv is called keras
 keras/

@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+import sys
 import random
 import pickle
 
@@ -190,7 +191,9 @@ def main():
                     generate_vectors(model, crop_pctg, split, version)
 
 if __name__ == "__main__":
-    main()
-    # c = Config(Consts.TRAIN, True, True, True)
-    # p = Params(Consts.INCEPTIONV3, 10, 5, 20, True)
-    # vectors_and_labels(p, c)
+    # main()
+
+    if len(sys.argv) == 5:
+        generate_vectors(sys.argv[1], int(sys.argv[2]), sys.argv[3], sys.argv[4])
+    else:
+        main()

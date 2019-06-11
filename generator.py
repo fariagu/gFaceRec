@@ -4,8 +4,8 @@ from skimage.transform import resize
 from skimage.io import imread
 import numpy as np
 
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
+# import matplotlib.pyplot as plt
+# import matplotlib.image as mpimg
 
 from new_utils import Consts
 

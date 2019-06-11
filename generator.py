@@ -4,8 +4,8 @@ from skimage.transform import resize
 from skimage.io import imread
 import numpy as np
 
-# import matplotlib.pyplot as plt
-# import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 from new_utils import Consts
 
@@ -29,20 +29,17 @@ class Generator(keras.utils.Sequence):
         image_array = []
         (height, width) = Consts.get_image_size(self.model)
         for file_name in image_batch:
-            img = resize(
-                imread(file_name),
-                (height, width)
-            )
+            img = imread(file_name)
 
             if self.model == Consts.VGG16:
                 np.transpose(img, (2, 0, 1))
 
-            crop_len = self.get_crop_len(width)
+            crop_len = self.get_crop_len(img.shape[0])
 
             if crop_len > 0:
                 img = img[crop_len:-crop_len, crop_len:-crop_len]
 
-            image_array.append(img)
+            image_array.append(resize(img, (height, width)))
 
         return np.array(image_array), np.array(label_batch)
 
@@ -51,24 +48,26 @@ class Generator(keras.utils.Sequence):
 
         return int(pctg * length / 100)
 
-# def get_crop_len(length, crop_pctg):
-#     pctg = 30 - crop_pctg
+def get_crop_len(length, crop_pctg):
+    pctg = 30 - crop_pctg
 
-#     return int(pctg * length / 100)
+    return int(pctg * length / 100)
 
-# if __name__ == "__main__":
-#     tmp = resize(
-#         imread("C:/datasets/CelebA/crop_30/train/original/003636.jpg"),
-#         (224, 224)
-#     )
+if __name__ == "__main__":
+    tmp = imread("C:/datasets/CelebA/crop_30/train/original/003636.jpg")
 
-#     (heighht, whidth) = (224, 224)
-#     crop_lhen = get_crop_len(whidth, 0)
+    (heighht, whidth) = (tmp.shape[0], tmp.shape[1])
+    crop_lhen = get_crop_len(whidth, 30)
 
-#     if crop_lhen > 0:
-#         tmp = tmp[crop_lhen:-crop_lhen, crop_lhen:-crop_lhen]
+    if crop_lhen > 0:
+        tmp = tmp[crop_lhen:-crop_lhen, crop_lhen:-crop_lhen]
 
-#     tmpplot = plt.imshow(tmp)
-#     plt.show()
+    tmp = resize(
+        tmp,
+        (224, 224)
+    )
 
-#     x = 0
+    tmpplot = plt.imshow(tmp)
+    plt.show()
+
+    x = 0

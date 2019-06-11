@@ -149,7 +149,7 @@ def generate_vectors(model, crop_pctg, split, version):
         version=version
     )
 
-    generator = Generator(filenames, labels, Consts.BATCH_SIZE, model)
+    generator = Generator(filenames, labels, Consts.BATCH_SIZE, model, crop_pctg)
 
     keras_model = load_local_fv(model)
     # keras_model.summary()
@@ -176,8 +176,8 @@ def generate_vectors(model, crop_pctg, split, version):
 def main():
     generate_cache_tree(Dirs.ROOT_DIR)
 
-    for model in Consts.MODELS[1:2]: # [:2] porque ainda só tenho dois modelos
-        for crop_pctg in Consts.CROP_PCTGS[1:]: # [1:] porque o no_crop merdou
+    for model in Consts.MODELS[1:2]: # [:2] porque ainda so tenho dois modelos
+        for crop_pctg in Consts.CROP_PCTGS[1:]: # [1:] porque o no_crop nao interessa
             for split in Consts.SPLITS:
                 for version in Consts.VERSIONS:
                     print("GENERATING VECTORS FOR {} crop_{pctg:02d} {} {}"
@@ -190,7 +190,7 @@ def main():
                     generate_vectors(model, crop_pctg, split, version)
 
 if __name__ == "__main__":
-    # main()
-    c = Config(Consts.TRAIN, True, True, True)
-    p = Params(Consts.INCEPTIONV3, 10, 5, 20, True)
-    vectors_and_labels(p, c)
+    main()
+    # c = Config(Consts.TRAIN, True, True, True)
+    # p = Params(Consts.INCEPTIONV3, 10, 5, 20, True)
+    # vectors_and_labels(p, c)

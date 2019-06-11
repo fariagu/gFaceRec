@@ -127,7 +127,7 @@ class Dirs:
             print("WRONG ARGS: invalid version")
             return -1
 
-        crop_dir = Dirs.get_crop_dir(crop_pctg=crop_pctg, cache=False)
+        crop_dir = Dirs.get_crop_dir(crop_pctg=30, cache=False)
 
         return "{}{}/{}/".format(crop_dir, split, version)
 

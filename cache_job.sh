@@ -1,8 +1,8 @@
 #!/bin/bash
 
-python -W ignore load_dataset_cache.py VGG16 20 train original
+# python -W ignore load_dataset_cache.py VGG16 20 train original
 
-python -W ignore load_dataset_cache.py VGG16 20 train transform
+python -W ignore load_dataset_cache.py VGG16 20 train transform #
 
 python -W ignore load_dataset_cache.py VGG16 20 train face_patch
 

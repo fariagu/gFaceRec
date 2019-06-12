@@ -108,7 +108,7 @@ class Dirs:
             print("WRONG ARGS: invalid version")
             return -1
 
-        crop_dir = Dirs.get_crop_dir(crop_pctg=30, model=model) # reformulei e entao a unica crop_pctg e 30
+        crop_dir = Dirs.get_crop_dir(crop_pctg=crop_pctg, model=model)
 
         return "{}{}/{}/".format(crop_dir, split, version)
 

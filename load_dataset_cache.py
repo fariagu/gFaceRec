@@ -166,7 +166,7 @@ def generate_vectors(model, crop_pctg, split, version):
     iterable = []
     for prediction, filename, label in zip(predictions, filenames, labels):
         iterable.append(Iterable(prediction, filename, label))
-   
+
     pool = Pool(Consts.N_WORKERS)
     pool = Pool(1)
     func = partial(save_vectors_parallel, output_dir=output_dir)

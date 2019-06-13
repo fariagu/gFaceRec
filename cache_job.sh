@@ -2,43 +2,43 @@
 
 # python -W ignore load_dataset_cache.py VGG16 20 train original
 
-python -W ignore load_dataset_cache.py VGG16 20 train transform #
+# python -W ignore load_dataset_cache.py VGG16 20 train transform
 
-python -W ignore load_dataset_cache.py VGG16 20 train face_patch
+# python -W ignore load_dataset_cache.py VGG16 20 train face_patch
 
-python -W ignore load_dataset_cache.py VGG16 20 val original
+# python -W ignore load_dataset_cache.py VGG16 20 val original
 
-python -W ignore load_dataset_cache.py VGG16 20 val transform
+# python -W ignore load_dataset_cache.py VGG16 20 val transform
 
-python -W ignore load_dataset_cache.py VGG16 20 val face_patch
-
-###################
-
-python -W ignore load_dataset_cache.py VGG16 15 train original
-
-python -W ignore load_dataset_cache.py VGG16 15 train transform
-
-python -W ignore load_dataset_cache.py VGG16 15 train face_patch
-
-python -W ignore load_dataset_cache.py VGG16 15 val original
-
-python -W ignore load_dataset_cache.py VGG16 15 val transform
-
-python -W ignore load_dataset_cache.py VGG16 15 val face_patch
+# python -W ignore load_dataset_cache.py VGG16 20 val face_patch
 
 ###################
 
-python -W ignore load_dataset_cache.py InceptionV3 15 train original
+# python -W ignore load_dataset_cache.py VGG16 15 train original
 
-python -W ignore load_dataset_cache.py InceptionV3 15 train transform
+# python -W ignore load_dataset_cache.py VGG16 15 train transform
 
-python -W ignore load_dataset_cache.py InceptionV3 15 train face_patch
+# python -W ignore load_dataset_cache.py VGG16 15 train face_patch #
 
-python -W ignore load_dataset_cache.py InceptionV3 15 val original
+# python -W ignore load_dataset_cache.py VGG16 15 val original #
 
-python -W ignore load_dataset_cache.py InceptionV3 15 val transform
+# python -W ignore load_dataset_cache.py VGG16 15 val transform #
 
-python -W ignore load_dataset_cache.py InceptionV3 15 val face_patch
+# python -W ignore load_dataset_cache.py VGG16 15 val face_patch #
+
+###################
+
+# python -W ignore load_dataset_cache.py InceptionV3 15 train original #
+
+# python -W ignore load_dataset_cache.py InceptionV3 15 train transform #
+
+# python -W ignore load_dataset_cache.py InceptionV3 15 train face_patch #
+
+# python -W ignore load_dataset_cache.py InceptionV3 15 val original #
+
+# python -W ignore load_dataset_cache.py InceptionV3 15 val transform #
+
+# python -W ignore load_dataset_cache.py InceptionV3 15 val face_patch #
 
 ###################
 

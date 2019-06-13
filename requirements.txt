@@ -34,3 +34,4 @@ six==1.12.0
 termcolor==1.1.0
 toolz==0.9.0
 Werkzeug==0.15.1
+keras-vggface==0.5

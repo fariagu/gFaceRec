@@ -13,7 +13,7 @@ from params import Params, Config
 from new_utils import Consts, Dirs
 from train_final_layer import read_training_session
 
-def save_session_params(params, train_config, val_config, bias, euc_results, cos_results):
+def save_session_params(params, train_config, val_config, bias, euc_results, cos_results, time):
     training_session = read_training_session()
 
     if not os.path.exists(Dirs.LOG_DIR.format(sess=training_session)):
@@ -46,6 +46,8 @@ def save_session_params(params, train_config, val_config, bias, euc_results, cos
         file.write("\tInaccuracy: {}\n".format(cos_results[1]))
         file.write("\tFalse Positive Rate: {}\n".format(cos_results[2]))
         file.write("\tFalse Negative Rate: {}\n".format(cos_results[3]))
+
+        file.write("Time: {}\n".format(time))
 
         file.close()
 
@@ -157,9 +159,7 @@ def main(
     cos_results = vector_distance(params, train_config, val_config, bias=bias, euclidean=False)
     elapsed_time = time.time() - start_time
 
-    save_session_params(params, train_config, val_config, bias, euc_results, cos_results)
-
-    print("#######################\nElapsed Time: {}".format(elapsed_time))
+    save_session_params(params, train_config, val_config, bias, euc_results, cos_results, elapsed_time)
 
 if __name__ == "__main__":
     if len(sys.argv) == 13:

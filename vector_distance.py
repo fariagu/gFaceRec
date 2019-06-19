@@ -174,4 +174,4 @@ if __name__ == "__main__":
             bool(sys.argv[12])
         )
     else:
-        print("Usage: python -W ignore vector_distance.py <model> <num_classes> <examples_per_class> <crop_pctg> <num_epochs> <dropout_rate> <batch_size> <learning_rate> <nte> <ote> <nve> <ove>")
+        print("Usage: python -W ignore vector_distance.py <model> <num_classes> <examples_per_class> <crop_pctg> <nte> <ote> <nve> <ove>")

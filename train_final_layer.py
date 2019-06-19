@@ -108,7 +108,7 @@ def train_classifier(params, hyper_params, train_config, val_config):
 
     model = classifier(
         fv_len=get_fv_len(params.model),
-        num_classes=params.num_classes+1,
+        num_classes=params.num_classes,
         dropout_rate=hyper_params.dropout_rate,
         final_layer_activation=keras.activations.softmax,
         optimizer=hyper_params.optimizer
@@ -203,4 +203,4 @@ if __name__ == "__main__":
             bool(sys.argv[12])
         )
     else:
-        print("Usage: python -W ignore train_final layer.py <model> <num_classes> <examples_per_class> <crop_pctg> <num_epochs> <dropout_rate> <batch_size> <learning_rate> <nte> <ote> <nve> <ove>")
+        print("Usage: python -W ignore train_final_layer.py <model> <num_classes> <examples_per_class> <crop_pctg> <num_epochs> <dropout_rate> <batch_size> <learning_rate> <nte> <ote> <nve> <ove>")

@@ -1,6 +1,8 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+import sys
+import time
 
 import pickle
 import numpy as np
@@ -119,32 +121,57 @@ def vector_distance(params, train_config, val_config, bias, euclidean=True):
 
     return (accuracy, inacuracy, fp_rate, fn_rate)
 
-def main():
+def main(
+        model,
+        num_classes,
+        examples_per_class,
+        crop_pctg,
+        nte,
+        ote,
+        nve,
+        ove
+):
     params = Params(
-        model=Consts.VGG16,
-        num_classes=50,
-        examples_per_class=5,
-        crop_pctg=5,
+        model=model,
+        num_classes=num_classes,
+        examples_per_class=examples_per_class,
+        crop_pctg=crop_pctg,
         include_unknown=False   # when in vector mode: always false
     )
     train_config = Config(
         split=Consts.TRAIN,
-        include_original=True,
-        include_transform=True,
-        include_face_patch=True
+        include_original=nte,
+        include_transform=nte,
+        include_face_patch=ote
     )
     val_config = Config(
         split=Consts.VAL,
-        include_original=True,
-        include_transform=True,
-        include_face_patch=True
+        include_original=nve,
+        include_transform=nve,
+        include_face_patch=ove
     )
     bias = 0.625 # bias tb e var a estudar
 
+    start_time = time.time()
     euc_results = vector_distance(params, train_config, val_config, bias=bias, euclidean=True)
     cos_results = vector_distance(params, train_config, val_config, bias=bias, euclidean=False)
+    elapsed_time = time.time() - start_time
 
     save_session_params(params, train_config, val_config, bias, euc_results, cos_results)
 
+    print("#######################\nElapsed Time: {}".format(elapsed_time))
+
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) == 13:
+        main(
+            sys.argv[1],
+            int(sys.argv[2]),
+            int(sys.argv[3]),
+            int(sys.argv[4]),
+            bool(sys.argv[9]),
+            bool(sys.argv[10]),
+            bool(sys.argv[11]),
+            bool(sys.argv[12])
+        )
+    else:
+        print("Usage: python -W ignore vector_distance.py <model> <num_classes> <examples_per_class> <crop_pctg> <num_epochs> <dropout_rate> <batch_size> <learning_rate> <nte> <ote> <nve> <ove>")

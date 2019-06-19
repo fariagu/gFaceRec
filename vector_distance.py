@@ -162,16 +162,16 @@ def main(
     save_session_params(params, train_config, val_config, bias, euc_results, cos_results, elapsed_time)
 
 if __name__ == "__main__":
-    if len(sys.argv) == 13:
+    if len(sys.argv) == 9:
         main(
             sys.argv[1],
             int(sys.argv[2]),
             int(sys.argv[3]),
             int(sys.argv[4]),
-            bool(sys.argv[9]),
-            bool(sys.argv[10]),
-            bool(sys.argv[11]),
-            bool(sys.argv[12])
+            bool(sys.argv[5]),
+            bool(sys.argv[6]),
+            bool(sys.argv[7]),
+            bool(sys.argv[8])
         )
     else:
         print("Usage: python -W ignore vector_distance.py <model> <num_classes> <examples_per_class> <crop_pctg> <nte> <ote> <nve> <ove>")

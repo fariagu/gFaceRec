@@ -26,7 +26,6 @@ def save_session_params(params, train_config, val_config, bias, euc_results, cos
         file.write("\tModel: " + params.model + "\n")
         file.write("\tNumber of classes: " + str(params.num_classes) + "\n")
         file.write("\tExamples per class: " + str(params.examples_per_class) + "\n")
-        file.write("\tExamples per class: " + str(params.examples_per_class) + "\n")
         file.write("\tCrop percentage: " + str(params.crop_pctg) + "\n")
         file.write("\tBias:" + str(bias) + "\n")
 

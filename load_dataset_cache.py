@@ -102,7 +102,7 @@ def vectors_and_labels(params, config):
                     for i, file_name in enumerate(os.listdir(label_dir)):
 
                         if dict_by_iden:
-                            vector_id = file_name.split(".")[0]
+                            vector_id = file_name.split(".")[0].split("_")[0]
 
                             if vector_id in dict_by_iden[label]:
                                 vector_path = "{}{}".format(label_dir, file_name)

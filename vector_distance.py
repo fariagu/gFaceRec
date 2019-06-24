@@ -32,7 +32,7 @@ def save_session_params(params, train_config, val_config, bias, euc_results, cos
         for config in configs:
             file.write("\n" + config.split.capitalize() + " Config:\n")
             for version in config.list_versions:
-                file.write("\tInclude" + version[1] + ": " + str(version[0]) + "\n")
+                file.write("\tInclude " + version[1] + ": " + str(version[0]) + "\n")
 
         file.write("Euclidean Results:\n")
         file.write("\tAccuracy: {}\n".format(euc_results[0]))
@@ -162,15 +162,22 @@ def main(
 
 if __name__ == "__main__":
     if len(sys.argv) == 9:
+
+        nte = sys.argv[5] == "True"
+        ote = sys.argv[6] == "True"
+        nve = sys.argv[7] == "True"
+        ove = sys.argv[8] == "True"
+
         main(
             sys.argv[1],
             int(sys.argv[2]),
             int(sys.argv[3]),
             int(sys.argv[4]),
-            bool(sys.argv[5]),
-            bool(sys.argv[6]),
-            bool(sys.argv[7]),
-            bool(sys.argv[8])
+            nte,
+            ote,
+            nve,
+            ove
         )
     else:
+        main("VGG16", 100, 9999, 20, False, True, True, False)
         print("Usage: python -W ignore vector_distance.py <model> <num_classes> <examples_per_class> <crop_pctg> <nte> <ote> <nve> <ove>")

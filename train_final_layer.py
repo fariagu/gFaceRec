@@ -188,6 +188,12 @@ def main(
 
 if __name__ == "__main__":
     if len(sys.argv) == 13:
+        
+        nte = sys.argv[9] == "True"
+        ote = sys.argv[10] == "True"
+        nve = sys.argv[11] == "True"
+        ove = sys.argv[12] == "True"
+
         main(
             sys.argv[1],
             int(sys.argv[2]),
@@ -197,10 +203,10 @@ if __name__ == "__main__":
             float(sys.argv[6]),
             int(sys.argv[7]),
             float(sys.argv[8]),
-            bool(sys.argv[9]),
-            bool(sys.argv[10]),
-            bool(sys.argv[11]),
-            bool(sys.argv[12])
+            nte,
+            ote,
+            nve,
+            ove
         )
     else:
         print("Usage: python -W ignore train_final_layer.py <model> <num_classes> <examples_per_class> <crop_pctg> <num_epochs> <dropout_rate> <batch_size> <learning_rate> <nte> <ote> <nve> <ove>")
